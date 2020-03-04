@@ -2,39 +2,79 @@ import numpy as np
 from mpl_toolkits import mplot3d
 import matplotlib.pyplot as plt
 
-# Define the learning rate ( Usually good values are 0.03, 0.05, 0.01)
-a = 0.005
+selection = -1         # User selection options
+functionName = ''      # Holds function name for plot label
+points = []            # List of locations
+learning_rate = 0.0    # Define the learning rate (Good values are usually 0.01, 0.03 or 0.05)
+convergence = []       # List representing history of convergence
+
+text = '''
+Please select function to run gradient descent upon:
+1. Paraboloid            -> x^2+y^2
+2. Himmelblau's function -> (x^2+7-11)^2+(x+y^2-7)^2
+0. Quit
+'''
+print(text)
+
+while True:
+    try:
+        selection = int(input("Enter your selection: "))
+        if selection <= 2 and selection >= 0:
+            # Check if exit action is selected
+            if selection == 0:
+                quit()
+            # Initialize values for each function
+            elif selection == 1:
+                points.append([3.5, 3.5])
+                learning_rate = 0.06
+                functionName = "x^2+y^2"
+            else:
+                points.append([-1.2, -1.0])
+                learning_rate = 0.005
+                functionName = "Himmelblau's function"
+            break
+        else:
+            raise ValueError
+    except ValueError:
+        print("Wrong input specified.")
+        print(text)
+        pass
 
 # Define a multivirable function f(x, y), the cost function to run the gradient descent algorithm on
 def f(x, y):
-    return ((x ** 2 + y - 11) ** 2) + ((x + y ** 2 - 7) ** 2)    # Himmelblau's function
+    if   selection == 1: return x ** 2 + y ** 2
+    else               : return ((x ** 2 + y - 11) ** 2) + ((x + y ** 2 - 7) ** 2)
 
 # Define the derivative of the cost function in order to find the slope
 def df(x, y):
-    dfdx = 4 * x * (x ** 2 + y - 11) + 2 * (x + y ** 2 - 7)       # Partial derivative with respect to x
-    dfdy = 2 * (x ** 2 + y - 11) + 4 * y * (x + y ** 2 - 7)       # Partial derivative with respect to y
+    if selection == 1:
+        dfdx = 2 * x                                                # Partial derivative with respect to x
+        dfdy = 2 * y                                                # Partial derivative with respect to y
+    else:
+        dfdx = 4 * x * (x ** 2 + y - 11) + 2 * (x + y ** 2 - 7)     # Partial derivative with respect to x
+        dfdy = 2 * (x ** 2 + y - 11) + 4 * y * (x + y ** 2 - 7)     # Partial derivative with respect to y
     return dfdx, dfdy
 
-x = np.linspace(-6, 6, 20)
-y = np.linspace(-6, 6, 20)
+if   selection == 1:
+    x = np.linspace(-5, 5, 20)
+    y = np.linspace(-5, 5, 20)
+else:
+    x = np.linspace(-6, 6, 20)
+    y = np.linspace(-6, 6, 20)
 
 X, Y = np.meshgrid(x, y)
 
 fig = plt.figure(figsize=(10,8))
 
-# Set initial values
-points = [[-0.5, 0.6]]
-convergence = []
-
 for i in range(50):
     # Update the location of the next value and the current convergence value
-    points.append([points[i][0] - df(points[i][0], points[i][1])[0] * a, points[i][1] - df(points[i][0], points[i][1])[1] * a])
+    points.append([points[i][0] - df(points[i][0], points[i][1])[0] * learning_rate, points[i][1] - df(points[i][0], points[i][1])[1] * learning_rate])
     convergence.append(df(points[i][0], points[i][1])[0] ** 2 + df(points[i][0], points[i][1])[1] ** 2)
 
     # Update plots
     plt.clf()
     ax = fig.add_subplot(2, 2, 1, projection='3d')
-    ax.title.set_text('Cost Function')
+    ax.title.set_text(functionName)
     ax.contour3D(X, Y, f(X, Y), 50, cmap='coolwarm')                                                  # Plot the function in 3D
     ax.view_init(elev=40., azim=240)
     ax.scatter(points[i][0], points[i][1], f(points[i][0], points[i][1]), marker='o', color="red")    # Plot the point

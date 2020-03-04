@@ -21,8 +21,11 @@ while True:
     try:
         selection = int(input("Enter your selection: "))
         if selection <= 5 and selection >= 0:
+            # Check if selection made is exit
+            if selection == 0:
+                quit()
             # Initialize values for each function
-            if   selection == 1:
+            elif selection == 1:
                 points.append(-1.4)
                 functionName = "2*x*x*cos(x)-5*x"
             elif selection == 2: 
@@ -44,14 +47,10 @@ while True:
             break
         else: 
             raise ValueError
-    except:
+    except ValueError:
         print("Wrong input specified.")
         print(text)
         pass
-
-# Check if selection made is exit
-if selection == 0:
-    quit()
 
 # Define f(x), the cost function to run the gradient descent algorithm on
 def f(x):
