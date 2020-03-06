@@ -33,7 +33,7 @@ class Perceptron():
                 for i in range (0, len(self.w)):
                     result += self.w[i] * x[i, p]
                 u = self.f(result)
-                if u != d[p]:                                   # Check if sample is misclassified
+                if u != d[p]:                                       # Check if sample is misclassified
                     for i in range(0, len(self.w)):
                         self.w[i] = self.w[i] + self.b * (d[p] - u) * x[i, p]      # Update weights
                     convergence = False
@@ -44,7 +44,21 @@ class Perceptron():
             if convergence == False and epoch == self.maxEpochs:
                 print("Training unsuccessfull after " + str(epoch) + " epochs.\n"
                       "Maybe this dataset is not linearly classifiable.\n")
-
+            
+            plotRange = range(-5,6)
+            line = ((-1 * self.w[2] * plotRange) / self.w[1]) -1 * (self.w[0] / self.w[1])
+            points1 = np.where(d == -1)
+            points2 = np.where(d == 1)
+            plt.clf()
+            plt.title('Perceptron training...')
+            plt.xlim(-5, 5)
+            plt.ylim(-5, 5)
+            class1 = plt.scatter(x[1, points1], x[2, points1], marker='x', color='b')
+            class2 = plt.scatter(x[1, points2], x[2, points2], marker='o', color='r')
+            plt.plot(line, plotRange, linewidth=1, color='g')
+            plt.legend((class1, class2), ('Class 1', 'Class 2'), loc='upper right')
+            plt.pause(0.1)
+            
     def guess(self, point):
         guessedValue = 0
         for i in range (0, len(self.w)):
