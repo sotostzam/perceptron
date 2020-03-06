@@ -2,10 +2,22 @@
 
 This is a Python implementation of a single layer Perceptron. A perceptron is an artificial neuron, which can only solve linearly separable problems.
 
+![perceptron](images/perceptron.png)
+
+A perceptron owns the following properties:
+
 * Feed-forward neural network with a single layer
 * Used for supervised learning
 * Represents a binary classifier, type of linear classifier
 * Deals with the training of weights
+
+With this implementation you can interact in real time with the perceptron. More specifically you can:
+
+1. See current weights of the perceptron
+
+2. Train the Perceptron with a given dataset
+
+3. Give a test value to the perceptron and get a guess
 
 ## Prerequistes
 
