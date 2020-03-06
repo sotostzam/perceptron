@@ -7,14 +7,9 @@ def f(u):
     else:
         return -1
 
-# Sample data
-x = np.array([[ 1.0, 1.0,  1.0,  1.0, 1.0,  1.0, 1.0, 1.0,  1.0, 1.0 ],   # Augmented row
-              [ 0.5, 1.0, -1.0, -2.0, 1.5, -1.5, 2.0, 0.0, 2.75, 1.0 ],   # X values
-              [ 0.5, 2.0,  1.0,  1.0, 3.0,  3.5, 1.0, 3.0, 1.80, 3.0 ]    # Y values
-             ])
-
-# Array representing the desired output of the neuron        
-d = np.array([1.0, 1.0, -1.0, -1.0, 1.0, -1.0, 1.0, -1.0, 1.0, -1.0])
+dataset = np.genfromtxt('dataset.csv', delimiter=',')
+x = np.delete(dataset, dataset.shape[0]-1, 0)           # Array holding sample data
+d = dataset[-1]                                         # Array representing the desired output of the neuron    
 
 # Initialize parameters
 w = -1 + np.random.rand(3) * 2      # Initialize random weights on range [-1:1]    
