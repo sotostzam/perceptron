@@ -1,6 +1,11 @@
 # Perceptron Neural Network
 
-This is a Python implementation of a single layer Perceptron. A perceptron is an artificial neuron, which can solve only linearly separable problems.
+This is a Python implementation of a single layer Perceptron. A perceptron is an artificial neuron, which can only solve linearly separable problems.
+
+* Feed-forward neural network with a single layer
+* Used for supervised learning
+* Represents a binary classifier, type of linear classifier
+* Deals with the training of weights
 
 ## Prerequistes
 

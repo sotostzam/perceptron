@@ -1,47 +1,41 @@
 import numpy as np
 
-# Perceptron Function
-def f(x):
-    if x > 0:
+# Neuron Activation Function (Step function -1/1)
+def f(u):
+    if u > 0:
         return 1
     else:
         return -1
 
-# Test data
-x = np.array([[ 1.0, 1.0,  1.0,  1.0, 1.0,  1.0, 1.0, 1.0,  1.0, 1.0 ],
-              [ 0.5, 1.0, -1.0, -2.0, 1.5, -1.5, 2.0, 0.0, 2.75, 1.0 ],
-              [ 0.5, 2.0,  1.0,  1.0, 3.0,  3.5, 1.0, 3.0, 1.80, 3.0 ]
+# Sample data
+x = np.array([[ 1.0, 1.0,  1.0,  1.0, 1.0,  1.0, 1.0, 1.0,  1.0, 1.0 ],   # Augmented row
+              [ 0.5, 1.0, -1.0, -2.0, 1.5, -1.5, 2.0, 0.0, 2.75, 1.0 ],   # X values
+              [ 0.5, 2.0,  1.0,  1.0, 3.0,  3.5, 1.0, 3.0, 1.80, 3.0 ]    # Y values
              ])
-      
+
+# Array representing the desired output of the neuron        
 d = np.array([1.0, 1.0, -1.0, -1.0, 1.0, -1.0, 1.0, -1.0, 1.0, -1.0])
 
-# Randomize initial weights
-w = -1 + np.random.rand(1,3) * 2  # Initialization of weights on [-1:1]
-print("Initial weights:")
-print(w)
+# Initialize parameters
+w = -1 + np.random.rand(3) * 2      # Initialize random weights on range [-1:1]    
+maxEpochs = 10                      # Max iterations
+b = 0.1                             # Learning rate
 
-flag = 1         
-epochs = 0       # Starting iteration
-maxEpochs = 10   # Max iterations
-b = 0.2          # Learning rate
+print("Initial weights:\t" + str(w))
 
 # Start of Percepton training
-while flag < d.shape[0] and epochs < maxEpochs:
-    for i in range (0, x.T.shape[1]):
-        if flag < 10:
-            eg=0
-            for j in range(0, 3):
-                c = w[0, j] * x[j, i]
-                eg = eg + c
-            u = f(eg)
+for epoch in range (0, maxEpochs):                          # Iterate through the epochs given
+    convergence = True                                      # Convergence value (True | False)
+    for p in range (0, x.T.shape[0]):                       # Iterate through each sample
+        result = 0
+        for i in range (0, len(w)):
+            result += w[i] * x[i, p]
+        u = f(result)
+        if u != d[p]:                                       # Check if sample is misclassified
+            for i in range(0, len(w)):
+                w[i] = w[i] + b * (d[p] - u) * x[i, p]      # Update weights
+            convergence = False
+    if convergence == True:
+        break
 
-            if u != d[i]:
-                for j in range(0, 3):
-                    w[0, j] = w[0, j] + b * (d[i] - u) * x[j, i]
-                flag = 1
-            else:
-                flag = flag + 1
-
-    epochs += 1
-print("Trained weights:")
-print(w)
+print("Trained weights:\t" + str(w))
