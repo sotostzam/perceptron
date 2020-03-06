@@ -19,10 +19,17 @@ With this implementation you can interact in real time with the perceptron. More
 
 3. Give a test value to the perceptron and get a guess
 
+## Training
+
+During the training phase, there is a plot explaining what is going. Throughout the epochs, one can see how the line is changing, until ultimatelly finds a location that can linearly classify the two classes.
+
+![perceptron_plot](images/training.png)
+
 ## Prerequistes
 
 1) [Python 3](https://www.python.org/downloads/)
 2) [NumPy](http://www.numpy.org/)
+3) [Matplotlib](http://matplotlib.org/)
 
 For your convenience there is a file named requirements, which holds the information about all the required libraries. After making sure you have python up and running in your machine, you can install all the requirements by using the following command:
 
