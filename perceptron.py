@@ -10,18 +10,20 @@ class Perceptron():
         else:
             return -1
 
-    # Default constructor 
-    def __init__(self, maxEpochs = 10, learning_rate = 0.1):
-        self.w = -1 + np.random.rand(3) * 2                     # Initialize weights randomly on range [-1:1]  
+    # Default constructor for a perceptron
+    def __init__(self, maxEpochs = 10, learning_rate = 0.1, features = 2):
+        self.w = -1 + np.random.rand(features + 1) * 2          # Initialize weights randomly on range [-1:1]  
         self.maxEpochs = maxEpochs                              # Max iterations
         self.learning_rate = learning_rate                      # Learning rate
-            
+
+    # Function to provide a guess for a specific input            
     def guess(self, input):
         sum = 0
         for i in range (0, len(self.w)):
             sum += self.w[i] * input[i]
         return self.f(sum)
 
+    # Function to train the perceptron
     def train(self, dataset):
         x = np.delete(dataset, dataset.shape[0]-1, 0)           # Array holding sample data
         target = dataset[-1]                                    # Array representing the desired output of the neuron    

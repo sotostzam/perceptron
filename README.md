@@ -25,6 +25,12 @@ During the training phase, there is a plot explaining what is going. Throughout 
 
 ![perceptron_plot](images/training.png)
 
+Currently there are two datasets inside the "dataset" folder. The user has the option to choose between a custom random dataset and the popular "iris" dataset.
+
+Your can read more about the "Iris" dataset by clicking at the following link:
+
+* [Iris Data Set](https://archive.ics.uci.edu/ml/datasets/Iris)
+
 ## Prerequistes
 
 1) [Python 3](https://www.python.org/downloads/)
