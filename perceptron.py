@@ -14,24 +14,37 @@ class Perceptron():
     def __init__(self, maxEpochs = 10, learning_rate = 0.1):
         self.w = -1 + np.random.rand(3) * 2                     # Initialize weights randomly on range [-1:1]  
         self.maxEpochs = maxEpochs                              # Max iterations
-        self.b = learning_rate                                  # Learning rate
+        self.learning_rate = learning_rate                      # Learning rate
+            
+    def guess(self, input):
+        sum = 0
+        for i in range (0, len(self.w)):
+            sum += self.w[i] * input[i]
+        return self.f(sum)
 
     def train(self, dataset):
         x = np.delete(dataset, dataset.shape[0]-1, 0)           # Array holding sample data
-        d = dataset[-1]                                         # Array representing the desired output of the neuron    
+        target = dataset[-1]                                    # Array representing the desired output of the neuron    
+        x_min = np.amin(x[1]) - 0.5
+        x_max = np.amax(x[1]) + 0.5
+        y_min = np.amin(x[2]) - 0.5
+        y_max = np.amax(x[2]) + 0.5
 
-        # Start of Percepton training
+        # Iterate through each epoch
         for epoch in range (0, self.maxEpochs + 1):             # Iterate through the epochs given
-            convergence = True                                  # Convergence value (True | False)
-            for p in range (0, x.T.shape[0]):                   # Iterate through each sample
-                result = 0
-                for i in range (0, len(self.w)):
-                    result += self.w[i] * x[i, p]
-                u = self.f(result)
-                if u != d[p]:                                   # Check if sample is misclassified
+            convergence = True                                  # Value indicating convergence status
+
+            # Iterate through each sample
+            for p in range (0, x.T.shape[0]):
+                guessedValue = self.guess(x[:, p])              # Make a guess on the output of this sample
+                error = (target[p] - guessedValue)              # Apply Gradient Descent to find the error
+
+                # Weight tuning if sample is misclassified
+                if guessedValue != target[p]:                                 
                     for i in range(0, len(self.w)):
-                        self.w[i] = self.w[i] + self.b * (d[p] - u) * x[i, p]      # Update weights
+                        self.w[i] += self.learning_rate * error * x[i, p]
                     convergence = False
+
             if convergence:
                 print("Training successfull after " + str(epoch) + " epochs.")
                 print("Weights after training: " + str(self.w) + "\n")
@@ -41,29 +54,22 @@ class Perceptron():
                       "Maybe this dataset is not linearly classifiable.\n")
             
             # Plotting of classes and the line separating the two
-            plotRange = range(-5,6)
-            line = ((-1 * self.w[2] * plotRange) / self.w[1]) -1 * (self.w[0] / self.w[1])
-            points1 = np.where(d == -1)
-            points2 = np.where(d == 1)
+            x_range = np.linspace(x_min, x_max, endpoint = True)
+            y_intercept = - 1 * (self.w[0] / self.w[2]) - 1 * (self.w[1] / self.w[2]) * x_range
+
+            points1 = np.where(target == 1)
+            points2 = np.where(target == -1)
             plt.clf()
             plt.title('Perceptron training...')
-            plt.xlim(-5, 5)
-            plt.ylim(-5, 5)
-            class1 = plt.scatter(x[1, points1], x[2, points1], marker='x', color='b')
-            class2 = plt.scatter(x[1, points2], x[2, points2], marker='o', color='r')
-            plt.plot(line, plotRange, linewidth=1, color='g')
-            plt.legend((class1, class2), ('Class 1', 'Class 2'), loc='upper right')
+            plt.xlabel('Feature 1')
+            plt.ylabel("Feature 2")
+            plt.xlim(x_min, x_max)
+            plt.ylim(y_min, y_max)
+            plt.scatter(x[1, points1], x[2, points1], marker='x', color='b', label='Class 1')
+            plt.scatter(x[1, points2], x[2, points2], marker='o', color='r', label='Class 2')
+            plt.plot(x_range, y_intercept, linewidth=1, color='g')
+            plt.legend(loc='upper right')
             plt.pause(0.1)
-            
-    def guess(self, point):
-        guessedValue = 0
-        for i in range (0, len(self.w)):
-            guessedValue += self.w[i] * point[i]
-        u = self.f(guessedValue)
-        if u == -1:
-            print("Perceptron's guess: Class 1.\n")
-        else:
-            print("Perceptron's guess: Class 2.\n")
 
     def show_weights(self):
         print("Perceptron's weights:\t" + str(self.w) + "\n")

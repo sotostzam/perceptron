@@ -25,7 +25,10 @@ while True:
             point_x = int(input("Enter point's x: "))
             point_y = int(input("Enter point's y: "))
             guess_point = np.array([1, point_x, point_y])
-            neuron.guess(guess_point)
+            if neuron.guess(guess_point) == -1:
+                print("Perceptron's guess: Class 1.\n")
+            else:
+                print("Perceptron's guess: Class 2.\n")
         else: 
             raise ValueError
     except ValueError:
