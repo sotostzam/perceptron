@@ -10,20 +10,15 @@ class Perceptron():
         else:
             return -1
 
-    # Parameters
-    w = b = maxEpochs = 0
-
     # Default constructor 
-    def __init__(self):
-        self.w = -1 + np.random.rand(3) * 2         # Initialize weights randomly on range [-1:1]  
-        self.maxEpochs = 10                         # Max iterations
-        self.b = 0.1                                # Learning rate
+    def __init__(self, maxEpochs = 10, learning_rate = 0.1):
+        self.w = -1 + np.random.rand(3) * 2                     # Initialize weights randomly on range [-1:1]  
+        self.maxEpochs = maxEpochs                              # Max iterations
+        self.b = learning_rate                                  # Learning rate
 
     def train(self, dataset):
         x = np.delete(dataset, dataset.shape[0]-1, 0)           # Array holding sample data
         d = dataset[-1]                                         # Array representing the desired output of the neuron    
-
-        convergence = True                                      # Convergence value (True | False)
 
         # Start of Percepton training
         for epoch in range (0, self.maxEpochs + 1):             # Iterate through the epochs given
@@ -33,7 +28,7 @@ class Perceptron():
                 for i in range (0, len(self.w)):
                     result += self.w[i] * x[i, p]
                 u = self.f(result)
-                if u != d[p]:                                       # Check if sample is misclassified
+                if u != d[p]:                                   # Check if sample is misclassified
                     for i in range(0, len(self.w)):
                         self.w[i] = self.w[i] + self.b * (d[p] - u) * x[i, p]      # Update weights
                     convergence = False
@@ -45,6 +40,7 @@ class Perceptron():
                 print("Training unsuccessfull after " + str(epoch) + " epochs.\n"
                       "Maybe this dataset is not linearly classifiable.\n")
             
+            # Plotting of classes and the line separating the two
             plotRange = range(-5,6)
             line = ((-1 * self.w[2] * plotRange) / self.w[1]) -1 * (self.w[0] / self.w[1])
             points1 = np.where(d == -1)

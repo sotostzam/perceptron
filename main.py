@@ -3,7 +3,7 @@ import numpy as np
 import perceptron
 
 # Create a single perceptron
-neuron = perceptron.Perceptron()
+neuron = perceptron.Perceptron(maxEpochs = 10, learning_rate = 0.1)
 
 while True:
     try:
