@@ -19,7 +19,7 @@ With this implementation you can interact in real time with the perceptron. More
 
 3. Give a test value to the perceptron and get a guess
 
-## Training
+## Perceptron Training
 
 During the training phase, there is a plot explaining what is going. Throughout the epochs, one can see how the line is changing, until ultimatelly finds a location that can linearly classify the two classes.
 
@@ -30,6 +30,17 @@ Currently there are two datasets inside the "dataset" folder. The user has the o
 Your can read more about the "Iris" dataset by clicking at the following link:
 
 * [Iris Data Set](https://archive.ics.uci.edu/ml/datasets/Iris)
+
+## Multilayer Perceptron (MLP)
+
+With a multilayer perceptron, we can achive what the single perceptron can not. Distinguish data that are not linearly separable.
+
+A multilayer perceptron owns the following properties:
+
+* Is a class of feedforward artificial neural networks (ANN)
+* Uses a supervised learning technique called backpropagation
+* Has at least 3 layers (1 input, 1 hidden, 1 output)
+* Uses a non-linear activation function
 
 ## Prerequistes
 

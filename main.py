@@ -5,7 +5,7 @@ import perceptron
 def load_dataset(option):
     if option == 1:
         # Read and generate the third and forth feature of the dataset
-        dataset_values = np.genfromtxt('datasets/iris.data', delimiter=',')[50:150, [2,3]]
+        dataset_values = np.genfromtxt('datasets/iris.data', delimiter=',')[0:100, [2,3]]
         
         # Read and generate the names of the two classes
         dataset_target_names = np.genfromtxt('datasets/iris.data', delimiter=',', dtype = np.str_)[0:100, [4]]
