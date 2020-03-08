@@ -34,9 +34,25 @@ class NeuralNetwork:
 
         return output
 
+    def train(self, dataset, targets):
+        # Get the guessed value
+        outputs = self.feedForward(dataset)
+
+        # Calculate errors
+        output_errors = np.array(targets - outputs)
+
+        # Backpropagation
+        hidden_errors = self.weights_HO.T.dot(output_errors)
+
+        print("Guesses:\n" + str(outputs)) 
+        print("Inputs:\n" + str(targets))
+        print("Errors:\n" + str(output_errors))
+        print("Hidden Layer's Errors:\n" + str(hidden_errors))
+        return hidden_errors
+
 # Create a neural network of 2 inputs, 2 hidden, and 1 output nodes
 mlp = NeuralNetwork(2, 2, 1)
 
 test_input = np.array([[1], [0]])
-output = mlp.feedForward(test_input)
-print(output)
+targets = np.array([[1]])
+output = mlp.train(test_input, targets)
