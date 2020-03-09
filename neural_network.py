@@ -1,4 +1,5 @@
 import numpy as np
+from random import randrange
 
 class NeuralNetwork:
 
@@ -83,12 +84,25 @@ class NeuralNetwork:
 # Create a neural network of 2 inputs, 2 hidden, and 1 output nodes
 mlp = NeuralNetwork(2, 2, 1)
 
-test_input = np.array([[1, 0], [0, 1], [1, 1], [0, 0]])
-targets = np.array([[1], [1], [0], [0]])
+# Dataset arrays to train the neural network on 
+test_input = np.array([[0, 0],
+                       [0, 1],
+                       [1, 0],
+                       [1, 1]])
 
-# Train the neural network 50.000 times on the data
+targets = np.array([[0],
+                    [1],
+                    [1],
+                    [0]])
+
+# Train the neural network on the data feeding it random values each time
 for i in range(0,50000):
-    mlp.train(test_input.T, targets)
+    randomPick = randrange(4)
+    mlp.train(np.array([[test_input[randomPick][0]],[test_input[randomPick][1]]]), targets[randomPick])
 
 # Let the neural network have a guess
-print(mlp.feedForward(np.array([[0, 1]]).T))
+print("\nXOR Gate check:")
+print(str(test_input[0]) + " -> " + str(mlp.feedForward(np.array([[0], [0]]))[0]))      # Should be number close to 0
+print(str(test_input[1]) + " -> " + str(mlp.feedForward(np.array([[0], [1]]))[0]))      # Should be number close to 1
+print(str(test_input[2]) + " -> " + str(mlp.feedForward(np.array([[1], [0]]))[0]))      # Should be number close to 1
+print(str(test_input[3]) + " -> " + str(mlp.feedForward(np.array([[1], [1]]))[0]))      # Should be number close to 0
