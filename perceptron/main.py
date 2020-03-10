@@ -63,6 +63,7 @@ def showMenu():
             print("Wrong input specified.\n")
             pass
 
-# Create a single perceptron with 2 features
-neuron = perceptron.Perceptron(maxEpochs = 10, learning_rate = 0.1, features = 2)
-showMenu()
+if __name__ == "__main__":
+    # Create a single perceptron with 2 features
+    neuron = perceptron.Perceptron(maxEpochs = 10, learning_rate = 0.1, features = 2)
+    showMenu()

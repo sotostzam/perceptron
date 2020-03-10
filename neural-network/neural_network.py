@@ -82,10 +82,42 @@ class NeuralNetwork:
 
         return hidden_errors
 
-# Create a neural network of 2 inputs, 2 hidden, and 1 output nodes
-mlp = NeuralNetwork(2, 2, 1)
+    def showWeights(self):
+        print("\nInput -> Hidden weights:\n" + str(self.weights_IH))
+        print("\nHidden -> Output weights:\n" + str(self.weights_HO))
 
-# Dataset arrays to train the neural network on 
+def train_mlp(epochs = 1000, plot = True, update = 1000):
+    # Train the neural network on the data feeding it random values each time
+    for i in range(0, epochs + 1):
+        randomPick = randrange(4)
+        mlp.train(np.array([[test_input[randomPick][0]],[test_input[randomPick][1]]]), targets[randomPick])
+
+        if i % update == 0:
+            print("Training... " + str(int((i/epochs)*100)) + " %")
+            if plot:  
+                # Plotting of classes and the line separating the two
+                x_range = np.linspace(-.5, 1.5, endpoint = True)
+
+                y_intercept_g   = - 1 * (mlp.bias_O[0][0] / mlp.weights_HO[0][1]) - 1 * (mlp.weights_HO[0][0] / mlp.weights_HO[0][1]) * x_range
+                y_intercept_1   = - 1 * (mlp.bias_H[0][0] / mlp.weights_IH[0][1]) - 1 * (mlp.weights_IH[0][0] / mlp.weights_IH[0][1]) * x_range
+                y_intercept_2   = - 1 * (mlp.bias_H[1][0] / mlp.weights_IH[1][1]) - 1 * (mlp.weights_IH[1][0] / mlp.weights_IH[1][1]) * x_range
+
+                plt.clf()
+                plt.title('Neural Network is training...')
+                plt.scatter(1, 1, c='red')
+                plt.scatter(0, 0, c='red')
+                plt.scatter(0, 1, c='blue')
+                plt.scatter(1, 0, c='blue')
+                plt.plot(x_range, y_intercept_g, linewidth=1, color='green', label='Output Neuron')
+                plt.plot(x_range, y_intercept_1, linewidth=1, color='red',   label='Hidden Neuron 1')
+                plt.plot(x_range, y_intercept_2, linewidth=1, color='blue',  label='Hidden Neuron 2')
+                plt.fill_between(x = x_range, y1 = y_intercept_1, y2 = y_intercept_2, alpha=.2, color='blue')
+                plt.xlim(-.5, 1.5)
+                plt.ylim(-.5, 1.5)
+                plt.legend(loc='upper right', prop={'size': 8})
+                plt.pause(0.01)
+
+# Dataset arrays to train the neural network uppon 
 test_input = np.array([[0, 0],
                        [0, 1],
                        [1, 0],
@@ -96,41 +128,19 @@ targets = np.array([[0],
                     [1],
                     [0]])
 
-# Train the neural network on the data feeding it random values each time
-for i in range(0, 50001):
-    randomPick = randrange(4)
-    mlp.train(np.array([[test_input[randomPick][0]],[test_input[randomPick][1]]]), targets[randomPick])
+if __name__ == "__main__":
+    # Create a neural network of 2 inputs, 2 hidden, and 1 output nodes
+    mlp = NeuralNetwork(2, 2, 1)
 
-    if i % 500 == 0:
-        print(str(int((i/50000)*100)) + " %")
+    # Train network by passing it the dataset values randomly
+    train_mlp(epochs = 50000, plot = True, update = 1000)
 
-        # Plotting of classes and the line separating the two
-        x_range = np.linspace(-.5, 1.5, endpoint = True)
+    # Let the neural network have a guess
+    print("\nXOR Gate check:")
+    print(str(test_input[0]) + " -> " + str(mlp.feedForward(np.array([[0], [0]]))[0]))      # Should be number close to 0
+    print(str(test_input[1]) + " -> " + str(mlp.feedForward(np.array([[0], [1]]))[0]))      # Should be number close to 1
+    print(str(test_input[2]) + " -> " + str(mlp.feedForward(np.array([[1], [0]]))[0]))      # Should be number close to 1
+    print(str(test_input[3]) + " -> " + str(mlp.feedForward(np.array([[1], [1]]))[0]))      # Should be number close to 0
 
-        y_intercept_1   = - 1 * (mlp.bias_H[0][0] / mlp.weights_IH[0][1]) - 1 * (mlp.weights_IH[0][0] / mlp.weights_IH[0][1]) * x_range
-        y_intercept_2   = - 1 * (mlp.bias_H[0][0] / mlp.weights_IH[1][1]) - 1 * (mlp.weights_IH[1][0] / mlp.weights_IH[1][1]) * x_range
-        y_intercept_g   = - 1 * (mlp.bias_O[0][0] / mlp.weights_HO[0][1]) - 1 * (mlp.weights_HO[0][0] / mlp.weights_HO[0][1]) * x_range
-
-        plt.clf()
-        plt.title('Neural Network is training...')
-        plt.scatter(1, 1, c='red')
-        plt.scatter(0, 0, c='red')
-        plt.scatter(0, 1, c='blue')
-        plt.scatter(1, 0, c='blue')
-        plt.plot(x_range, y_intercept_1, linewidth=1, color='red',   label='Hidden Neuron 1')
-        plt.plot(x_range, y_intercept_2, linewidth=1, color='blue',  label='Hidden Neuron 2')
-        plt.plot(x_range, y_intercept_g, linewidth=1, color='green', label='Output Neuron')
-        plt.fill_between(x = x_range, y1 = y_intercept_1, y2 = y_intercept_2, alpha=.2, color='blue')
-        plt.xlim(-.5, 1.5)
-        plt.ylim(-.5, 1.5)
-        plt.legend(loc='upper right', prop={'size': 8})
-        plt.pause(0.01)
-
-# Let the neural network have a guess
-print("\nXOR Gate check:")
-print(str(test_input[0]) + " -> " + str(mlp.feedForward(np.array([[0], [0]]))[0]))      # Should be number close to 0
-print(str(test_input[1]) + " -> " + str(mlp.feedForward(np.array([[0], [1]]))[0]))      # Should be number close to 1
-print(str(test_input[2]) + " -> " + str(mlp.feedForward(np.array([[1], [0]]))[0]))      # Should be number close to 1
-print(str(test_input[3]) + " -> " + str(mlp.feedForward(np.array([[1], [1]]))[0]))      # Should be number close to 0
-
-plt.show()
+    # mlp.showWeights()
+    plt.show()
