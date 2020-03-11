@@ -50,22 +50,11 @@ nextPoint[] = [point - derivative_x(point) * a - point - derivative_y(point) * a
 
 Important! Notice that now we are getting and saving vectors instead of single values. This happens because on every iteration, we need to calculate the gradient (or slope) towards both the x axis and the y axis.
 
-## Running examples through the Jupyter notebook
-
-If you wish to run the examples within the jupyter notebook you need to execute the following snipet of code from within the folder.
-
-```CMD
-jupyter notebook
-```
-
-After this, a window in your browser will open. Just open the file you wish and you can run the examples directly through your browser.
-
 ## Prerequistes
 
 1) [Python 3](https://www.python.org/downloads/)
 2) [NumPy](http://www.numpy.org/)
 3) [Matplotlib](http://matplotlib.org/)
-4) [Jupyter Notebook](https://jupyter.org/) (Support running python shell through your browser)
 
 For your convenience there is a file named requirements, which holds the information about all the required libraries. After making sure you have python up and running in your machine, you can install all the requirements by using the following command:
 
