@@ -98,7 +98,7 @@ def train_mlp(epochs = 1000, plot = True, update = 1000):
                 # Plotting of classes and the line separating the two
                 x_range = np.linspace(-.5, 1.5, endpoint = True)
 
-                y_intercept_g   = - 1 * (mlp.bias_O[0][0] / mlp.weights_HO[0][1]) - 1 * (mlp.weights_HO[0][0] / mlp.weights_HO[0][1]) * x_range
+                #y_intercept_g   = - 1 * (mlp.bias_O[0][0] / mlp.weights_HO[0][1]) - 1 * (mlp.weights_HO[0][0] / mlp.weights_HO[0][1]) * x_range
                 y_intercept_1   = - 1 * (mlp.bias_H[0][0] / mlp.weights_IH[0][1]) - 1 * (mlp.weights_IH[0][0] / mlp.weights_IH[0][1]) * x_range
                 y_intercept_2   = - 1 * (mlp.bias_H[1][0] / mlp.weights_IH[1][1]) - 1 * (mlp.weights_IH[1][0] / mlp.weights_IH[1][1]) * x_range
 
@@ -108,7 +108,7 @@ def train_mlp(epochs = 1000, plot = True, update = 1000):
                 plt.scatter(0, 0, c='red')
                 plt.scatter(0, 1, c='blue')
                 plt.scatter(1, 0, c='blue')
-                plt.plot(x_range, y_intercept_g, linewidth=1, color='green', label='Output Neuron')
+                #plt.plot(x_range, y_intercept_g, linewidth=1, color='green', label='Output Neuron')
                 plt.plot(x_range, y_intercept_1, linewidth=1, color='red',   label='Hidden Neuron 1')
                 plt.plot(x_range, y_intercept_2, linewidth=1, color='blue',  label='Hidden Neuron 2')
                 plt.fill_between(x = x_range, y1 = y_intercept_1, y2 = y_intercept_2, alpha=.2, color='blue')
@@ -133,7 +133,7 @@ if __name__ == "__main__":
     mlp = NeuralNetwork(2, 2, 1)
 
     # Train network by passing it the dataset values randomly
-    train_mlp(epochs = 50000, plot = True, update = 1000)
+    train_mlp(epochs = 50000, plot = True, update = 2000)
 
     # Let the neural network have a guess
     print("\nXOR Gate check:")

@@ -1,48 +1,25 @@
-# Perceptron Neural Network
+# Machine Learning
 
-This is a Python implementation of a single layer Perceptron. A perceptron is an artificial neuron, which can only solve linearly separable problems.
+## What is machine learning
 
-![perceptron](images/perceptron.png)
+* "Field of study that gives computers the ability to learn without being explicitly programmed." -- Arthur Samuels (1959).
 
-A perceptron owns the following properties:
+This repository contains work and examples i have done to showcase the use of each respective algorithm used in machine learning and artificial intelligence in general.
 
-* Feed-forward neural network with a single layer
-* Used for supervised learning
-* Represents a binary classifier, type of linear classifier
-* Deals with the training of weights
+## Prerequisites
 
-With this implementation you can interact in real time with the perceptron. More specifically you can:
+Most of the examples contain an algorithm commonly used in machine learning, called gradient descent. If you wish to understand how gradient descent works and run some examples on your own machine, i am including a link to my other repository going over gradient descent in detail. 
 
-1. See current weights of the perceptron
+* [Gradient Descent](https://github.com/sotostzam/gradient-descent)
 
-2. Train the Perceptron with a given dataset
+## Supervised Learning Algorithms
 
-3. Give a test value to the perceptron and get a guess
+* [Perceptron](https://github.com/sotostzam/artificial-neural-networks/tree/master/perceptron)
+* [Multilayer Perceptron](https://github.com/sotostzam/artificial-neural-networks/tree/master/multilayer-perceptron)
 
-## Perceptron Training
+## How to run code
 
-During the training phase, there is a plot explaining what is going. Throughout the epochs, one can see how the line is changing, until ultimatelly finds a location that can linearly classify the two classes.
-
-![perceptron_plot](images/training.png)
-
-Currently there are two datasets inside the "dataset" folder. The user has the option to choose between a custom random dataset and the popular "iris" dataset.
-
-Your can read more about the "Iris" dataset by clicking at the following link:
-
-* [Iris Data Set](https://archive.ics.uci.edu/ml/datasets/Iris)
-
-## Multilayer Perceptron (MLP)
-
-With a multilayer perceptron, we can achive what the single perceptron can not. Distinguish data that are not linearly separable.
-
-A multilayer perceptron owns the following properties:
-
-* Is a class of feedforward artificial neural networks (ANN)
-* Uses a supervised learning technique called backpropagation
-* Has at least 3 layers (1 input, 1 hidden, 1 output)
-* Uses a non-linear activation function
-
-## Prerequistes
+In order to run the examples you need to have the following requirements:
 
 1) [Python 3](https://www.python.org/downloads/)
 2) [NumPy](http://www.numpy.org/)
