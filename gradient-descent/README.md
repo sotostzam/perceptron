@@ -2,7 +2,7 @@
 
 This is a Python implementation of the gradient descent algorithm. Gradient descent is an optimization algorithm for minimizing a given cost function, most commonly used in machine learning.
 
-![gradient_descent](images/gradient_descent.png)
+![gradient_descent](/images/gradient_descent.png)
 
 ## Initialization of the algorithm
 
@@ -23,7 +23,7 @@ Calculating the derivative of a specific point on the cost function, we can find
 
 ## Three dimensions and multivariable functions
 
-![gradient_descent_3D](images/gradient_descent_3D.png)
+![gradient_descent_3D](/images/gradient_descent_3D.png)
 
 When the cost function takes more than one parameters (known as multivariable functions), things change a bit. For instance the function
 
@@ -49,15 +49,3 @@ nextPoint[] = [point - derivative_x(point) * a - point - derivative_y(point) * a
 ```
 
 Important! Notice that now we are getting and saving vectors instead of single values. This happens because on every iteration, we need to calculate the gradient (or slope) towards both the x axis and the y axis.
-
-## Prerequistes
-
-1) [Python 3](https://www.python.org/downloads/)
-2) [NumPy](http://www.numpy.org/)
-3) [Matplotlib](http://matplotlib.org/)
-
-For your convenience there is a file named requirements, which holds the information about all the required libraries. After making sure you have python up and running in your machine, you can install all the requirements by using the following command:
-
-```Python
-pip install -r requirements.txt
-```

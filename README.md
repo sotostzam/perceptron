@@ -6,18 +6,18 @@ This repository contains work and examples i have done to showcase the use of ea
 
 ## Supervised Learning Algorithms
 
-* [Perceptron](https://github.com/sotostzam/artificial-neural-networks/tree/master/perceptron)
-* [Multilayer Perceptron](https://github.com/sotostzam/artificial-neural-networks/tree/master/multilayer-perceptron)
+* [Perceptron](https://github.com/sotostzam/artificial-intelligence/tree/master/perceptron)
+* [Multilayer Perceptron](https://github.com/sotostzam/artificial-intelligence/tree/master/multilayer-perceptron)
 
 ## Reinforcement Learning Algorithms
 
-* [Q-Learning](https://github.com/sotostzam/artificial-neural-networks/tree/master/q-learning) (WIP)
+* [Q-Learning](https://github.com/sotostzam/artificial-intelligence/tree/master/q-learning) (WIP)
 
 ## Prerequisites
 
-Most of the examples contain an algorithm commonly used in machine learning, called gradient descent. If you wish to understand how gradient descent works and run some examples on your own machine, i am including a link to my other repository going over gradient descent in detail.
+Most of the examples contain an algorithm commonly used in machine learning, called gradient descent. If you wish to understand how gradient descent works and run some examples on your own machine, navigating to the gradient-descent folder or click on the following link:
 
-* [Gradient Descent](https://github.com/sotostzam/gradient-descent)
+* [Gradient Descent](https://github.com/sotostzam/artificial-intelligence/tree/master/gradient-descent)
 
 ## How to run code
 
