@@ -52,9 +52,9 @@ canvas.grid(row=0, column=1, sticky="nsew")
 
 ###############################################################################################
 
-LEARNING_RATE   = 0.1
+LEARNING_RATE   = 0.05
 DISCOUNT        = 0.95      # How much value future rewards over current rewards
-EPISODES        = 25000
+EPISODES        = 1000
 ACTIONS         = np.array([0, 1, 2, 3])
 
 ###############################################################################################
@@ -108,15 +108,7 @@ def drawOnCanvas(event, action):
             canvas_objects[y, x] = canvas.create_rectangle(x * 50, y * 50, x * 50 + 50, y * 50 + 50, fill="black")
         reward_table[y, x] = -10
     elif action == 2:
-        print("Add goal: " + str(y) + "," + str(x))
-        goal_pos = [y, x]
-        if canvas_objects[y, x] == 0:
-            canvas_objects[y, x] = canvas.create_rectangle(x * 50, y * 50, x * 50 + 50, y * 50 + 50, fill="green")
-        else:
-            canvas.delete(canvas_objects[y, x])
-            canvas_objects[y, x] = 0
-            canvas_objects[y, x] = canvas.create_rectangle(x * 50, y * 50, x * 50 + 50, y * 50 + 50, fill="green")
-        reward_table[y, x] = 100
+        print("Q-Value: " + str(q_table[y, x]))
     else:
         print("Object removed: " + str(y) + "," + str(x))
         canvas.delete(canvas_objects[y, x])
@@ -191,6 +183,7 @@ def train():
     best_reward = 0
     success_times = 0
     b_rewards_text.set("Best score: " + str(best_reward))
+    success_text.set("Success times: " + str(success_times))
     for i in range (1, EPISODES):
         episodes_text.set("Episode: " + str(i))
         max_reward = 0
@@ -213,26 +206,20 @@ def train():
             max_reward += reward
             rewards_text.set("Reward: " + str(max_reward))
 
-            new_state = tuple(q_table[agent_pos[0], agent_pos[1]].astype(np.int))       # See new state
+            new_state = tuple(q_table[agent_pos[0], agent_pos[1]])       # See new state
             max_future_q = np.max(new_state)
 
             current_q    = q_table[current_state[0], current_state[1]][action]
-
-            #new_q = (1 - LEARNING_RATE) * current_q + LEARNING_RATE * (reward + DISCOUNT * max_future_q)
             new_q = current_q + LEARNING_RATE * (reward + DISCOUNT * max_future_q - current_q)
 
             q_table[current_state[0]][current_state[1]][action] = new_q
-
-            # if (i > 0):
-            #     print(q_table[1, 0])
-            #     print(q_table[1, 1])
 
             if reward == 100:
                 success_times += 1
                 success_text.set("Success times: " + str(success_times))
                 reset()
                 break
-            if i == 1 or i % 100 == 0:
+            if i == 1 or i % 50 == 0:
                 canvas.update()
                 time.sleep(.1)
 

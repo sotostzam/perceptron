@@ -11,7 +11,9 @@ This repository contains work and examples i have done to showcase the use of ea
 
 ## Reinforcement Learning Algorithms
 
-* [Q-Learning](https://github.com/sotostzam/artificial-intelligence/tree/master/q-learning) (WIP)
+Reinforcement learning (RL) is a subset of machine learning that makes use of software agents, which take actions in a given environment. Their goal is to maximize a cumulative reward.
+
+* [Q-Learning](https://github.com/sotostzam/artificial-intelligence/tree/master/q-learning)
 
 ## Prerequisites
 
