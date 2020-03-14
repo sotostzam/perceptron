@@ -39,11 +39,13 @@ label_success.grid(row=4, column=0, sticky="ew", padx=5, pady=10)
 
 btn_start = tk.Button(main_menu, text="Start", width=20, height=2)
 btn_reset = tk.Button(main_menu, text="Reset", width=20, height=2)
+btn_load = tk.Button(main_menu, text="Load Custom Maze", width=20, height=2)
 btn_exit  = tk.Button(main_menu, text="Exit",  width=20, height=2, command=window.destroy)
 
 btn_start.grid(row=5, column=0, sticky="ew", padx=5, pady=10)
 btn_reset.grid(row=6, column=0, sticky="ew", padx=5, pady=10)
-btn_exit.grid(row=7, column=0, sticky="ew", padx=5, pady=10)
+btn_load.grid(row=7, column=0, sticky="ew", padx=5, pady=10)
+btn_exit.grid(row=8, column=0, sticky="ew", padx=5, pady=10)
 
 # Canvas Panel Parameters
 canvas = tk.Canvas(master = window, width = 500, height = 500, bg="grey")
@@ -64,24 +66,31 @@ reward_table   = np.ones((10, 10)) * - 1                # Initialize reward tabl
 canvas_objects = np.zeros((10, 10), dtype=int)          # Canvas objects table
 
 # Initialization of starting state parameters
-canvas_objects[agent_pos[0], agent_pos[1]] = canvas.create_rectangle(agent_pos[1] * 50, agent_pos[0] * 50, agent_pos[1] * 50 + 50, agent_pos[0] * 50 + 50, fill="red")
+canvas_objects[agent_pos[0], agent_pos[1]] = canvas.create_oval(agent_pos[1] * 50, agent_pos[0] * 50, agent_pos[1] * 50 + 50, agent_pos[0] * 50 + 50, fill="red")
 canvas_objects[goal_pos[0], goal_pos[1]]   = canvas.create_rectangle(goal_pos[1] * 50, goal_pos[0] * 50, goal_pos[1] * 50 + 50, goal_pos[0] * 50 + 50, fill="green")
-canvas_objects[0, 1]                       = canvas.create_rectangle(0 * 50, 0 * 50, 0 * 50 + 50, 0 * 50 + 50, fill="black")
 reward_table[goal_pos[0], goal_pos[1]]     = 100
 
-# TEST MAZE FIXME It should be made easy to import and export maze samples
-for i in range (0, 10):
-    reward_table[0, i] = -10
-    reward_table[9, i] = -10
-
-for i in range (1, 8):
-    reward_table[i, 9] = -10
-    reward_table[i+1, 0] = -10
-
-for i in range(0, len(reward_table)):
-    for j in range(0, len(reward_table[i])):
-        if reward_table[i, j] == -10:
-            canvas_objects[i, j] = canvas.create_rectangle(j * 50, i * 50, j * 50 + 50, i * 50 + 50, fill="black")
+# Load custom maze from csv file
+def loadMaze():
+    global agent_pos, canvas_objects, reward_table
+    canvas.delete("all")
+    canvas_objects.fill(0)
+    reward_table.fill(-1)
+    custom_maze = np.genfromtxt('q-learning/custom-maze.csv', delimiter=',', dtype = np.int)
+    for i in range (0, custom_maze.shape[0]):
+        for j in range (0, custom_maze.shape[1]):
+            if custom_maze[i, j] == 1:
+                reward_table[i, j] = -10
+                canvas_objects[i, j] = canvas.create_rectangle(j * 50, i * 50, j * 50 + 50, i * 50 + 50, fill="black")
+            elif custom_maze[i, j] == 2:
+                agent_pos = [i, j]
+                canvas_objects[i, j] = canvas.create_oval(agent_pos[1] * 50, agent_pos[0] * 50, agent_pos[1] * 50 + 50, agent_pos[0] * 50 + 50, fill="red")
+            elif custom_maze[i, j] == 3:
+                goal_pos = [i, j]
+                reward_table[goal_pos[0], goal_pos[1]] = 100
+                canvas_objects[goal_pos[0], goal_pos[1]] = canvas.create_rectangle(goal_pos[1] * 50, goal_pos[0] * 50, goal_pos[1] * 50 + 50, goal_pos[0] * 50 + 50, fill="green")
+            else:
+                pass
 
 # Method to add or remove canvas objects
 def drawOnCanvas(event, action):
@@ -105,11 +114,11 @@ def drawOnCanvas(event, action):
 
 # Reset agent to original position
 def reset():
-    global agent_pos
+    global agent_pos, canvas_objects
     canvas.delete(canvas_objects[agent_pos[0], agent_pos[1]])
     canvas_objects[agent_pos[0], agent_pos[1]] = 0
     agent_pos = np.copy(initial_pos)
-    canvas_objects[agent_pos[0], agent_pos[1]] = canvas.create_rectangle(agent_pos[1] * 50, agent_pos[0] * 50, agent_pos[1] * 50 + 50, agent_pos[0] * 50 + 50, fill="red")
+    canvas_objects[agent_pos[0], agent_pos[1]] = canvas.create_oval(agent_pos[1] * 50, agent_pos[0] * 50, agent_pos[1] * 50 + 50, agent_pos[0] * 50 + 50, fill="red")
 
 # Check every available option on a specific state
 def get_movement_availability():
@@ -227,4 +236,5 @@ canvas.bind("<Button 3>", lambda event : drawOnCanvas(event, 3))  # Delete canva
 
 btn_start.configure(command=start)
 btn_reset.configure(command=reset)
+btn_load.configure(command=loadMaze)
 window.mainloop()
