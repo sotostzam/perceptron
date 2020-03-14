@@ -13,6 +13,19 @@ window.columnconfigure(1, minsize=100, weight=1)
 main_menu = tk.Frame(window)
 main_menu.grid(row=0, column=0, sticky="ns")
 
+btn_start = tk.Button(main_menu, text="Start", width=20, height=2)
+btn_reset = tk.Button(main_menu, text="Reset", width=20, height=2)
+btn_load = tk.Button(main_menu, text="Load Custom Maze", width=20, height=2)
+btn_exit  = tk.Button(main_menu, text="Exit",  width=20, height=2, command=window.destroy)
+
+btn_start.grid(row=0, column=0, sticky="ew", padx=5, pady=10)
+btn_reset.grid(row=1, column=0, sticky="ew", padx=5, pady=10)
+btn_load.grid(row=2, column=0, sticky="ew", padx=5, pady=10)
+btn_exit.grid(row=3, column=0, sticky="ew", padx=5, pady=10)
+
+info_menu = tk.Frame(window)
+info_menu.grid(row=0, column=2, sticky="ns")
+
 episodes_text  = tk.StringVar()
 tries_text     = tk.StringVar()
 rewards_text   = tk.StringVar()
@@ -23,29 +36,19 @@ episodes_text.set("Episode: N/A")
 tries_text.set("Tries left: N/A")
 rewards_text.set("Reward: N/A")
 b_rewards_text.set("Best Score: N/A")
-success_text.set("Success times: N/A")
+success_text.set("Success: N/A")
 
-label_epoch    = tk.Label(main_menu, textvariable=episodes_text)
-label_tries    = tk.Label(main_menu, textvariable=tries_text)
-label_reward   = tk.Label(main_menu, textvariable=rewards_text)
-label_b_reward = tk.Label(main_menu, textvariable=b_rewards_text)
-label_success  = tk.Label(main_menu, textvariable=success_text)
+label_epoch    = tk.Label(info_menu, width=20, textvariable=episodes_text)
+label_tries    = tk.Label(info_menu, width=20, textvariable=tries_text)
+label_reward   = tk.Label(info_menu, width=20, textvariable=rewards_text)
+label_b_reward = tk.Label(info_menu, width=20, textvariable=b_rewards_text)
+label_success  = tk.Label(info_menu, width=20, textvariable=success_text)
 
 label_epoch.grid(row=0, column=0, sticky="ew", padx=5, pady=10)
 label_tries.grid(row=1, column=0, sticky="ew", padx=5, pady=10)
 label_reward.grid(row=2, column=0, sticky="ew", padx=5, pady=10)
 label_b_reward.grid(row=3, column=0, sticky="ew", padx=5, pady=10)
 label_success.grid(row=4, column=0, sticky="ew", padx=5, pady=10)
-
-btn_start = tk.Button(main_menu, text="Start", width=20, height=2)
-btn_reset = tk.Button(main_menu, text="Reset", width=20, height=2)
-btn_load = tk.Button(main_menu, text="Load Custom Maze", width=20, height=2)
-btn_exit  = tk.Button(main_menu, text="Exit",  width=20, height=2, command=window.destroy)
-
-btn_start.grid(row=5, column=0, sticky="ew", padx=5, pady=10)
-btn_reset.grid(row=6, column=0, sticky="ew", padx=5, pady=10)
-btn_load.grid(row=7, column=0, sticky="ew", padx=5, pady=10)
-btn_exit.grid(row=8, column=0, sticky="ew", padx=5, pady=10)
 
 # Canvas Panel Parameters
 canvas = tk.Canvas(master = window, width = 500, height = 500, bg="grey")
@@ -72,7 +75,7 @@ reward_table[goal_pos[0], goal_pos[1]]     = 100
 
 # Load custom maze from csv file
 def loadMaze():
-    global agent_pos, canvas_objects, reward_table
+    global agent_pos, canvas_objects, reward_table, initial_pos
     canvas.delete("all")
     canvas_objects.fill(0)
     reward_table.fill(-1)
@@ -83,7 +86,8 @@ def loadMaze():
                 reward_table[i, j] = -10
                 canvas_objects[i, j] = canvas.create_rectangle(j * 50, i * 50, j * 50 + 50, i * 50 + 50, fill="black")
             elif custom_maze[i, j] == 2:
-                agent_pos = [i, j]
+                initial_pos = [i, j]
+                agent_pos = np.copy(initial_pos)
                 canvas_objects[i, j] = canvas.create_oval(agent_pos[1] * 50, agent_pos[0] * 50, agent_pos[1] * 50 + 50, agent_pos[0] * 50 + 50, fill="red")
             elif custom_maze[i, j] == 3:
                 goal_pos = [i, j]
@@ -114,7 +118,7 @@ def drawOnCanvas(event, action):
 
 # Reset agent to original position
 def reset():
-    global agent_pos, canvas_objects
+    global agent_pos, canvas_objects, initial_pos
     canvas.delete(canvas_objects[agent_pos[0], agent_pos[1]])
     canvas_objects[agent_pos[0], agent_pos[1]] = 0
     agent_pos = np.copy(initial_pos)
@@ -180,7 +184,7 @@ def start():
     best_reward = 0
     success_times = 0
     b_rewards_text.set("Best score: " + str(best_reward))
-    success_text.set("Success times: " + str(success_times))
+    success_text.set("Success: " + str(success_times) + "%")
 
     for i in range (1, EPISODES + 1):
         episodes_text.set("Episode: " + str(i))
@@ -210,7 +214,7 @@ def start():
 
             if reward == 100:
                 success_times += 1
-                success_text.set("Success times: " + str(success_times))
+                success_text.set("Success: " + str(round((100 * success_times / i), 2)) + "%")
                 reset()
                 break
             if i == 1 or i % 50 == 0:
