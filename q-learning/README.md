@@ -1,4 +1,4 @@
-# Q-Learning Algorithm
+# Q-Learning
 
 Q-learning is a model-free reinforcement learning algorithm. It uses software agents that learn to make action based on the state they are and the reward they take. Q-Learnig is model-free, meaning that it does not need a model for the environment, and makes use of the Markov decision processes (MDP).
 
@@ -8,7 +8,7 @@ Reinforcement learning, and Q-Learning more specifically needs the following to 
 
 * A virtual agent
 * A set of states
-* A set of action per state
+* A set of actions per state
 * A set of rewards
 
 Moreover, a learning rate has to be set, which determing the rate the algorithm is learning throughout the episodes, as well as a discount factor, which determines the importance of future rewards. A lower value of discount means that the agent will only value current rewards. The exact formula of the algorithm is shown below:
