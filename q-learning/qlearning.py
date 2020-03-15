@@ -80,7 +80,7 @@ def drawOnCanvas(event, action):
             canvas_objects[y, x] = canvas.create_rectangle(x * 50, y * 50, x * 50 + 50, y * 50 + 50, fill="black")
         reward_table[y, x] = -10
     elif action == 2:
-        print("Q-Value: " + str(q_table[y, x]))
+        print("Q-Value at (" + str(y) + ", " + str(x) + "): " + str(q_table[y, x]))
     else:
         canvas.delete(canvas_objects[y, x])
         canvas_objects[y, x] = 0
@@ -209,6 +209,31 @@ def start():
     btn_save.config(state="normal")
     btn_load.config(state="normal")
 
+# Set agent position
+def setInputs(option):
+    global initial_pos, agent_pos, canvas_objects, goal_pos, reward_table
+    try:
+        if option == 0:
+            agent_row = int(agent_row_input.get())
+            agent_col = int(agent_col_input.get())
+            canvas.delete(canvas_objects[agent_pos[0], agent_pos[1]])
+            canvas_objects[agent_pos[0], agent_pos[1]] = 0
+            initial_pos = [agent_row, agent_col]
+            agent_pos = np.copy(initial_pos)
+            canvas_objects[agent_row, agent_col] = canvas.create_oval(agent_pos[1] * 50, agent_pos[0] * 50, agent_pos[1] * 50 + 50, agent_pos[0] * 50 + 50, fill="red")
+        else:
+            goal_row = int(goal_row_input.get())
+            goal_col = int(goal_col_input.get())
+            canvas.delete(canvas_objects[goal_pos[0], goal_pos[1]])
+            reward_table[goal_pos[0], goal_pos[1]] = -1
+            goal_pos = [goal_row, goal_col]
+            reward_table[goal_pos[0], goal_pos[1]] = 100
+            canvas_objects[goal_pos[0], goal_pos[1]] = canvas.create_rectangle(goal_pos[1] * 50, goal_pos[0] * 50, goal_pos[1] * 50 + 50, goal_pos[0] * 50 + 50, fill="green")
+    except Exception:
+        print("Please make sure you filled both row and column number and that it is a single number (0-9)")
+        pass
+    
+
 # User Interface Parameters
 window = tk.Tk()
 window.title("Reinforcement Learning")
@@ -216,15 +241,62 @@ window.rowconfigure(0, minsize=500, weight=1)
 window.columnconfigure(0, minsize=150, weight=1)
 window.columnconfigure(2, minsize=150, weight=1)
 
-# Left Panel Parameters
+# Main Menu
 main_menu = tk.Frame(window)
 main_menu.grid(row=0, column=0, sticky="ns")
+main_menu.rowconfigure(0, minsize=150, weight=1)
+inputs = tk.Frame(main_menu)
+inputs.grid(row=0, column=0, sticky="n", pady=5)
 
-btn_start = tk.Button(main_menu, width=20, height=2, command=start, text="Start")
-btn_reset = tk.Button(main_menu, width=20, height=2, command=reset, text="Reset")
-btn_save  = tk.Button(main_menu, width=20, height=2, command=saveMaze, text="Save Custom Maze")
-btn_load  = tk.Button(main_menu, width=20, height=2, command=loadMaze, text="Load Custom Maze")
-btn_exit  = tk.Button(main_menu, width=20, height=2, command=window.destroy, text="Exit")
+# Agent position inputs
+agent_label = tk.Label(inputs, text="Agent Position:")
+agent_label.grid(row=0, column=0, sticky="w")
+
+agent_params = tk.Frame(inputs)
+agent_params.grid(row=1, column=0, sticky="nwe")
+
+agent_row = tk.Label(agent_params, text="Row:")
+agent_row.grid(row=0, column=0, sticky="w")
+agent_row_input = tk.Entry(agent_params, width=2)
+agent_row_input.grid(row=0, column=1, sticky="ew")
+
+agent_col = tk.Label(agent_params, text="Col:")
+agent_col.grid(row=0, column=2, sticky="w")
+
+agent_col_input = tk.Entry(agent_params, width=2)
+agent_col_input.grid(row=0, column=3, sticky="ew")
+btn_agent = tk.Button(agent_params, text="Set", command=lambda: setInputs(0))
+btn_agent.grid(row=0, column=4, sticky="ew", padx=5)
+
+# Goal position inputs
+goal_label = tk.Label(inputs, text="Goal Position:")
+goal_label.grid(row=2, column=0, sticky="w")
+
+goal_params = tk.Frame(inputs)
+goal_params.grid(row=3, column=0, sticky="n")
+
+goal_row = tk.Label(goal_params, text="Row:")
+goal_row.grid(row=0, column=0, sticky="w")
+goal_row_input = tk.Entry(goal_params, width=2)
+goal_row_input.grid(row=0, column=1, sticky="ew")
+
+goal_col = tk.Label(goal_params, text="Col:")
+goal_col.grid(row=0, column=2, sticky="w")
+
+goal_col_input = tk.Entry(goal_params, width=2)
+goal_col_input.grid(row=0, column=3, sticky="ew")
+btn_goal = tk.Button(goal_params, text="Set", command=lambda: setInputs(1))
+btn_goal.grid(row=0, column=4, sticky="ew", padx=5)
+
+# Left Panel Parameters
+btn_menu = tk.Frame(main_menu)
+btn_menu.grid(row=1, column=0, sticky="s")
+
+btn_start = tk.Button(btn_menu, width=20, height=2, command=start, text="Start")
+btn_reset = tk.Button(btn_menu, width=20, height=2, command=reset, text="Reset")
+btn_save  = tk.Button(btn_menu, width=20, height=2, command=saveMaze, text="Save Custom Maze")
+btn_load  = tk.Button(btn_menu, width=20, height=2, command=loadMaze, text="Load Custom Maze")
+btn_exit  = tk.Button(btn_menu, width=20, height=2, command=window.destroy, text="Exit")
 
 btn_start.grid(row=0, column=0, sticky="ew", padx=5, pady=10)
 btn_reset.grid(row=1, column=0, sticky="ew", padx=5, pady=10)
