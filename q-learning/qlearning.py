@@ -42,7 +42,7 @@ def saveMaze():
 
 # Load custom maze from csv file
 def loadMaze():
-    global agent_pos, canvas_objects, reward_table, initial_pos
+    global agent_pos, canvas_objects, reward_table, initial_pos, goal_pos
     canvas.delete("all")
     canvas_objects.fill(0)
     reward_table.fill(-1)
@@ -114,7 +114,6 @@ def move(direction):
     x, y = 0, 0
     agent_ID = canvas_objects[agent_pos[0]][agent_pos[1]]
     previous_location = np.copy(agent_pos)
-    agent_moved = True
     movements_available = get_movement_availability()
 
     if direction == 0 and movements_available[0]:         # Move Left
@@ -130,23 +129,12 @@ def move(direction):
         y = 50
         agent_pos[0] += 1
     else:
-        agent_moved = False
+        return tuple(q_table[agent_pos[0], agent_pos[1]]), -10
 
-    if agent_moved:
-        if reward_table[agent_pos[0], agent_pos[1]] == 100:
-            #agent_pos = np.copy(previous_location)
-            #reset()
-            canvas.move(agent_ID, x, y)                                                       # FIXME These lines
-            canvas_objects[previous_location[0], previous_location[1]] = 0                    # FIXME should be
-            canvas_objects[agent_pos[0], agent_pos[1]] = agent_ID                             # FIXME DELETED
-            return 100
-        else:
-            canvas.move(agent_ID, x, y)
-            canvas_objects[previous_location[0], previous_location[1]] = 0
-            canvas_objects[agent_pos[0], agent_pos[1]] = agent_ID
-            return reward_table[agent_pos[0], agent_pos[1]]
-    else:
-        return -10
+    canvas.move(agent_ID, x, y)
+    canvas_objects[previous_location[0], previous_location[1]] = 0
+    canvas_objects[agent_pos[0], agent_pos[1]] = agent_ID
+    return tuple(q_table[agent_pos[0], agent_pos[1]]), reward_table[agent_pos[0], agent_pos[1]]
 
 def start():
     global epsilon
@@ -175,16 +163,15 @@ def start():
                 action = random.randint(0, 3)
             else:
                 action = np.argmax(q_table[agent_pos[0], agent_pos[1]])
-            reward = move(action)
+            new_state, reward = move(action)
             max_reward += reward
             rewards_text.set("Reward: " + str(max_reward))
-            new_state = tuple(q_table[agent_pos[0], agent_pos[1]])       # See new state
             max_future_q = np.max(new_state)
             current_q    = q_table[current_state[0], current_state[1]][action]
             new_q = current_q + LEARNING_RATE * (reward + DISCOUNT * max_future_q - current_q)
             q_table[current_state[0]][current_state[1]][action] = new_q
 
-            if reward == 100:
+            if reward == reward_table[goal_pos[0], goal_pos[1]]:
                 success_times += 1
                 success_text.set("Success: " + str(round((100 * success_times / i), 2)) + "%")
                 reset()
