@@ -86,8 +86,19 @@ def drawOnCanvas(event, action):
         canvas_objects[y, x] = 0
         reward_table[y, x] = -1
 
-# Reset agent to original position
+# Reset application to initial values
 def reset():
+    global agent_pos, canvas_objects, reward_table, initial_pos, goal_pos
+    canvas.delete("all")
+    canvas_objects.fill(0)
+    reward_table.fill(-1)
+    agent_pos = np.copy(initial_pos)
+    canvas_objects[agent_pos[0], agent_pos[1]] = canvas.create_oval(agent_pos[1] * 50, agent_pos[0] * 50, agent_pos[1] * 50 + 50, agent_pos[0] * 50 + 50, fill="red")
+    reward_table[goal_pos[0], goal_pos[1]] = 100
+    canvas_objects[goal_pos[0], goal_pos[1]] = canvas.create_rectangle(goal_pos[1] * 50, goal_pos[0] * 50, goal_pos[1] * 50 + 50, goal_pos[0] * 50 + 50, fill="green")
+
+# Reset agent to original position
+def reset_agent():
     global agent_pos, canvas_objects, initial_pos
     canvas.delete(canvas_objects[agent_pos[0], agent_pos[1]])
     canvas_objects[agent_pos[0], agent_pos[1]] = 0
@@ -139,6 +150,9 @@ def move(direction):
 def start():
     global epsilon
     btn_start.config(state="disabled")
+    btn_reset.config(state="disabled")
+    btn_save.config(state="disabled")
+    btn_load.config(state="disabled")
     best_reward = 0
     success_times = 0
     b_rewards_text.set("Best score: " + str(best_reward))
@@ -174,7 +188,7 @@ def start():
             if reward == reward_table[goal_pos[0], goal_pos[1]]:
                 success_times += 1
                 success_text.set("Success: " + str(round((100 * success_times / i), 2)) + "%")
-                reset()
+                reset_agent()
                 break
             if i == 1 or i % 50 == 0:
                 canvas.update()
@@ -189,24 +203,28 @@ def start():
             best_reward = max_reward
         b_rewards_text.set("Best score: " + str(best_reward))
 
-        reset()
+        reset_agent()
     btn_start.config(state="normal")
+    btn_reset.config(state="normal")
+    btn_save.config(state="normal")
+    btn_load.config(state="normal")
 
 # User Interface Parameters
 window = tk.Tk()
 window.title("Reinforcement Learning")
 window.rowconfigure(0, minsize=500, weight=1)
-window.columnconfigure(1, minsize=100, weight=1)
+window.columnconfigure(0, minsize=150, weight=1)
+window.columnconfigure(2, minsize=150, weight=1)
 
 # Left Panel Parameters
 main_menu = tk.Frame(window)
 main_menu.grid(row=0, column=0, sticky="ns")
 
-btn_start = tk.Button(main_menu, text="Start", width=20, height=2)
-btn_reset = tk.Button(main_menu, text="Reset", width=20, height=2)
-btn_save = tk.Button(main_menu, text="Save Custom Maze", width=20, height=2)
-btn_load = tk.Button(main_menu, text="Load Custom Maze", width=20, height=2)
-btn_exit  = tk.Button(main_menu, text="Exit",  width=20, height=2, command=window.destroy)
+btn_start = tk.Button(main_menu, width=20, height=2, command=start, text="Start")
+btn_reset = tk.Button(main_menu, width=20, height=2, command=reset, text="Reset")
+btn_save  = tk.Button(main_menu, width=20, height=2, command=saveMaze, text="Save Custom Maze")
+btn_load  = tk.Button(main_menu, width=20, height=2, command=loadMaze, text="Load Custom Maze")
+btn_exit  = tk.Button(main_menu, width=20, height=2, command=window.destroy, text="Exit")
 
 btn_start.grid(row=0, column=0, sticky="ew", padx=5, pady=10)
 btn_reset.grid(row=1, column=0, sticky="ew", padx=5, pady=10)
@@ -214,8 +232,17 @@ btn_save.grid(row=2, column=0, sticky="ew", padx=5, pady=10)
 btn_load.grid(row=3, column=0, sticky="ew", padx=5, pady=10)
 btn_exit.grid(row=4, column=0, sticky="ew", padx=5, pady=10)
 
+# Canvas Panel Parameters
+canvas = tk.Canvas(master = window, width = 500, height = 500, bg="grey")
+canvas.grid(row=0, column=1, sticky="nsew")
+
+# Bind Events
+canvas.bind("<Button 1>", lambda event : drawOnCanvas(event, 1))  # Place canvas object
+canvas.bind("<Button 2>", lambda event : drawOnCanvas(event, 2))  # Show Q-Table's value
+canvas.bind("<Button 3>", lambda event : drawOnCanvas(event, 3))  # Delete canvas object
+
 info_menu = tk.Frame(window)
-info_menu.grid(row=0, column=2, sticky="ns")
+info_menu.grid(row=0, column=2, sticky="ns", padx=3)
 
 episodes_text    = tk.StringVar()
 tries_text       = tk.StringVar()
@@ -231,36 +258,23 @@ b_rewards_text.set("Best Score: N/A")
 success_text.set("Success: N/A")
 exploration_text.set("Exploration rate: N/A")
 
-label_epoch       = tk.Label(info_menu, width=20, textvariable=episodes_text)
-label_tries       = tk.Label(info_menu, width=20, textvariable=tries_text)
-label_reward      = tk.Label(info_menu, width=20, textvariable=rewards_text)
-label_b_reward    = tk.Label(info_menu, width=20, textvariable=b_rewards_text)
-label_success     = tk.Label(info_menu, width=20, textvariable=success_text)
-label_exploration = tk.Label(info_menu, width=20, textvariable=exploration_text)
+label_epoch       = tk.Label(info_menu, textvariable=episodes_text)
+label_tries       = tk.Label(info_menu, textvariable=tries_text)
+label_reward      = tk.Label(info_menu, textvariable=rewards_text)
+label_b_reward    = tk.Label(info_menu, textvariable=b_rewards_text)
+label_success     = tk.Label(info_menu, textvariable=success_text)
+label_exploration = tk.Label(info_menu, textvariable=exploration_text)
 
-label_epoch.grid(row=0, column=0, sticky="ew", padx=5, pady=10)
-label_tries.grid(row=1, column=0, sticky="ew", padx=5, pady=10)
-label_reward.grid(row=2, column=0, sticky="ew", padx=5, pady=10)
-label_b_reward.grid(row=3, column=0, sticky="ew", padx=5, pady=10)
-label_success.grid(row=4, column=0, sticky="ew", padx=5, pady=10)
-label_exploration.grid(row=5, column=0, sticky="ew", padx=5, pady=10)
-
-# Canvas Panel Parameters
-canvas = tk.Canvas(master = window, width = 500, height = 500, bg="grey")
-canvas.grid(row=0, column=1, sticky="nsew")
-
-# Bind Events
-canvas.bind("<Button 1>", lambda event : drawOnCanvas(event, 1))  # Place canvas object
-canvas.bind("<Button 2>", lambda event : drawOnCanvas(event, 2))  # Show Q-Table's value
-canvas.bind("<Button 3>", lambda event : drawOnCanvas(event, 3))  # Delete canvas object
+label_epoch.grid(row=0, column=0, sticky="w", pady=10)
+label_tries.grid(row=1, column=0, sticky="w", pady=10)
+label_reward.grid(row=2, column=0, sticky="w", pady=10)
+label_b_reward.grid(row=3, column=0, sticky="w", pady=10)
+label_success.grid(row=4, column=0, sticky="w", pady=10)
+label_exploration.grid(row=5, column=0, sticky="w", pady=10)
 
 # Initialization of starting state parameters
 canvas_objects[agent_pos[0], agent_pos[1]] = canvas.create_oval(agent_pos[1] * 50, agent_pos[0] * 50, agent_pos[1] * 50 + 50, agent_pos[0] * 50 + 50, fill="red")
 canvas_objects[goal_pos[0], goal_pos[1]]   = canvas.create_rectangle(goal_pos[1] * 50, goal_pos[0] * 50, goal_pos[1] * 50 + 50, goal_pos[0] * 50 + 50, fill="green")
 reward_table[goal_pos[0], goal_pos[1]]     = 100
 
-btn_start.configure(command=start)
-btn_reset.configure(command=reset)
-btn_save.configure(command=saveMaze)
-btn_load.configure(command=loadMaze)
 window.mainloop()
