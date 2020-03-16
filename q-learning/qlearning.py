@@ -43,28 +43,31 @@ def saveMaze():
 # Load custom maze from csv file
 def loadMaze():
     global agent_pos, canvas_objects, reward_table, initial_pos, goal_pos
-    canvas.delete("all")
-    canvas_objects.fill(0)
-    reward_table.fill(-1)
     try:
         maze_file = np.genfromtxt(askopenfilename(initialdir='/q-learning/'), delimiter=',', dtype = np.int)
+        canvas.delete("all")
+        canvas_objects.fill(0)
+        reward_table.fill(-1)
+        for i in range (0, maze_file.shape[0]):
+            for j in range (0, maze_file.shape[1]):
+                if maze_file[i, j] == 1:
+                    reward_table[i, j] = -10
+                    canvas_objects[i, j] = canvas.create_rectangle(j * 50, i * 50, j * 50 + 50, i * 50 + 50, fill="black")
+                elif maze_file[i, j] == 2:
+                    initial_pos = [i, j]
+                    agent_pos = np.copy(initial_pos)
+                    canvas_objects[i, j] = canvas.create_oval(agent_pos[1] * 50, agent_pos[0] * 50, agent_pos[1] * 50 + 50, agent_pos[0] * 50 + 50, fill="red")
+                elif maze_file[i, j] == 3:
+                    goal_pos = [i, j]
+                    reward_table[goal_pos[0], goal_pos[1]] = 100
+                    canvas_objects[goal_pos[0], goal_pos[1]] = canvas.create_rectangle(goal_pos[1] * 50, goal_pos[0] * 50, goal_pos[1] * 50 + 50, goal_pos[0] * 50 + 50, fill="green")
+                else:
+                    pass
+    except OSError:
+        pass
     except:
         print("Error loading maze:", sys.exc_info()[0])
-    for i in range (0, maze_file.shape[0]):
-        for j in range (0, maze_file.shape[1]):
-            if maze_file[i, j] == 1:
-                reward_table[i, j] = -10
-                canvas_objects[i, j] = canvas.create_rectangle(j * 50, i * 50, j * 50 + 50, i * 50 + 50, fill="black")
-            elif maze_file[i, j] == 2:
-                initial_pos = [i, j]
-                agent_pos = np.copy(initial_pos)
-                canvas_objects[i, j] = canvas.create_oval(agent_pos[1] * 50, agent_pos[0] * 50, agent_pos[1] * 50 + 50, agent_pos[0] * 50 + 50, fill="red")
-            elif maze_file[i, j] == 3:
-                goal_pos = [i, j]
-                reward_table[goal_pos[0], goal_pos[1]] = 100
-                canvas_objects[goal_pos[0], goal_pos[1]] = canvas.create_rectangle(goal_pos[1] * 50, goal_pos[0] * 50, goal_pos[1] * 50 + 50, goal_pos[0] * 50 + 50, fill="green")
-            else:
-                pass
+
 
 # Method to add or remove canvas objects
 def drawOnCanvas(event, action):
@@ -74,6 +77,8 @@ def drawOnCanvas(event, action):
     if action == 1:
         if canvas_objects[y, x] == 0:
             canvas_objects[y, x] = canvas.create_rectangle(x * 50, y * 50, x * 50 + 50, y * 50 + 50, fill="black")
+        elif canvas_objects[y, x] == canvas_objects[tuple(agent_pos)] or canvas_objects[y, x] == canvas_objects[tuple(goal_pos)]:
+            print("You can't place block here.")
         else:
             canvas.delete(canvas_objects[y][x])
             canvas_objects[y, x] = 0
@@ -82,9 +87,12 @@ def drawOnCanvas(event, action):
     elif action == 2:
         print("Q-Value at (" + str(y) + ", " + str(x) + "): " + str(q_table[y, x]))
     else:
-        canvas.delete(canvas_objects[y, x])
-        canvas_objects[y, x] = 0
-        reward_table[y, x] = -1
+        if canvas_objects[y, x] == canvas_objects[tuple(agent_pos)] or canvas_objects[y, x] == canvas_objects[tuple(goal_pos)]:
+            print("You can't delete this object.")
+        else:
+            canvas.delete(canvas_objects[y, x])
+            canvas_objects[y, x] = 0
+            reward_table[y, x] = -1
 
 # Reset application to initial values
 def reset():
@@ -216,19 +224,28 @@ def setInputs(option):
         if option == 0:
             agent_row = int(agent_row_input.get())
             agent_col = int(agent_col_input.get())
-            canvas.delete(canvas_objects[agent_pos[0], agent_pos[1]])
-            canvas_objects[agent_pos[0], agent_pos[1]] = 0
-            initial_pos = [agent_row, agent_col]
-            agent_pos = np.copy(initial_pos)
-            canvas_objects[agent_row, agent_col] = canvas.create_oval(agent_pos[1] * 50, agent_pos[0] * 50, agent_pos[1] * 50 + 50, agent_pos[0] * 50 + 50, fill="red")
+            if canvas_objects[agent_row, agent_col] != canvas_objects[goal_pos[0], goal_pos[1]]:
+                canvas.delete(canvas_objects[agent_pos[0], agent_pos[1]])
+                canvas.delete(canvas_objects[agent_row, agent_col])
+                canvas_objects[agent_pos[0], agent_pos[1]] = 0
+                canvas_objects[agent_row, agent_col] = 0
+                initial_pos = [agent_row, agent_col]
+                agent_pos = np.copy(initial_pos)
+                canvas_objects[agent_row, agent_col] = canvas.create_oval(agent_pos[1] * 50, agent_pos[0] * 50, agent_pos[1] * 50 + 50, agent_pos[0] * 50 + 50, fill="red")
+            else:
+                print("You can't place agent on top of the goal position!")
         else:
             goal_row = int(goal_row_input.get())
             goal_col = int(goal_col_input.get())
-            canvas.delete(canvas_objects[goal_pos[0], goal_pos[1]])
-            reward_table[goal_pos[0], goal_pos[1]] = -1
-            goal_pos = [goal_row, goal_col]
-            reward_table[goal_pos[0], goal_pos[1]] = 100
-            canvas_objects[goal_pos[0], goal_pos[1]] = canvas.create_rectangle(goal_pos[1] * 50, goal_pos[0] * 50, goal_pos[1] * 50 + 50, goal_pos[0] * 50 + 50, fill="green")
+            if canvas_objects[goal_row, goal_col] != canvas_objects[tuple(agent_pos)]:
+                canvas.delete(canvas_objects[goal_pos[0], goal_pos[1]])
+                canvas.delete(canvas_objects[goal_row, goal_col])
+                reward_table[goal_pos[0], goal_pos[1]] = -1
+                goal_pos = [goal_row, goal_col]
+                reward_table[goal_pos[0], goal_pos[1]] = 100
+                canvas_objects[goal_pos[0], goal_pos[1]] = canvas.create_rectangle(goal_pos[1] * 50, goal_pos[0] * 50, goal_pos[1] * 50 + 50, goal_pos[0] * 50 + 50, fill="green")
+            else:
+                print("You can't place goal on top of the agent position!")
     except Exception:
         print("Please make sure you filled both row and column number and that it is a single number (0-9)")
         pass
