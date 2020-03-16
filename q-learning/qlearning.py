@@ -8,7 +8,7 @@ import sys
 # Q-Learning parameters
 LEARNING_RATE = 0.05                                    # How big or small step to make each iteration
 DISCOUNT      = 0.95                                    # How much value future rewards over current rewards
-EPISODES      = 500                                     # Maximum number of episodes to run
+EPISODES      = 250                                     # Maximum number of episodes to run
 epsilon       = 1                                       # Epsilon greedy strategy (Exploration percentage)
 
 # Initialization of tables (10 x 10) and positions
