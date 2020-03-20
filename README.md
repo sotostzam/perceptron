@@ -6,14 +6,14 @@ This repository contains work and examples i have done to showcase the use of ea
 
 ## Supervised Learning Algorithms
 
-* [Perceptron](https://github.com/sotostzam/artificial-intelligence/tree/master/perceptron)
-* [Multilayer Perceptron](https://github.com/sotostzam/artificial-intelligence/tree/master/multilayer-perceptron)
+* [Perceptron](https://github.com/sotostzam/artificial-intelligence/tree/master//machine-learning/perceptron)
+* [Multilayer Perceptron](https://github.com/sotostzam/artificial-intelligence/tree/master/machine-learning/multilayer-perceptron)
 
 ## Reinforcement Learning Algorithms
 
 Reinforcement learning (RL) is a subset of machine learning that makes use of software agents, which take actions in a given environment. Their goal is to maximize a cumulative reward.
 
-* [Q-Learning](https://github.com/sotostzam/artificial-intelligence/tree/master/q-learning)
+* [Q-Learning](https://github.com/sotostzam/artificial-intelligence/tree/master/machine-learning/q-learning)
 
 ## Prerequisites
 
