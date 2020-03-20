@@ -46,7 +46,7 @@ class Graph:
 
 graph = Graph()
 
-with open('search-algorithms/breadth-first-search/data.json') as json_file:
+with open('data.json') as json_file:
     data = json.load(json_file)
     for i in data:
         node = Node(i)

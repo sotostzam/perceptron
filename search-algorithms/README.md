@@ -6,11 +6,8 @@ Given a problem with a state space, a search algorithm's purpose is to find the 
 
 These kinds of algorithms are also called blind search algorithms. These algorithms do not take into account the information about the evaluation of each state. So they act in the same way to solve any problem, and they only care about the timing that each state is created. Some of these algorithms are state below:
 
-* Breadth-first search
-  * [Example using a graph](https://github.com/sotostzam/artificial-intelligence/tree/master/search-algorithms/breadth-first-search)
-  * [Example using a binary search tree](https://github.com/sotostzam/data-structures-and-algorithms)
-* Depth-first search
-  * [Example using a binary search tree](https://github.com/sotostzam/data-structures-and-algorithms)
+* [Breadth-first search](https://github.com/sotostzam/artificial-intelligence/tree/master/search-algorithms/breadth-first-search)
+* [Depth-first search](https://github.com/sotostzam/data-structures-and-algorithms)
 
 ## Informed Search Algorithms
 
