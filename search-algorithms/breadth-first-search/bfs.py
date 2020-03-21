@@ -22,9 +22,11 @@ class Graph:
         queue = []
         queue.append(start_Node)
         start_Node.discovered = True
+        found = False
         while queue:
             current = queue.pop(0)
             if current == target_Node:
+                found = True
                 break
             for edge in current.edges:
                 if edge.discovered != True:
@@ -43,6 +45,10 @@ class Graph:
         for node in path:
             bfs_path += node + " -> "
         print("Path: " + bfs_path[0: -4])
+        if found:
+            print("Target found!")
+        else:
+            print("Target not found!")
 
 graph = Graph()
 
