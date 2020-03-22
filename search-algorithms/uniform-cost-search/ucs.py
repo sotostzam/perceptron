@@ -6,7 +6,12 @@ class Node:
         self.value = value
         self.edges = []
         self.discovered = False
-        self.parent = []
+        self.parent = None
+
+    # Rich comparison method called by x < y 
+    def __lt__(self, other):
+        # Returns priority based on alphabetical order
+        return self.value < other.value
 
     def get_cost(self, target):
         for edge in self.edges:
@@ -32,18 +37,28 @@ class Graph:
             if current.discovered != True:
                 current.discovered = True
                 if current == target_Node:
-                    return print("Path found with cost: " + str(current_cost))
+                    path_stack = []
+                    path_stack.append(current.value)
+                    while current.parent:
+                        path_stack.append(current.parent.value)
+                        current = current.parent
+                    path = ""
+                    while path_stack:
+                        item = path_stack.pop()
+                        path += item + " -> "
+                    print("Path found: " + path[0: -4])
+                    print("Accumulated cost: " + str(current_cost))
+                    return True
                 for edge in current.edges:
                     if edge['node'].discovered != True:
-                        edge['node'].parent.append(current)
+                        edge['node'].parent = current
                         new_cost = current_cost + current.get_cost(edge['node'])
-                        #print(current.value + " -> " + edge['node'].value + " with total cost: " + str(new_cost))
                         frontier.put((new_cost, edge['node']))
-
+        return False
 
 graph = Graph()
 
-with open('data.json') as json_file:
+with open('tour_romania.json') as json_file:
     data = json.load(json_file)
     for i in data:
         node = Node(i)
@@ -60,7 +75,6 @@ with open('data.json') as json_file:
                 if node.edges[edge]['node'] == i.value:
                      node.edges[edge]['node'] = i
 
-start_Node  = graph.getNode("A")
-target_Node = graph.getNode("G")
-
+start_Node  = graph.getNode("Arad")
+target_Node = graph.getNode("Bucharest")
 graph.ucs_search(start_Node, target_Node)
