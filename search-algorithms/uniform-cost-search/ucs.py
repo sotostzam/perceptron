@@ -12,17 +12,13 @@ class Node:
         # Returns priority based on alphabetical order
         return self.value < other.value
 
-    def get_cost(self, target):
-        for edge in self.edges:
-            if edge['node'] == target:
-                return edge['cost']
-
 class Graph:
     def __init__(self):
         self.nodes = []
         self.start = None
         self.target = None
 
+    # Helper function to return node object from name
     def getNode(self, value):
         for i in self.nodes:
             if i.value == value:
@@ -30,9 +26,9 @@ class Graph:
 
     def ucs_search(self, start_Node, target_Node):
         frontier = PriorityQueue()
-        frontier.put((0, (start_Node, [])))    ## Prepei na allaxei se (priority, (diadromh, current_node))
+        frontier.put((0, (start_Node, [])))
         while frontier:
-            current_cost, state =  frontier.get()
+            current_cost, state = frontier.get()
             current = state[0]
             current_path = state[1]
             if current.discovered != True:
@@ -43,12 +39,13 @@ class Graph:
                     print("Accumulated cost: " + str(current_cost))
                     return True
                 for edge in current.edges:
-                    if edge['node'].discovered != True:
-                        edge['node'].parent = current
-                        new_cost = current_cost + current.get_cost(edge['node'])
+                    edge_node = edge['node']
+                    edge_cost = edge['cost']
+                    if edge_node.discovered != True:
+                        new_cost = current_cost + edge_cost
                         new_path = current_path.copy()
                         new_path.append(current.value)
-                        frontier.put((new_cost, (edge['node'], new_path)))
+                        frontier.put((new_cost, (edge_node, new_path)))
         return False
 
 graph = Graph()
