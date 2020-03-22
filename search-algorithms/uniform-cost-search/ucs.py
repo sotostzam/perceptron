@@ -6,7 +6,6 @@ class Node:
         self.value = value
         self.edges = []
         self.discovered = False
-        self.parent = None
 
     # Rich comparison method called by x < y 
     def __lt__(self, other):
@@ -31,29 +30,25 @@ class Graph:
 
     def ucs_search(self, start_Node, target_Node):
         frontier = PriorityQueue()
-        frontier.put((0, start_Node))
+        frontier.put((0, (start_Node, [])))    ## Prepei na allaxei se (priority, (diadromh, current_node))
         while frontier:
-            current_cost, current =  frontier.get()
+            current_cost, state =  frontier.get()
+            current = state[0]
+            current_path = state[1]
             if current.discovered != True:
                 current.discovered = True
                 if current == target_Node:
-                    path_stack = []
-                    path_stack.append(current.value)
-                    while current.parent:
-                        path_stack.append(current.parent.value)
-                        current = current.parent
-                    path = ""
-                    while path_stack:
-                        item = path_stack.pop()
-                        path += item + " -> "
-                    print("Path found: " + path[0: -4])
+                    current_path.append(current.value)
+                    print("Path: " + str(' -> '.join(current_path)))
                     print("Accumulated cost: " + str(current_cost))
                     return True
                 for edge in current.edges:
                     if edge['node'].discovered != True:
                         edge['node'].parent = current
                         new_cost = current_cost + current.get_cost(edge['node'])
-                        frontier.put((new_cost, edge['node']))
+                        new_path = current_path.copy()
+                        new_path.append(current.value)
+                        frontier.put((new_cost, (edge['node'], new_path)))
         return False
 
 graph = Graph()
