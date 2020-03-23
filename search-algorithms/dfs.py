@@ -2,25 +2,20 @@ def search(graph, origin, target):
     # Make sure nodes are undiscovered initially
     graph.reset_nodes()
     target_node = graph.get_node_obj(target)
-    # DFS uses a LIFO stack structure (Last in first out)
+    # DFS uses a LIFO stack structure as frontier (Last in first out)
     frontier = []
-    frontier.append(graph.get_node_obj(origin))
-    found = False
-    path = ""
+    frontier.append((graph.get_node_obj(origin), [graph.get_node_obj(origin).value], 0))
     while frontier:
-        current = frontier.pop()
-        if current.discovered != True:
-            current.discovered = True
-            path += current.value + " -> "
-            if current == target_node:
-                found = True
-                break
-            neighbors = graph.get_neighbors(current)
-            # Iterate all the children backwards to fill stack correctly
-            for i in range(len(neighbors)-1, -1, -1):
-                frontier.append(neighbors[i][0])
-    print("Path: " + path[0: -4])
-    if found:
-        print("Target found!")
-    else:
-        print("Target not found!")
+        current_node, current_path, current_cost = frontier.pop()
+        if current_node.discovered != True:
+            current_node.discovered = True
+            if current_node == target_node:
+                return current_path, current_cost
+            neighbors = graph.get_neighbors(current_node)
+            neighbors.reverse()
+            for edge_node, cost in neighbors:
+                new_path = current_path.copy()
+                new_path.append(edge_node.value)
+                frontier.append((edge_node, new_path, cost + current_cost))
+    # Return false if target is not found
+    return False

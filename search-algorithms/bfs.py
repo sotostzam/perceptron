@@ -3,23 +3,20 @@ def search(graph, origin, target):
     graph.reset_nodes()
     target_node = graph.get_node_obj(target)
     origin_node = graph.get_node_obj(origin)
-    queue = []
-    queue.append(origin_node)
+    # BFS uses a FIFO queue structure as frontier (First in first out)
+    frontier = []
+    frontier.append((origin_node, [origin_node.value], 0))
     origin_node.discovered = True
-    iter = 0
-    while queue:
-        path = ""
-        current = queue.pop(0)
-        if current == target_node:
-            print(current.value)
-            print("Path: " + path)
-            return True
-        neighbors = graph.get_neighbors(current)
-        for edge in neighbors:
-            if edge[0].discovered != True:
-                edge[0].discovered = True
-                path += edge[0].value + ", "
-                queue.append(edge[0])
-        print(str(iter) + ": " + path)
-        iter += 1
-    return print("Not found!")
+    while frontier:
+        current_node, current_path, current_cost = frontier.pop(0)
+        if current_node == target_node:
+            return current_path, current_cost
+        neighbors = graph.get_neighbors(current_node)
+        for edge_node, cost in neighbors:
+            if edge_node.discovered != True:
+                edge_node.discovered = True
+                new_path = current_path.copy()
+                new_path.append(edge_node.value)
+                frontier.append((edge_node, new_path, cost + current_cost))
+    # Return false if target is not found
+    return False
