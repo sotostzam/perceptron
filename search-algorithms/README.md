@@ -10,6 +10,7 @@ Given a problem with a state space, a search algorithm's purpose is to find the 
   * [Uniform cost search](#uniform-cost-search)
 * [Informed Search Algorithms](#informed-search-algorithms)
   * [Hill Climbing](#hill-climbing)
+  * [Best First Search](#best-first-search)
 * [Time and space complexities](#time-and-space-complexities)
 * [Implementation](#implementation)
 
@@ -120,6 +121,10 @@ algorithm hill_climbing(graph, origin, target)
 ```
 
 Generally, the hill climbing algorithm is used when a solution needs to be found extremely fast, even if this solution is not the best available. This means that HC could choose a node that, at the time, is the best, only to prove later that this whole path is a mediocre or bad choice to take. HC is very efficient both in time and memory, but it is not complete. He can also be stuck in deadlocks, making a solution impossible to find.
+
+### Best First Search
+
+Information to be added.
 
 ## Time and space complexities
 

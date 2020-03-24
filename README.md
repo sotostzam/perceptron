@@ -1,19 +1,18 @@
-# Artificial Neural Networks
+# Artificial Intelligence
 
-Artificial neural networks (ANNs) are tools widely used in machine learning. They are brain inspired algorithms which replicate the way human beings think and learn. They consist of layers which are called input, hidden and output layers respectively. Deep neural networks usually include a lot of hidden layers (more than one) to produce far more reliable results and improve the learning process.
+Artificial Intelligence, in contrary with natural intelligence which is how people think and solve problems, is the intelligence demonstrated by machines.
 
-This repository contains work and examples i have done to showcase the use of each model used in machine learning and artificial intelligence in general.
+## Machine Learning
 
-## Supervised Learning Algorithms
+Machine learning is a subset of Artificial Intelligence. It is the study of algorithms and statistical models that various computer systems use in order to perform a task without any implicit instructions.
 
-* [Perceptron](https://github.com/sotostzam/artificial-intelligence/tree/master//machine-learning/perceptron)
-* [Multilayer Perceptron](https://github.com/sotostzam/artificial-intelligence/tree/master/machine-learning/multilayer-perceptron)
+* [Machine Learning](https://github.com/sotostzam/artificial-intelligence/tree/master/machine-learning)
 
-## Reinforcement Learning Algorithms
+## Search Algorithms
 
-Reinforcement learning (RL) is a subset of machine learning that makes use of software agents, which take actions in a given environment. Their goal is to maximize a cumulative reward.
+Given a problem with a state space, a search algorithm's purpose is to find the solution. All algorithms that try to find a solution are called search algorithms.
 
-* [Q-Learning](https://github.com/sotostzam/artificial-intelligence/tree/master/machine-learning/q-learning)
+* [Search Algorithms](https://github.com/sotostzam/artificial-intelligence/tree/master/search-algorithms)
 
 ## Prerequisites
 
