@@ -12,8 +12,9 @@ class Node:
 
 class Graph:
     def __init__(self):
-        self.nodes = []
-        self.edges = []
+        self.nodes        = []
+        self.edges        = []
+        self.dist_to_goal = []
 
     # Function to fill graph from dataset
     def load_data(self, path):
@@ -23,10 +24,11 @@ class Graph:
             for vertice in data:
                 node = self.add_node(vertice)
                 # Loop through the edges
-                for edge in data[vertice]:
+                for edge in data[vertice]['Edges']:
                     # Loop through the keys (1 Iteration only)
                     for node_name in edge:
-                        self.add_edge(node, self.add_node(node_name), edge[node_name])
+                        self.edges.append((node, self.add_node(node_name), edge[node_name]))
+                self.dist_to_goal.append((node, data[vertice]['Distance']))
 
     # Helper function to check regulate node's creation
     def add_node(self, value):
@@ -36,10 +38,6 @@ class Graph:
         new_node = Node(value)
         self.nodes.append(new_node)
         return new_node
-
-    # Function to add an edge to the graph
-    def add_edge(self, origin_node, target_node, cost = 0):
-        self.edges.append((origin_node, target_node, cost))
 
     # Function returning a list of adjacent nodes
     def get_neighbors(self, node):

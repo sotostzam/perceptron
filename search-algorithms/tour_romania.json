@@ -1,105 +1,167 @@
 {
-    "Arad": [
-        {"Sibiu" : 140},
-        {"Timisoara" : 118},
-        {"Zerind" : 75}
-    ],
+    "Arad": {
+        "Edges" : [
+            {"Sibiu" : 140},
+            {"Timisoara" : 118},
+            {"Zerind" : 75}
+        ],
+        "Distance" : 366
+    },
 
-    "Bucharest": [
-        {"Fagaras" : 211},
-        {"Giurgiu" : 90},
-        {"Pitesti" : 101},
-        {"Urziceni" : 85}
-    ],
+    "Bucharest": {
+        "Edges" : [
+            {"Fagaras" : 211},
+            {"Giurgiu" : 90},
+            {"Pitesti" : 101},
+            {"Urziceni" : 85}
+        ],
+        "Distance" : 0
+    },
 
-    "Craiova": [
-        {"Drobeta" : 120},
-        {"Pitesti" : 138},
-        {"Rimnicu_Vilcea" : 146}
-    ],
+    "Craiova": {
+        "Edges" : [
+            {"Drobeta" : 120},
+            {"Pitesti" : 138},
+            {"Rimnicu_Vilcea" : 146}
+        ],
+        "Distance" : 160
+    },
 
-    "Drobeta": [
-        {"Craiova" : 120}, 
-        {"Mehadia" : 75}
-    ],
+    "Drobeta": {
+        "Edges" : [
+            {"Craiova" : 120}, 
+            {"Mehadia" : 75}
+        ],
+        "Distance" : 242
+    },
 
-    "Eforie": [
-        {"Hirsova" : 86}
-    ],
-    "Fagaras": [
-        {"Bucharest" : 211},
-        {"Sibiu" : 99}
-    ],
-    "Giurgiu": [
-        {"Bucharest" : 90}
-    ],
+    "Eforie": {
+        "Edges" : [
+            {"Hirsova" : 86}
+        ],
+        "Distance" : 161
+    },
 
-    "Hirsova": [
-        {"Eforie" : 86},
-        {"Urziceni" : 98}
-    ],
+    "Fagaras": {
+        "Edges" : [
+            {"Bucharest" : 211},
+            {"Sibiu" : 99}
+        ],
+        "Distance" : 178
+    },
+
+    "Giurgiu": {
+        "Edges" : [
+            {"Bucharest" : 90}
+        ],
+        "Distance" : 77
+    },
+
+    "Hirsova": {
+        "Edges" : [
+            {"Eforie" : 86},
+            {"Urziceni" : 98}
+        ],
+        "Distance" : 151
+    },
     
-    "Iasi": [
-        {"Neamt" : 87},
-        {"Vaslui" : 92}
-    ],
+    "Iasi": {
+        "Edges" : [
+            {"Neamt" : 87},
+            {"Vaslui" : 92}
+        ],
+        "Distance" : 226
+    },
 
-    "Lugoj": [
-        {"Mehadia" : 70},
-        {"Timisoara" : 111}
-    ],
+    "Lugoj": {
+        "Edges" : [
+            {"Mehadia" : 70},
+            {"Timisoara" : 111}
+        ],
+        "Distance" : 244
+    },
         
-    "Mehadia": [
-        {"Drobeta" : 75},
-        {"Lugoj" : 70}
-    ],
+    "Mehadia": {
+        "Edges" : [
+            {"Drobeta" : 75},
+            {"Lugoj" : 70}
+        ],
+        "Distance" : 241
+    },
 
-    "Neamt": [
-        {"Iasi" : 87}
-    ],
+    "Neamt": {
+        "Edges" : [
+            {"Iasi" : 87}
+        ],
+        "Distance" : 234
+    },
 
-    "Oradea": [
-        {"Sibiu" : 151},
-        {"Zerind" : 71}
-    ],
+    "Oradea": {
+        "Edges" : [
+            {"Sibiu" : 151},
+            {"Zerind" : 71}
+        ],
+        "Distance" : 380
+    },
 
-    "Pitesti": [
-        {"Bucharest" : 101},
-        {"Craiova" : 138},
-        {"Rimnicu_Vilcea" : 97}
-    ],
+    "Pitesti": {
+        "Edges" : [
+            {"Bucharest" : 101},
+            {"Craiova" : 138},
+            {"Rimnicu_Vilcea" : 97}
+        ],
+        "Distance" : 98
+    },
 
-    "Rimnicu_Vilcea": [
-        {"Craiova" : 146},
-        {"Pitesti" : 97},
-        {"Sibiu" : 80}
-    ],
+    "Rimnicu_Vilcea": {
+        "Edges" : [
+            {"Craiova" : 146},
+            {"Pitesti" : 97},
+            {"Sibiu" : 80}
+        ],
+        "Distance" : 193
+    },
 
-    "Sibiu": [
-        {"Arad" : 140},
-        {"Fagaras" : 99},
-        {"Oradea" : 151},
-        {"Rimnicu_Vilcea" : 80}
-    ],
+    "Sibiu": {
+        "Edges" : [
+            {"Arad" : 140},
+            {"Fagaras" : 99},
+            {"Oradea" : 151},
+            {"Rimnicu_Vilcea" : 80}
+        ],
+        "Distance" : 253
+    },
 
-    "Timisoara": [
-        {"Arad" : 118},
-        {"Lugoj" : 111}
-    ],
+    "Timisoara": {
+        "Edges" : [
+            {"Arad" : 118},
+            {"Lugoj" : 111}
+        ],
+        "Distance" : 329
+    },
 
-    "Urziceni": [
-        {"Bucharest" : 85},
-        {"Hirsova" : 98},
-        {"Vaslui" : 142}
-    ],
+    "Urziceni": {
+        "Edges" : [
+            {"Bucharest" : 85},
+            {"Hirsova" : 98},
+            {"Vaslui" : 142}
+        ],
+        "Distance" : 80
+    },
 
-    "Vaslui": [
-        {"Iasi" : 92},
-        {"Urziceni" : 142}
-    ],
+    "Vaslui": {
+        "Edges" : [
+            {"Iasi" : 92},
+            {"Urziceni" : 142}
+        ],
+        "Distance" : 199
+    },
 
-    "Zerind": [
-        {"Arad" : 75},
-        {"Oradea" : 71}
-    ]
+    "Zerind": {
+        "Edges" : [
+            {"Arad" : 75},
+            {"Oradea" : 71}
+        ],
+        "Distance" : 374
+    }
 }
