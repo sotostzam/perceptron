@@ -53,6 +53,11 @@ class Graph:
             if node.value == value:
                 return node
 
+    def get_distance(self, value):
+        for distance in self.dist_to_goal:
+            if distance[0] == value:
+                return distance[1]
+
     # Helper function to reset all nodes discovered status
     def reset_nodes(self):
         for node in self.nodes:
