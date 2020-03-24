@@ -53,6 +53,7 @@ class Graph:
             if node.value == value:
                 return node
 
+    # Heuristic function returning the distance from origin to target node
     def get_distance(self, value):
         for distance in self.dist_to_goal:
             if distance[0] == value:
