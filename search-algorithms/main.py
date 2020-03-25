@@ -1,6 +1,6 @@
 import graph, bfs, dfs , ucs
 import hill_climbing as hc
-import bestFS
+import bestFS, a_star
 
 def print_results(name, result):
     print("----- " + name + " -----")
@@ -15,8 +15,9 @@ if __name__ == "__main__":
     graph.load_data('tour_romania.json')
 
     # Algorithms return either a tuple of (found_path, total_cost) or False
-    print_results("Breadth-first search", bfs.search(graph, "Oradea", "Bucharest"))
-    print_results("Depth-first search", dfs.search(graph, "Oradea", "Bucharest"))
+    #print_results("Breadth-first search", bfs.search(graph, "Oradea", "Bucharest"))
+    #print_results("Depth-first search", dfs.search(graph, "Oradea", "Bucharest"))
     print_results("Uniform cost search", ucs.search(graph, "Oradea", "Bucharest"))
-    print_results("Hill Climbing",  hc.search(graph, "Oradea", "Bucharest"))
-    print_results("Best First Search", bestFS.search(graph, "Oradea", "Bucharest"))
+    #print_results("Hill Climbing",  hc.search(graph, "Oradea", "Bucharest"))
+    #print_results("Best First Search", bestFS.search(graph, "Oradea", "Bucharest"))
+    print_results("A*", a_star.search(graph, "Oradea", "Bucharest"))

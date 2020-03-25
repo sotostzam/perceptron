@@ -11,6 +11,7 @@ Given a problem with a state space, a search algorithm's purpose is to find the 
 * [Informed Search Algorithms](#informed-search-algorithms)
   * [Hill Climbing](#hill-climbing)
   * [Best First Search](#best-first-search)
+  * [A* Algorithm](#A*-Algorithm-(A-Star))
 * [Time and space complexities](#time-and-space-complexities)
 * [Implementation](#implementation)
 
@@ -126,21 +127,25 @@ Generally, the hill climbing algorithm is used when a solution needs to be found
 
 Information to be added.
 
+### A* Algorithm (A-star)
+
+Information to be added.
+
 ## Time and space complexities
 
-* *"V"* represents the ammount of vertices
-* *"E"* represents all the edges of the graph
-* *"H"* represents the maximum height of the tree
 * *"b"* represents the branching factor
+* *"d"* represents the depth of the goal node
 * *"C"* represents the cost of the optimal solution
 * *"e"* represents minimum cost of a step
 
-|        Algorithm        |  Time Complexity  | Space Complexity |
-|   :-----------------:   | :---------------: | :--------------: |
-|  Breadth-first search   |     O(V + E)      |       O(V)       |
-|   Depth-first search    |     O(V + E)      |       O(H)       |
-|   Uniform cost search   |    O(b^(C/e))     |    O(b^(C/e))    |
-|      Hill Climbing      |       O(∞)        |       O(b)       |
+|      Algorithm       | Time Complexity | Space Complexity |
+| :-----------------   | :-------------- | :--------------  |
+| Breadth-first search | O(b^(d+1))      | O(b^d)           |
+| Depth-first search   | O(b^(d+1))      | O(b*d)           |
+| Uniform cost search  | O(b^(C/e))      | O(b^(C/e))       |
+| Hill Climbing        | O(d)            | O(b)             |
+| Best First Search    | O(b^(d+1))      | O(b^d)           |
+| A* (A-star)          | O(b^d)          | O(b^d)           |
 
 ## Implementation
 
