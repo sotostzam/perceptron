@@ -7,6 +7,8 @@ def print_results(name, result):
     if result:
         print("Path: " + ' -> '.join(result[0]))
         print("Cost: " + str(result[1]))
+        if len(result) is 3:
+            print("Depth: " + str(result[2]))
     else:
         print("Path not found!")
 
@@ -18,6 +20,7 @@ if __name__ == "__main__":
     print_results("Breadth-first search", bfs.search(graph, "Oradea", "Bucharest"))
     print_results("Depth-first search", dls.search(graph, "Oradea", "Bucharest"))
     print_results("Depth limited search", dls.search(graph, "Oradea", "Bucharest", depth = 5))
+    print_results("Iterative deepening search", dls.id(graph, "Oradea", "Bucharest"))
     print_results("Uniform cost search", ucs.search(graph, "Oradea", "Bucharest"))
     print_results("Hill Climbing",  hc.search(graph, "Oradea", "Bucharest"))
     print_results("Best First Search", bestFS.search(graph, "Oradea", "Bucharest"))

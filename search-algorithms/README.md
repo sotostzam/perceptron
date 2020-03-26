@@ -7,6 +7,8 @@ Given a problem and a description of its state space, we want to find a solution
 * [Uninformed Search Algorithms](#uninformed-search-algorithms)
   * [Breadth-first search](#breadth-first-search)
   * [Depth-first search](#depth-first-search)
+  * [Depth limited search](#depth-limited-search)
+  * [Iterative deepening search](#iterative-deepening-search)
   * [Uniform cost search](#uniform-cost-search)
 * [Informed Search Algorithms](#informed-search-algorithms)
   * [Hill Climbing](#hill-climbing)
@@ -60,7 +62,7 @@ algorithm dfs_search(graph, origin, target)
         current = frontier.pop()
         if current is not discovered then
             label current as discovered
-            if current is target:
+            if current is target then
                 return success
             for all adjacentEdges(edge) from current do
                 frontier.push(edge)
@@ -68,6 +70,41 @@ algorithm dfs_search(graph, origin, target)
 ```
 
 The DFS algorithm has the advantage of not consuming too many resources when it comes to space. The search frontier does not increase by that much on each iteration, so its memory for upcoming search states is relatively small. However, this algorithm does not guarantee that the first solution found, is also the best. What is more, it can be stuck in a loop if there are branches of a tree with infinite length.
+
+### Depth limited search
+
+Using a depth-first search can result in an extremely long or even infinite path, while taking another path could result in a solution pretty close to the origin node. This tactic can be eliminated by introducing a depth value to the algorithm, so when searching for a node's neighbors beyond a depth value, it does not add this path to the frontier. This approach is called **depth limited search**.
+
+We can assume the pseudocode for the depth limited search algorithm as following:
+
+```Pseudocode
+algorithm dfs_search(graph, origin, target, depth)
+    frontier <- Is a stack
+    frontier.push(origin)
+    while frontier is not empty do
+        current = frontier.pop()
+        if current is not discovered then
+            label current as discovered
+            if current is target then
+                return success
+            if depth > current_depth then
+                for all adjacentEdges(edge) from current do
+                    frontier.push(edge)
+    return failure
+```
+
+### Iterative Deepening search
+
+The algorithm utilizing an **iterative deepening search** (ID) combines the pros of both BFS and DFS. ID is on its core a depth limited search, but iterative and starting from zero. This means that whenever the result of an iteration is negative, it advances to a new depth until a solution is found or it checked all possible paths.
+
+We can assume the pseudocode for the iterative deepening search algorithm as following:
+
+```Pseudocode
+algorithm ids(graph, origin, target)
+    depth = 0
+    while solution is not found do
+        solution = depth_limited_search(graph, origin, target);
+```
 
 ### Uniform Cost search
 
@@ -83,7 +120,7 @@ algorithm ucs_search(graph, origin, target)
         current = frontier.pop()
         if current is not discovered then
             label current as discovered
-            if current is target:
+            if current is target then
                 return success
             for all adjacentEdges(edge) from current do
                 if edge is not discovered then
@@ -124,9 +161,9 @@ Generally, the hill climbing algorithm is used when a solution needs to be found
 
 ### Best First Search
 
-Unlike the hill climbing algorithm, **Best first search** keeps all state-nodes in its frontier. Doing this means that the algorithm can return back to another state if it is following a worse path.
+Unlike the hill climbing algorithm, **best first search** keeps all state-nodes in its frontier. Doing this means that the algorithm can return back to another state if it is following a worse path.
 
-We can assume the pseudocode for the hill climbing algorithm as following:
+We can assume the pseudocode for the best first search algorithm as following:
 
 ```Pseudocode
 algorithm bestFS(graph, origin, target)
@@ -155,6 +192,8 @@ BestFS algorithm makes use of an evaluation function that returns the distance f
 
 Of course, this evaluation function can be an underestimation or an overestimation of the real value. Moreover, if the value from h(S) is less or equal with the real value, then A* is guaranteed to find the best solution.
 
+We can assume the pseudocode for the A-star algorithm as following:
+
 ```Pseudocode
 algorithm a_star(graph, origin, target)
     frontier <- Is a priority queue
@@ -176,15 +215,23 @@ algorithm a_star(graph, origin, target)
 * *"d"* represents the depth of the goal node
 * *"C"* represents the cost of the optimal solution
 * *"e"* represents minimum cost of a step
+* *"l"* represents the depth limit
+* *[x]* represent notes explained below the following table
 
-|      Algorithm       | Time Complexity | Space Complexity | Complete | Optimal |
-| :-----------------   | :-------------- | :--------------  | :------- | :-------|
-| Breadth-first search | O(b^(d+1))      | O(b^(d+1))       | Yes      | Yes     |
-| Depth-first search   | O(b^d    )      | O(b*d)           | No       | No      |
-| Uniform cost search  | O(b^(C/e))      | O(b^(C/e))       | Yes      | Yes     |
-| Hill Climbing        | O(d)            | O(b)             | No       | No      |
-| Best First Search    | O(b^(d+1))      | O(b^d)           | No       | No      |
-| A* (A-star)          | O(b^d)          | O(b^d)           | Yes      | Yes     |
+| Algorithm                  | Time Complexity | Space Complexity | Complete  | Optimal  |
+| :------------------------- | :-------------- | :--------------  | :-------- | :------- |
+| Breadth-first Search       | O(b^(d+1))      | O(b^(d+1))       | Yes [a]   | Yes [c]  |
+| Depth-first Search         | O(b^d)          | O(b*d)           | No        | No       |
+| Depth Limited Search       | O(b^l)          | O(b*l)           | No        | No       |
+| Iterative Deepening Search | O(b^d)          | O(b*d)           | Yes [a]   | Yes [c]  |
+| Uniform cost Search        | O(b^(C/e))      | O(b^(C/e))       | Yes [a,b] | Yes      |
+| Hill Climbing              | O(d)            | O(b)             | No        | No       |
+| Best First Search          | O(b^(d+1))      | O(b^d)           | No        | No       |
+| A* (A-star)                | O(b^d)          | O(b^d)           | Yes       | Yes      |
+
+* [a]: Complete if b is finite
+* [b]: Complete if cost of steps > e, for e > 0
+* [c]: Optimal if all steps have the same cost
 
 ## Implementation
 
@@ -192,11 +239,9 @@ This python implementation uses the popular simplified map of the Romania road s
 
 ![graph-example](/images/romanianmap.jpg)
 
-If you wish to see another example of the BFS or the DFS algorithms in action, i have also implemented them while traversing a binary search tree. The BFS is used to print the structure of the tree and the DFS to print the nodes in the following orders:
+Moreover, the dataset is orgnized in such a way that it included each city's distance from Bucharest in a straight line. This value is used by algorithms that are labeled as informed search algorithms.
 
-* pre-order
-* in-order
-* post-order
+If you wish to see another example of the BFS or the DFS algorithms in action, i have also implemented them while traversing a binary search tree. The BFS is used to print the structure of the tree and the DFS to print the nodes in the following orders: pre-order, in-order and post-order.
 
 If you wish to know more you can take a look at this repository:
 [Binary search tree](https://github.com/sotostzam/data-structures-and-algorithms)

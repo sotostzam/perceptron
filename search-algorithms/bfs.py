@@ -4,8 +4,7 @@ def search(graph, origin, target):
     target_node = graph.get_node_obj(target)
     origin_node = graph.get_node_obj(origin)
     # BFS uses a FIFO queue structure as frontier (First in first out)
-    frontier = []
-    frontier.append((origin_node, [origin_node.value], 0))
+    frontier = [(origin_node, [origin_node.value], 0)]
     origin_node.discovered = True
     while frontier:
         current_node, current_path, current_cost = frontier.pop(0)

@@ -5,8 +5,7 @@ def search(graph, origin, target, depth = math.inf):
     graph.reset_nodes()
     target_node = graph.get_node_obj(target)
     # DFS uses a LIFO stack structure as frontier (Last in first out)
-    frontier = []
-    frontier.append((graph.get_node_obj(origin), [graph.get_node_obj(origin).value], 0))
+    frontier = [(graph.get_node_obj(origin), [graph.get_node_obj(origin).value], 0)]
     while frontier:
         current_node, current_path, current_cost = frontier.pop()
         if current_node.discovered != True:
@@ -22,3 +21,21 @@ def search(graph, origin, target, depth = math.inf):
                     frontier.append((edge_node, new_path, cost + current_cost))
     # Return false if target is not found
     return False
+
+def id(graph, origin, target):
+    depth = 0
+    while True:
+        discovered = True
+        result = search(graph, origin, target, depth)
+        if result is False:
+            # Check if all nodes have been discovered
+            for node in graph.nodes:
+                if node.discovered is False:
+                    discovered = False
+                    break
+            if discovered:
+                return False
+            else:
+                depth += 1
+        else:
+            return result + (depth,)
