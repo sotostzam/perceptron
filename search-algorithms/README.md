@@ -1,6 +1,6 @@
 # Search Algorithms
 
-Given a problem with a state space, a search algorithm's purpose is to find the solution. All algorithms that try to find a solution are called search algorithms. These algorithms fall into the following categories:
+Given a problem and a description of its state space, we want to find a solution. To achieve that, we have to apply a sequence of strictly predetermined steps, also known as algorithms. All algorithms that fall into that category, meaning they try to find a solution to a problem, are called search algorithms.
 
 ## Table of contents
 
@@ -11,17 +11,17 @@ Given a problem with a state space, a search algorithm's purpose is to find the 
 * [Informed Search Algorithms](#informed-search-algorithms)
   * [Hill Climbing](#hill-climbing)
   * [Best First Search](#best-first-search)
-  * [A* Algorithm](#A*-Algorithm-(A-Star))
+  * [A* Algorithm](#A*-(A-Star))
 * [Time and space complexities](#time-and-space-complexities)
 * [Implementation](#implementation)
 
 ## Uninformed Search Algorithms
 
-These kinds of algorithms are also called blind search algorithms. These algorithms do not take into account the information about the evaluation of each state. So they act in the same way to solve any problem, and they only care about the timing that each state is created. Some of these algorithms are state below:
+Algorithms that are labeled as **uninformed search algorithms** (also refered to as **blind search algorithms**), are used for problems that do not allow the evaluation the space state. So, these algorithms treat any problem in the same way, and they only care about the timing that each state is created. Some of these algorithms are stated below:
 
 ### Breadth-first search
 
-Breadth-first search (BFS) is a uninformed search algorithm. It examines all possible states on the same level first, and then moves to the next level. BFS uses a FIFO queue structure (First In First Out) for keeping track of its search frontier. On each iteration the algorithm searches all the states being on the lower depth, as these states were inserted first in the queue. If a node that is attached via an edge has already been discovered, the algorithm ignores it and moves on.
+**Breadth-first search** (BFS) firstly examines the root-node from there all the ascendants of this node, and so on so forth. In other words, the algorithm examines all possible states on the same level first, and then moves on to the next level. The BFS uses a FIFO queue structure (First In First Out) for keeping track of its search frontier. On each iteration the algorithm searches all the states being on a lower depth, as these states were inserted first in the queue. If a node that is attached via an edge has already been discovered, the algorithm ignores it and moves on.
 
 We can assume the pseudocode for the breadth-first search algorithm as following:
 
@@ -42,11 +42,11 @@ algorithm bfs_search(graph, origin, target)
     return failure
 ```
 
-The biggest advantage of the BFS algorithm is that it finds the smallest possible route, meaning the route with the least amount of edges. This solution can only be described as best if all edges have the same cost. Moreover, the bfs algorithm is considered as "complete", as i will always find a solution if there is one. One disadvantage is that the search frontier of the bfs algorithm is increasing a lot in size, which means that it needs a lot more memory space.
+The biggest advantage of the BFS algorithm is that it finds the smallest possible route, meaning the route with the least amount of steps. This solution can only be described as best if all edges have the same cost. Moreover, the bfs algorithm is considered as "complete", as i will always find a solution if there is one. One disadvantage is that the search frontier of the bfs algorithm is increasing a lot in size, which means that it needs a lot more memory space.
 
 ### Depth-first search
 
-Like the name of this algorithm suggests, depth-first search (DFS) is an uninformed search algorithm which examines all possible states that exist in the deeper layers of the tree. If there is more than one state at the same depth, it randomly chooses the next or picks the one on the left for ease.
+Like the name of this algorithm suggests, **depth-first search** (DFS) examines all possible states that exist at the deepest layer of the tree. If there is more than one state at the same depth, the choice is being done randomly or it is also common to choose the one being on the left.
 
 The search frontier this algorithm uses, is a LIFO stack structure (Last In First Out). This means that on each iteration, every new state gets added to the top of the stack, and the search procedure continues with one of them. If a node that is attached via an edge has already been discovered, the algorithm ignores it and moves on.
 
@@ -71,7 +71,7 @@ The DFS algorithm has the advantage of not consuming too many resources when it 
 
 ### Uniform Cost search
 
-Unlike the BFS, uniform-cost search doesn’t care about the number of steps that each of the paths it searches has, but the total path cost. Therefor, it uses a priority queue. This means that the path that is selected from the frontier is the one with the lowest cost value so far.
+Unlike the BFS algorithm, **uniform-cost search** (UCS) doesn’t care about the total number of steps of a path, but the total path's steps cost. Therefore, it uses a priority queue which means that the path that is selected from the frontier is the one with the lowest cost value so far. In other words, the priority which determines the next node to be examined, is attached to the added cost of this step.
 
 We can assume the pseudocode for the uniform cost search algorithm as following:
 
@@ -92,19 +92,18 @@ algorithm ucs_search(graph, origin, target)
     return failure
 ```
 
-There is a diffrerence between UCS and BFS. In breadth-first search, the discovery is done when the node is added to the frontier. However in uniform-cost search, the cost and discovery is done when evaluating this path form the frontier.
+There is a difference between UCS and BFS. In *breadth-first search*, the discovery is done when the node is added to the frontier, while in *uniform cost search* the discovery is done uppon choosing the path from the frontier.
 
 ## Informed Search Algorithms
 
-Given a problem which has a huge amount of states, blind search algorithms consume so much time, that most of the time a solution is never found. Taking this fact into account, the searching time needs to be reduced which means that the different number of states should also be reduced. To achieve that, an indication is needed so that it can describe and evaluate each state that the algorithm is on. Algorithms that utilize this information about states are called heuristic search algorithms.
+Given a problem that has a huge amount of states, blind search algorithms tend to be extremelly time-consuming, which almost always means that a solution can not be found. Taking this fact into account, the searching time needs to be reduced and as a result the different number of states should also be reduced. To achieve that, we indroduce an evaluation function which describes and evaluates each state. Algorithms that utilize this kind of information about states are called heuristic search algorithms.
 
 ### Hill Climbing
 
-The hill climbing algorithm shares a lot of similarities with the depth-first search algorithm (DFS). However, there are two key differences:
+The **hill climbing** algorithm shares a lot of similarities with the depth-first search algorithm (DFS). However, there are two key differences:
 
-1. With the Hill Climbing algorithm the next node to go into the frontier is based on the distance value from the target, while DFS chooses one of the neighbor nodes, often being the most left option.
-
-2. With the Hill Climbing algorithm, there is only one node in the frontier. Every time it chooses a new node to search, the other nodes get eliminated, while with DFS they are added to the frontier, to be discovered later.
+* The next node to be inserted into the frontier is based on the distance value from the target, while in DFS one of the neighbor nodes is chosen, often being the left most option.
+* There is only one node present in the frontier, so every time a new node is chosen to be searched, the other nodes get eliminated. On the contrary, using DFS all the nodes are added to the frontier, to be discovered later.
 
 We can assume the pseudocode for the hill climbing algorithm as following:
 
@@ -125,11 +124,51 @@ Generally, the hill climbing algorithm is used when a solution needs to be found
 
 ### Best First Search
 
-Information to be added.
+Unlike the hill climbing algorithm, **Best first search** keeps all state-nodes in its frontier. Doing this means that the algorithm can return back to another state if it is following a worse path.
 
-### A* Algorithm (A-star)
+We can assume the pseudocode for the hill climbing algorithm as following:
 
-Information to be added.
+```Pseudocode
+algorithm bestFS(graph, origin, target)
+    frontier <- Is a priority queue
+    frontier.push(origin, hValue(origin))
+    current = frontier.get()
+    while current is not target do
+        children = expand(neighbors)
+        bestNeighbor = best(children)
+        if hValue(bestNeighbor) < hValue(frontier) then
+            frontier = bestNeighbor
+        if frontier is empty then
+            return failure
+        current = frontier.get()
+    return success
+```
+
+Best first search, stops if it finds a solution. This is a common practice for heuristic algorthms. However they can be modified to return multiple solutions. Using this modification though, eliminates the advantage bestFS has, which is a good solution in a relatively short ammount of time.
+
+### A* (A-star)
+
+BestFS algorithm makes use of an evaluation function that returns the distance from the original node to the foal node. With **A\* (A-star)** algorithm, this function's value is then added to the distance that there is already been explored up to the current state. In other words for some state S there are two evaluation functions:
+
+* g(S) which returns the distance from the origin state up to the current state
+* h(S) which returns the straight distance from the origin to the target
+
+Of course, this evaluation function can be an underestimation or an overestimation of the real value. Moreover, if the value from h(S) is less or equal with the real value, then A* is guaranteed to find the best solution.
+
+```Pseudocode
+algorithm a_star(graph, origin, target)
+    frontier <- Is a priority queue
+    frontier.push(origin, hValue(origin))
+    while frontier is empty do
+        current = frontier.get()
+        neighbors = expand(current)
+        if current is target then
+            return success
+        for each neighbor of current
+            accumulated_cost = hValue(current) + cost(current)
+            frontier.put(neighbor, accumulated_cost)
+    return failure
+```
 
 ## Time and space complexities
 
@@ -138,14 +177,14 @@ Information to be added.
 * *"C"* represents the cost of the optimal solution
 * *"e"* represents minimum cost of a step
 
-|      Algorithm       | Time Complexity | Space Complexity |
-| :-----------------   | :-------------- | :--------------  |
-| Breadth-first search | O(b^(d+1))      | O(b^d)           |
-| Depth-first search   | O(b^(d+1))      | O(b*d)           |
-| Uniform cost search  | O(b^(C/e))      | O(b^(C/e))       |
-| Hill Climbing        | O(d)            | O(b)             |
-| Best First Search    | O(b^(d+1))      | O(b^d)           |
-| A* (A-star)          | O(b^d)          | O(b^d)           |
+|      Algorithm       | Time Complexity | Space Complexity | Complete | Optimal |
+| :-----------------   | :-------------- | :--------------  | :------- | :-------|
+| Breadth-first search | O(b^(d+1))      | O(b^(d+1))       | Yes      | Yes     |
+| Depth-first search   | O(b^d    )      | O(b*d)           | No       | No      |
+| Uniform cost search  | O(b^(C/e))      | O(b^(C/e))       | Yes      | Yes     |
+| Hill Climbing        | O(d)            | O(b)             | No       | No      |
+| Best First Search    | O(b^(d+1))      | O(b^d)           | No       | No      |
+| A* (A-star)          | O(b^d)          | O(b^d)           | Yes      | Yes     |
 
 ## Implementation
 
