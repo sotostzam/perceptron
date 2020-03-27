@@ -12,27 +12,10 @@ def print_results(name, result):
     else:
         print("Path not found!")
 
+
 if __name__ == "__main__":
-    graph = graph.Graph()
-    graph.load_data('tour_romania.json')
-
-    # Algorithms return either a tuple of (found_path, total_cost) or False
-    print_results("Breadth-first search", bfs.search(graph, "Oradea", "Bucharest"))
-    print_results("Depth-first search", dls.search(graph, "Oradea", "Bucharest"))
-    print_results("Depth limited search", dls.search(graph, "Oradea", "Bucharest", depth = 5))
-    print_results("Iterative deepening search", dls.id(graph, "Oradea", "Bucharest"))
-    print_results("Uniform cost search", ucs.search(graph, "Oradea", "Bucharest"))
-    print_results("Hill Climbing",  hc.search(graph, "Oradea", "Bucharest"))
-    print_results("Best First Search", bestFS.search(graph, "Oradea", "Bucharest"))
-    print_results("A* (A-star)", a_star.search(graph, "Oradea", "Bucharest"))
-
-    ########### Graphical User Interface ###########
     import tkinter as tk
     import time
-
-    def drawOnCanvas(event):
-        print(event.x)
-        print(event.y)
 
     window = tk.Tk()
     window.title("Search Algorithms")
@@ -43,17 +26,18 @@ if __name__ == "__main__":
     canvas = tk.Canvas(master = window, width = 800, height = 500, bg="white")
     canvas.grid(row=0, column=0, sticky="nsew")
 
-    # Bind Events
-    canvas.bind("<Button 1>", lambda event : drawOnCanvas(event))
-    canvas.bind("<Button 2>", lambda event : drawOnCanvas(event))
-    canvas.bind("<Button 3>", lambda event : drawOnCanvas(event))
+    graph = graph.Graph()
+    graph.load_data('tour_romania.json', canvas)
 
-    edge_obj = []
-    node_obj = []
-    for edge in graph.edges:
-        edge_obj.append(canvas.create_line(edge[0].x, edge[0].y, edge[1].x, edge[1].y, width = 3, fill='black'))
-    for node in graph.nodes:
-        node_obj.append(canvas.create_oval(node.x - 10, node.y - 10, node.x + 10, node.y + 10, fill="grey"))
-        # canvas.create_text(node.x + 40, node.y, font="Purisa", text=node.value)               # Names of cities      
+    # Algorithms return either a tuple of (found_path, total_cost) or False
+    #bfs.search(graph, canvas, "Oradea", "Bucharest")
+    #dls.search(graph, canvas, "Oradea", "Bucharest")
+    #dls.search(graph, canvas, "Oradea", "Bucharest", depth = 3)
+    #dls.id(graph, canvas, "Oradea", "Bucharest")
+    ucs.search(graph, canvas, "Oradea", "Bucharest")
+
+    print_results("Hill Climbing",  hc.search(graph, "Oradea", "Bucharest"))
+    print_results("Best First Search", bestFS.search(graph, "Oradea", "Bucharest"))
+    print_results("A* (A-star)", a_star.search(graph, "Oradea", "Bucharest"))
 
     window.mainloop()
