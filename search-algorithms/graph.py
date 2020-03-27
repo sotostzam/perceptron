@@ -41,6 +41,7 @@ class Graph:
             if node.value == value:
                 return node
         obj = canvas.create_oval(x - 10, y - 10, x + 10, y + 10, fill="grey")
+        canvas.create_text(x + 40, y - 20, font="Purisa", text = value)
         new_node = Node(value, x, y, obj)
         self.nodes.append(new_node)
         return new_node

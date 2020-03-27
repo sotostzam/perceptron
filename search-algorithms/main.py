@@ -30,14 +30,13 @@ if __name__ == "__main__":
     graph.load_data('tour_romania.json', canvas)
 
     # Algorithms return either a tuple of (found_path, total_cost) or False
-    #bfs.search(graph, canvas, "Oradea", "Bucharest")
-    #dls.search(graph, canvas, "Oradea", "Bucharest")
-    #dls.search(graph, canvas, "Oradea", "Bucharest", depth = 3)
-    #dls.id(graph, canvas, "Oradea", "Bucharest")
-    ucs.search(graph, canvas, "Oradea", "Bucharest")
-
-    print_results("Hill Climbing",  hc.search(graph, "Oradea", "Bucharest"))
-    print_results("Best First Search", bestFS.search(graph, "Oradea", "Bucharest"))
-    print_results("A* (A-star)", a_star.search(graph, "Oradea", "Bucharest"))
+    # bfs.search(graph, canvas, "Oradea", "Bucharest")
+    # dls.search(graph, canvas, "Oradea", "Bucharest")
+    # dls.search(graph, canvas, "Oradea", "Bucharest", depth = 3)
+    # dls.id(graph, canvas, "Oradea", "Bucharest")
+    # ucs.search(graph, canvas, "Oradea", "Drobeta")
+    # hc.search(graph, canvas, "Oradea", "Bucharest")
+    # bestFS.search(graph, canvas, "Oradea", "Bucharest")
+    # a_star.search(graph, canvas, "Oradea", "Mehadia")
 
     window.mainloop()

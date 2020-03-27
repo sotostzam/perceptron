@@ -17,6 +17,7 @@ def search(graph, canvas, origin, target, depth = math.inf):
 
         for item in range(0, len(current_path)):
             canvas.itemconfig(current_path[item].obj, fill='red')
+            canvas.tag_raise(current_path[item].obj)
             if item < len(current_path)-1:
                 for edge in graph.edges:
                     if edge[0] == current_path[item] and edge[1] == current_path[item + 1] or edge[1] == current_path[item] and edge[0] == current_path[item + 1]:
