@@ -5,7 +5,6 @@
             {"Timisoara" : 118},
             {"Zerind" : 75}
         ],
-        "Distance" : 366,
         "x" : 60,
         "y" : 160
     },
@@ -17,7 +16,6 @@
             {"Pitesti" : 101},
             {"Urziceni" : 85}
         ],
-        "Distance" : 0,
         "x" : 525,
         "y" : 400
     },
@@ -28,7 +26,6 @@
             {"Pitesti" : 138},
             {"Rimnicu_Vilcea" : 146}
         ],
-        "Distance" : 160,
         "x" : 300,
         "y" : 460
     },
@@ -38,7 +35,6 @@
             {"Craiova" : 120}, 
             {"Mehadia" : 75}
         ],
-        "Distance" : 242,
         "x" : 175,
         "y" : 445
     },
@@ -47,7 +43,6 @@
         "Edges" : [
             {"Hirsova" : 86}
         ],
-        "Distance" : 161,
         "x" : 765,
         "y" : 450
     },
@@ -57,7 +52,6 @@
             {"Bucharest" : 211},
             {"Sibiu" : 99}
         ],
-        "Distance" : 178,
         "x" : 385,
         "y" : 220
     },
@@ -66,7 +60,6 @@
         "Edges" : [
             {"Bucharest" : 90}
         ],
-        "Distance" : 77,
         "x" : 485,
         "y" : 485
     },
@@ -76,7 +69,6 @@
             {"Eforie" : 86},
             {"Urziceni" : 98}
         ],
-        "Distance" : 151,
         "x" : 722,
         "y" : 370
     },
@@ -86,7 +78,6 @@
             {"Neamt" : 87},
             {"Vaslui" : 92}
         ],
-        "Distance" : 226,
         "x" : 635,
         "y" : 135
     },
@@ -96,7 +87,6 @@
             {"Mehadia" : 70},
             {"Timisoara" : 111}
         ],
-        "Distance" : 244,
         "x" : 175,
         "y" : 325
     },
@@ -106,7 +96,6 @@
             {"Drobeta" : 75},
             {"Lugoj" : 70}
         ],
-        "Distance" : 241,
         "x" : 180,
         "y" : 385
     },
@@ -115,7 +104,6 @@
         "Edges" : [
             {"Iasi" : 87}
         ],
-        "Distance" : 234,
         "x" : 530,
         "y" : 90
     },
@@ -125,7 +113,6 @@
             {"Sibiu" : 151},
             {"Zerind" : 71}
         ],
-        "Distance" : 380,
         "x" : 125,
         "y" : 40
     },
@@ -136,7 +123,6 @@
             {"Craiova" : 138},
             {"Rimnicu_Vilcea" : 97}
         ],
-        "Distance" : 98,
         "x" : 405,
         "y" : 345
     },
@@ -147,7 +133,6 @@
             {"Pitesti" : 97},
             {"Sibiu" : 80}
         ],
-        "Distance" : 193,
         "x" : 275,
         "y" : 280
     },
@@ -159,7 +144,6 @@
             {"Oradea" : 151},
             {"Rimnicu_Vilcea" : 80}
         ],
-        "Distance" : 253,
         "x" : 240,
         "y" : 210
     },
@@ -169,7 +153,6 @@
             {"Arad" : 118},
             {"Lugoj" : 111}
         ],
-        "Distance" : 329,
         "x" : 70,
         "y" : 280
     },
@@ -180,7 +163,6 @@
             {"Hirsova" : 98},
             {"Vaslui" : 142}
         ],
-        "Distance" : 80,
         "x" : 610,
         "y" : 370
     },
@@ -190,7 +172,6 @@
             {"Iasi" : 92},
             {"Urziceni" : 142}
         ],
-        "Distance" : 199,
         "x" : 685,
         "y" : 225
     },
@@ -200,7 +181,6 @@
             {"Arad" : 75},
             {"Oradea" : 71}
         ],
-        "Distance" : 374,
         "x" : 90,
         "y" : 100
     }

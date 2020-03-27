@@ -1,6 +1,4 @@
-import time
-
-def search(graph, canvas, origin, target):
+def search(graph, app, origin, target):
     # Make sure nodes are undiscovered initially
     graph.reset_nodes()
     target_node = graph.get_node_obj(target)
@@ -10,23 +8,7 @@ def search(graph, canvas, origin, target):
     origin_node.discovered = True
     while frontier:
         current_node, current_path, current_cost = frontier.pop(0)
-
-        ## Reset canvas
-        for item in graph.nodes:
-            canvas.itemconfig(item.obj, fill='grey')
-        for item in graph.edges:
-            canvas.itemconfig(item[3], width = 3, fill='black')
-
-        for item in range(0, len(current_path)):
-            canvas.itemconfig(current_path[item].obj, fill='red')
-            canvas.tag_raise(current_path[item].obj)
-            if item < len(current_path)-1:
-                for edge in graph.edges:
-                    if edge[0] == current_path[item] and edge[1] == current_path[item + 1] or edge[1] == current_path[item] and edge[0] == current_path[item + 1]:
-                        canvas.itemconfig(edge[3], fill='red')
-        canvas.update()
-        time.sleep(0.5)
-
+        app.update_canvas(current_path, .5)
         if current_node == target_node:
             return current_path, current_cost
         neighbors = graph.get_neighbors(current_node)

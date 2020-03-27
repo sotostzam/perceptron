@@ -1,4 +1,4 @@
-import json
+import json, math
 
 class Node:
     def __init__(self, value, x = None, y = None, obj = None):
@@ -17,7 +17,6 @@ class Graph:
     def __init__(self):
         self.nodes        = []
         self.edges        = []
-        self.dist_to_goal = []
 
     # Function to fill graph from dataset
     def load_data(self, path, canvas):
@@ -33,7 +32,6 @@ class Graph:
                     # Loop through the keys (1 Iteration only)
                     for node_name in edge:
                         self.add_edge(node, self.add_node(node_name, data[node_name]['x'], data[node_name]['y'], canvas), edge[node_name], canvas)
-                self.dist_to_goal.append((node, data[vertice]['Distance']))
 
     # Helper function to check regulate node's creation
     def add_node(self, value, x, y, canvas):
@@ -71,14 +69,14 @@ class Graph:
             if node.value == value:
                 return node
 
-    # Heuristic function returning the distance from origin to target node
-    def get_distance(self, value):
-        for distance in self.dist_to_goal:
-            if distance[0] == value:
-                return distance[1]
-
     # Helper function to reset all nodes discovered status
     def reset_nodes(self):
         for node in self.nodes:
             if node.discovered:
                 node.discovered = False
+
+    # Heuristic function returning the distance from origin to target node
+    def evaluate(self, node_1, node_2):
+        distance = math.sqrt((node_2.x - node_1.x)**2 + (node_2.y - node_1.y)**2)   # Euclidean distance
+        # distance = abs((node_1.x - node_2.x)) + abs((node_1.y - node_2.y))        # Manhattan distance
+        return distance
