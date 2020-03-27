@@ -239,7 +239,7 @@ This python implementation uses the popular simplified map of the Romania road s
 
 ![graph-example](/images/romanianmap.jpg)
 
-Moreover, the dataset is orgnized in such a way that it included each city's distance from Bucharest in a straight line. This value is used by algorithms that are labeled as informed search algorithms.
+Moreover, the data set is organized in such a way to include each city's distance from Bucharest in a straight line. There is a special evaluation function in the Graph class that returns these distance values, as they are used by the informed search algorithms implemented in this repository.
 
 If you wish to see another example of the BFS or the DFS algorithms in action, i have also implemented them while traversing a binary search tree. The BFS is used to print the structure of the tree and the DFS to print the nodes in the following orders: pre-order, in-order and post-order.
 
