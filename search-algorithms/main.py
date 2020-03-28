@@ -3,6 +3,7 @@ import hill_climbing as hc
 import bestFS, a_star
 import tkinter as tk
 from tkinter import ttk
+from tkinter import messagebox
 import time
 
 class gui():
@@ -27,6 +28,7 @@ class gui():
                            'Iterative Deepening Search',
                            'Uniform Cost Search',
                            'Hill Climbing',
+                           'Best First Search',
                            'A* (A-star)',]
         self.combo = ttk.Combobox(self.main_menu, values = self.algorithms, state="readonly", width=25)
         self.combo.bind("<<ComboboxSelected>>", self.comboSelection)
@@ -58,6 +60,7 @@ class gui():
 
         self.btn_start = tk.Button(self.main_menu, width=20, height=2, command=self.run, text="Run")
         self.btn_start.grid(row=4, column=0, padx=5, pady=10)
+        self.btn_start.configure(state='disabled')
 
         # Canvas Panel Parameters
         self.canvas = tk.Canvas(master = self.window, width = width, height = height, bg="white")
@@ -65,38 +68,50 @@ class gui():
 
     # Run application with selected algorithm
     def run(self):
-        self.btn_start.config(state="disabled")
         selection = self.combo.current()
          # Make sure nodes are undiscovered initially
         graph.reset_nodes()
         origin = self.node_start_input.get()
         goal = self.node_goal_input.get()
-        # Algorithms return either a tuple of (found_path, total_cost) or False
-        if selection is 0:
-            path = bfs.search(graph, app, origin, goal)
-        elif selection is 1:
-            path = dls.search(graph, app, origin, goal)
-        elif selection is 2:
-            selected_depth = int(self.depth_input.get())
-            path = dls.search(graph, app, origin, goal, depth = selected_depth)
-        elif selection is 3:
-            path = dls.id(graph, app, origin, goal)
-        elif selection is 4:
-            path = ucs.search(graph, app, origin, goal)
-        elif selection is 5:
-            path = hc.search(graph, app, origin, goal)
-        elif selection is 6:
-            path = bestFS.search(graph, app, origin, goal)
+        path = None
+        if graph.get_node_obj(origin) is None:
+            tk.messagebox.showwarning("Warning", "Starting node does not exist!")
         else:
-            path = a_star.search(graph, app, origin, goal)
-        if path is not False:
-            app.update_canvas(path[0], found = True)
-        else:
-            print("Not found")
-        self.btn_start.config(state="normal")
+            self.btn_start.config(state="disabled")
+            # Algorithms return either a tuple of (found_path, total_cost) or False
+            if selection is 0:
+                path = bfs.search(graph, app, origin, goal)
+            elif selection is 1:
+                path = dls.search(graph, app, origin, goal)
+            elif selection is 2:
+                selected_depth = int(self.depth_input.get())
+                path = dls.search(graph, app, origin, goal, depth = selected_depth)
+            elif selection is 3:
+                path = dls.id(graph, app, origin, goal)
+            elif selection is 4:
+                path = ucs.search(graph, app, origin, goal)
+            else:
+                if graph.get_node_obj(goal) is None:
+                    tk.messagebox.showwarning("Warning", "Target node does not exist!")
+                else:
+                    if selection is 5:
+                        path = hc.search(graph, app, origin, goal)
+                    elif selection is 6:
+                        path = bestFS.search(graph, app, origin, goal)
+                    else:
+                        path = a_star.search(graph, app, origin, goal)
+            if path is None:
+                pass
+            elif path is not False:
+                app.update_canvas(path[0], found = True)
+                tk.messagebox.showinfo("Results", "Path sucessfully found!\n Total cost: " + str(path[1]))
+            else:
+                tk.messagebox.showwarning("Results", "Path to target node not found.")
+            self.btn_start.config(state="normal")
 
     # ComboBox selection callback
     def comboSelection(self, event):
+        self.btn_start.configure(state='normal')
         if self.combo.current() > 0 and self.combo.current() <= 3:
             self.depth_selection.grid()
             if self.combo.current() is 2:
@@ -143,4 +158,5 @@ if __name__ == "__main__":
     app = gui(800, 500)
     graph = graph.Graph()
     graph.load_data('tour_romania.json', app.canvas)
+    graph.show_info(app.canvas)
     app.window.mainloop()
