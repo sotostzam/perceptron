@@ -50,6 +50,7 @@ class Graph:
             if edge[0] == node2 and edge[1] == node1:
                 return False
         obj = canvas.create_line(node1.x, node1.y, node2.x, node2.y, width = 3, fill='black')
+        canvas.tag_lower(obj)
         self.edges.append((node1, node2, cost, obj))
         return True
 

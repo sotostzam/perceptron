@@ -1,6 +1,8 @@
 import math
 
 def search(graph, app, origin, target, depth = math.inf):
+    # Update current depth in gui
+    app.update_depth(depth)
     # Make sure nodes are undiscovered initially
     graph.reset_nodes()
     target_node = graph.get_node_obj(target)
@@ -13,7 +15,7 @@ def search(graph, app, origin, target, depth = math.inf):
             current_node.discovered = True
             if current_node == target_node:
                 return current_path, current_cost
-            elif depth > len(current_path):
+            elif depth >= len(current_path):
                 neighbors = graph.get_neighbors(current_node)
                 neighbors.reverse()
                 for edge_node, cost in neighbors:
