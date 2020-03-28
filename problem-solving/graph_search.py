@@ -1,6 +1,10 @@
-import graph, bfs, dls , ucs
-import hill_climbing as hc
-import bestFS, a_star
+import uninformed_search_algorithms.bfs as bfs
+import uninformed_search_algorithms.dls as dls
+import uninformed_search_algorithms.ucs as ucs
+import informed_search_algorithms.hill_climbing as hc
+import informed_search_algorithms.bestFS as bestFS
+import informed_search_algorithms.a_star as a_star
+import graph
 import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox
@@ -36,7 +40,7 @@ class gui():
 
         self.node_selection = tk.Frame(self.main_menu)
         self.node_selection.grid(row=2, column=0, sticky="ns")
-        self.node_selection.columnconfigure(0, minsize=20)                          # FIXME Check this
+        self.node_selection.columnconfigure(0, minsize=20)
 
         self.node_start = tk.Label(self.node_selection, text="From:")
         self.node_start.grid(row=0, column=0, sticky="we")

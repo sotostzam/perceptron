@@ -235,11 +235,13 @@ algorithm a_star(graph, origin, target)
 
 ## Implementation
 
-This python implementation uses the popular simplified map of the Romania road system as its data set. However, anyone can create and load a custom graph just by defining a json fine in the appropriate format. Please take a look at the tour_romania.json file. The following picture depicts the graph that is created. Each square is a node, and each of these nodes is connected via an edge to one or more neighbor nodes.
+This python implementation uses the popular simplified map of the Romania road system as its data set. However, anyone can create and load a custom graph just by defining a json fine in the appropriate format. Please take a look at the tour_romania.json file. The following picture depicts the graph that is created. Each circle is a node, and each of these nodes is connected via an edge to one or more neighbor nodes.
 
-![graph-example](/images/romanianmap.jpg)
+![graph-example](/images/search_application.png)
 
-Moreover, the data set is organized in such a way to include each city's distance from Bucharest in a straight line. There is a special evaluation function in the Graph class that returns these distance values, as they are used by the informed search algorithms implemented in this repository.
+This gui implementation makes it possible to select and run various algorithms on this graph. The user can select the starting node and the goal node. As far as depth limited search and its variants (DFS, IDS) are concerned, the appication gives you the ability to show the depth value and even edit it for the DLS search.
+
+The informed search algorithms, need a special evaluation function, which will evaluate the step. In this implementation, this evvaluation function if using the euclidean distance between two node's pixel positions.
 
 If you wish to see another example of the BFS or the DFS algorithms in action, i have also implemented them while traversing a binary search tree. The BFS is used to print the structure of the tree and the DFS to print the nodes in the following orders: pre-order, in-order and post-order.
 
