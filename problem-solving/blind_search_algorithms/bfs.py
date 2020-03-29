@@ -8,13 +8,13 @@ def search(graph, app, origin, target):
     origin_node.discovered = True
     while frontier:
         current_node, current_path, current_cost = frontier.pop(0)
-        app.update_canvas(current_path, .5)
         if current_node == target_node:
             return current_path, current_cost
         neighbors = graph.get_neighbors(current_node)
         for edge_node, cost in neighbors:
             if edge_node.discovered != True:
                 edge_node.discovered = True
+                app.update_canvas(current_path, edge_node)
                 new_path = current_path.copy()
                 new_path.append(edge_node)
                 frontier.append((edge_node, new_path, cost + current_cost))

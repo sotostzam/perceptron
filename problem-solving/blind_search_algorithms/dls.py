@@ -10,9 +10,9 @@ def search(graph, app, origin, target, depth = math.inf):
     frontier = [(graph.get_node_obj(origin), [graph.get_node_obj(origin)], 0)]
     while frontier:
         current_node, current_path, current_cost = frontier.pop()
-        app.update_canvas(current_path, .5)
         if current_node.discovered != True:
             current_node.discovered = True
+            app.update_canvas(current_path, current_node)
             if current_node == target_node:
                 return current_path, current_cost
             elif depth >= len(current_path):

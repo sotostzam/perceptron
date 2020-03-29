@@ -1,9 +1,9 @@
-import uninformed_search_algorithms.bfs as bfs
-import uninformed_search_algorithms.dls as dls
-import uninformed_search_algorithms.ucs as ucs
-import informed_search_algorithms.hill_climbing as hc
-import informed_search_algorithms.bestFS as bestFS
-import informed_search_algorithms.a_star as a_star
+import blind_search_algorithms.bfs as bfs
+import blind_search_algorithms.dls as dls
+import blind_search_algorithms.ucs as ucs
+import heuristic_search_algorithms.hill_climbing as hc
+import heuristic_search_algorithms.bestFS as bestFS
+import heuristic_search_algorithms.a_star as a_star
 import graph
 import tkinter as tk
 from tkinter import ttk
@@ -33,6 +33,7 @@ class gui():
                            'Uniform Cost Search',
                            'Hill Climbing',
                            'Best First Search',
+                           'Beam Search',
                            'A* (A-star)',]
         self.combo = ttk.Combobox(self.main_menu, values = self.algorithms, state="readonly", width=25)
         self.combo.bind("<<ComboboxSelected>>", self.comboSelection)
@@ -61,6 +62,14 @@ class gui():
         self.depth_input = tk.Entry(self.depth_selection, justify='center', state="disabled")
         self.depth_input.grid(row=1, column=0, sticky="we")
         self.depth_selection.grid_remove()
+    
+        self.beam_selection = tk.Frame(self.main_menu)
+        self.beam_selection.grid(row=3, column=0, sticky="ns", pady=10)
+        self.beam_label = tk.Label(self.beam_selection, text="Beam value:")
+        self.beam_label.grid(row=0, column=0)
+        self.beam_input = tk.Entry(self.beam_selection, justify='center')
+        self.beam_input.grid(row=1, column=0, sticky="we")
+        self.beam_selection.grid_remove()
 
         self.btn_start = tk.Button(self.main_menu, width=20, height=2, command=self.run, text="Run")
         self.btn_start.grid(row=4, column=0, padx=5, pady=10)
@@ -102,6 +111,9 @@ class gui():
                         path = hc.search(graph, app, origin, goal)
                     elif selection is 6:
                         path = bestFS.search(graph, app, origin, goal)
+                    elif selection is 7:
+                        selected_beam = int(self.beam_input.get())
+                        path = bestFS.search(graph, app, origin, goal, beam = selected_beam)
                     else:
                         path = a_star.search(graph, app, origin, goal)
             if path is None:
@@ -116,6 +128,7 @@ class gui():
     # ComboBox selection callback
     def comboSelection(self, event):
         self.btn_start.configure(state='normal')
+        # DFS Enable depth selection
         if self.combo.current() > 0 and self.combo.current() <= 3:
             self.depth_selection.grid()
             if self.combo.current() is 2:
@@ -124,17 +137,29 @@ class gui():
                 self.depth_input.configure(state='disabled')
         else:
             self.depth_selection.grid_remove()
+        # BestFS Enable beam selection
+        if self.combo.current() is 7:
+            self.beam_selection.grid()
+        else:
+            self.beam_selection.grid_remove()
 
     # Helper function to reset canvas items
     def reset_canvas(self):
         for item in graph.nodes:
-            self.canvas.itemconfig(item.obj, fill='grey')
+            if item.discovered:
+                self.canvas.itemconfig(item.obj, fill='blue')
+            else:
+                self.canvas.itemconfig(item.obj, fill='grey')
         for item in graph.edges:
             self.canvas.itemconfig(item[3], width = 3, fill='black')
 
     # Helper function to update canvas
-    def update_canvas(self, path, time_value = None, found = None):
+    def update_canvas(self, path, search_node = None, time_value = .5, found = None):
         self.reset_canvas()
+        if search_node != None:
+            new_path = path.copy()
+            new_path.append(search_node)
+            path = new_path.copy()
         for item in range(0, len(path)):
             if found:
                 self.canvas.itemconfig(path[item].obj, fill='green')
