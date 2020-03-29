@@ -10,9 +10,10 @@ from tkinter import ttk
 from tkinter import messagebox
 import time
 
-class gui():
+class Gui():
 
-    def __init__(self, width, height):
+    def __init__(self, graph):
+        self.graph = graph
         self.window = tk.Tk()
         self.window.title("Search Algorithms")
         self.window.rowconfigure(0, minsize=500, weight=1)
@@ -76,50 +77,50 @@ class gui():
         self.btn_start.configure(state='disabled')
 
         # Canvas Panel Parameters
-        self.canvas = tk.Canvas(master = self.window, width = width, height = height, bg="white")
+        self.canvas = tk.Canvas(master = self.window, width = 800, height = 500, bg="white")
         self.canvas.grid(row=0, column=1, sticky="nsew")
 
     # Run application with selected algorithm
     def run(self):
         selection = self.combo.current()
          # Make sure nodes are undiscovered initially
-        graph.reset_nodes()
+        self.graph.reset_nodes()
         origin = self.node_start_input.get()
         goal = self.node_goal_input.get()
         path = None
-        if graph.get_node_obj(origin) is None:
+        if self.graph.get_node_obj(origin) is None:
             tk.messagebox.showwarning("Warning", "Starting node does not exist!")
         else:
             self.btn_start.config(state="disabled")
             # Algorithms return either a tuple of (found_path, total_cost) or False
             if selection is 0:
-                path = bfs.search(graph, app, origin, goal)
+                path = bfs.search(self.graph, self, origin, goal)
             elif selection is 1:
-                path = dls.search(graph, app, origin, goal)
+                path = dls.search(self.graph, self, origin, goal)
             elif selection is 2:
                 selected_depth = int(self.depth_input.get())
-                path = dls.search(graph, app, origin, goal, depth = selected_depth)
+                path = dls.search(self.graph, self, origin, goal, depth = selected_depth)
             elif selection is 3:
-                path = dls.id(graph, app, origin, goal)
+                path = dls.id(self.graph, self, origin, goal)
             elif selection is 4:
-                path = ucs.search(graph, app, origin, goal)
+                path = ucs.search(self.graph, self, origin, goal)
             else:
-                if graph.get_node_obj(goal) is None:
+                if self.graph.get_node_obj(goal) is None:
                     tk.messagebox.showwarning("Warning", "Target node does not exist!")
                 else:
                     if selection is 5:
-                        path = hc.search(graph, app, origin, goal)
+                        path = hc.search(self.graph, self, origin, goal)
                     elif selection is 6:
-                        path = bestFS.search(graph, app, origin, goal)
+                        path = bestFS.search(self.graph, self, origin, goal)
                     elif selection is 7:
                         selected_beam = int(self.beam_input.get())
-                        path = bestFS.search(graph, app, origin, goal, beam = selected_beam)
+                        path = bestFS.search(self.graph, self, origin, goal, beam = selected_beam)
                     else:
-                        path = a_star.search(graph, app, origin, goal)
+                        path = a_star.search(self.graph, self, origin, goal)
             if path is None:
                 pass
             elif path is not False:
-                app.update_canvas(path[0], found = True)
+                self.update_canvas(path[0], found = True)
                 tk.messagebox.showinfo("Results", "Path sucessfully found!\n Total cost: " + str(path[1]))
             else:
                 tk.messagebox.showwarning("Results", "Path to target node not found.")
@@ -145,16 +146,16 @@ class gui():
 
     # Helper function to reset canvas items
     def reset_canvas(self):
-        for item in graph.nodes:
+        for item in self.graph.nodes:
             if item.discovered:
                 self.canvas.itemconfig(item.obj, fill='blue')
             else:
                 self.canvas.itemconfig(item.obj, fill='grey')
-        for item in graph.edges:
+        for item in self.graph.edges:
             self.canvas.itemconfig(item[3], width = 3, fill='black')
 
     # Helper function to update canvas
-    def update_canvas(self, path, search_node = None, time_value = .5, found = None):
+    def update_canvas(self, path, search_node = None, found = None):
         self.reset_canvas()
         if search_node != None:
             new_path = path.copy()
@@ -166,7 +167,7 @@ class gui():
             else:
                 self.canvas.itemconfig(path[item].obj, fill='red')
             if item < len(path)-1:
-                for edge in graph.edges:
+                for edge in self.graph.edges:
                     if edge[0] == path[item] and edge[1] == path[item + 1] or edge[1] == path[item] and edge[0] == path[item + 1]:
                         self.canvas.itemconfig(edge[3], fill='red')
                         if found:
@@ -174,18 +175,10 @@ class gui():
                         else:
                             self.canvas.itemconfig(edge[3], fill='red')
         self.canvas.update()
-        if time_value is not None:
-            time.sleep(time_value)
+        time.sleep(.5)
     
     def update_depth(self, depth):
         self.depth_input.configure(state='normal')
-        app.depth_input.delete(0, 'end')
-        app.depth_input.insert(0, str(depth))
+        self.depth_input.delete(0, 'end')
+        self.depth_input.insert(0, str(depth))
         self.depth_input.configure(state='disabled')
-
-if __name__ == "__main__":
-    app = gui(800, 500)
-    graph = graph.Graph()
-    graph.load_data('tour_romania.json', app.canvas)
-    graph.show_info(app.canvas)
-    app.window.mainloop()

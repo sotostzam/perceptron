@@ -15,8 +15,8 @@ class Node:
 
 class Graph:
     def __init__(self):
-        self.nodes        = []
-        self.edges        = []
+        self.nodes = []
+        self.edges = []
 
     # Function to fill graph from dataset
     def load_data(self, path, canvas):
