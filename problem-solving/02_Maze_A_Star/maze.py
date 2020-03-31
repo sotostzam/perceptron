@@ -80,7 +80,7 @@ class Maze():
     def update_path_line(self, path, found = False):
         if len(path) > 2:
             self.canvas.delete(self.pathLine)
-            self.pathLine = self.canvas.create_line(path, width = 6.4, fill = 'purple')
+            self.pathLine = self.canvas.create_line(path, width = 6, fill = 'purple')
         self.canvas.update()
     
     def set_start(self, pos):
