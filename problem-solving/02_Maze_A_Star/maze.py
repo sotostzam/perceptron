@@ -3,25 +3,27 @@ import time, math, random
 
 class Node:
     def __init__(self, x, y, col, row, obj):
-        self.x = x
-        self.y = y
-        self.col = col
-        self.row = row
-        self.obj = obj
-        self.neighbors = []
-        self.gScore = math.inf         # gScore
-        self.fScore = math.inf         # Both
-        self.cameFrom = None
-        self.obstacle = False
+        self.x = x                  # Node's canvas x value
+        self.y = y                  # Node's canvas y value
+        self.col = col              # Node's grid col value
+        self.row = row              # Node's grid row value
+        self.obj = obj              # Canvas object ID number
+        self.neighbors = []         # List of neighbor nodes
+        self.gScore = math.inf      # gScore is the cost of the cheapest path from start to this node
+        self.fScore = math.inf      # fScore = gScore + heuristic of this node
+        self.cameFrom = None        # Parent node comming from the cheapest path from start
+        self.obstacle = False       # Node identification as obstacle
 
-    # Rich comparison method called by x < y 
+    # Rich comparison method called by x < y
     def __lt__(self, other):
-        # Returns priority based on alphabetical order
+        # Compare nodes based on their fScore value (used by priority queue)
         return self.fScore < other.fScore
 
 class Maze():
 
     def __init__(self, width, height, grid_w, grid_h):
+        self.pathLine = None
+
         self.window = tk.Tk()
         self.window.title("A* Path finding algorithm")
         self.canvas = tk.Canvas(master = self.window, width = width, height = height, bg = "white")
@@ -30,7 +32,7 @@ class Maze():
         self.w = width / grid_w
         self.h = height / grid_h
 
-        # Node grid 2D List
+        # Initialize 2D grid holding all nodes
         self.grid = []
         for col in range(0, grid_w):
             self.grid.append([])
@@ -44,15 +46,6 @@ class Maze():
                     new_node.obstacle = True
                     self.canvas.itemconfig(new_node.obj, fill='black')
                 current_row.append(new_node)
-
-        # # TEST
-        # for i in range(20, 35):
-        #     self.grid[i][35].obstacle = True
-        #     self.canvas.itemconfig(self.grid[i][35].obj, fill='black')
-        # for i in range(15, 36):
-        #     self.grid[35][i].obstacle = True
-        #     self.canvas.itemconfig(self.grid[35][i].obj, fill='black')
-
 
         # Add node's neighbors
         for i in range(0, len(self.grid)):
@@ -84,6 +77,26 @@ class Maze():
                     if not self.grid[i+1][j].obstacle or not self.grid[i][j + 1].obstacle:
                         self.grid[i][j].neighbors.append(self.grid[i + 1][j + 1])
 
-    def evaluate(self, node_1, node_2):
-        distance = math.sqrt((node_2.x - node_1.x)**2 + (node_2.y - node_1.y)**2)   # Euclidean distance
-        return distance
+    def update_path_line(self, path, found = False):
+        if len(path) > 2:
+            self.canvas.delete(self.pathLine)
+            self.pathLine = self.canvas.create_line(path, width = 6.4, fill = 'purple')
+        self.canvas.update()
+    
+    def set_start(self, pos):
+        if self.grid[pos[0]][pos[1]].obstacle:
+            self.grid[pos[0]][pos[1]].obstacle = False
+            self.canvas.itemconfig(self.grid[pos[0]][pos[1]].obj, fill='white')
+        return self.grid[pos[0]][pos[1]]
+
+    def set_goal(self, pos):
+        if self.grid[pos[0]][pos[1]].obstacle:
+            self.grid[pos[0]][pos[1]].obstacle = False
+            self.canvas.itemconfig(self.grid[pos[0]][pos[1]].obj, fill='white')
+        return self.grid[pos[0]][pos[1]]
+    
+    def set_status_closed(self, node):
+        self.canvas.itemconfig(node.obj, fill='#ffcccb', outline='')
+
+    def set_status_open(self, node):
+        self.canvas.itemconfig(node.obj, fill='#90ee90', outline='')
