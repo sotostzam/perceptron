@@ -1,36 +1,11 @@
-import game
-import time, random
-
-def randomPlay(board):
-    current_state = board.get_board_state()
-    if not current_state:
-        return False
-    else:
-        move = random.choice(current_state)
-        return move
+import game, minimax
+import random
 
 if __name__ == "__main__":
     board = game.TicTacToe()
-
     current_player = random.choice(board.players)
-    keepPlaying = True
 
-    while keepPlaying:
-        move = randomPlay(board)
-        status = board.play(current_player, move)
-        board.canvas.update()
-
-        if status is True:
-            if current_player is board.players[0]:
-                current_player = board.players[1]
-            else:
-                current_player = board.players[0]
-            time.sleep(1)
-        elif status is not None:
-            print("Winner is: Player " + str(status))
-            keepPlaying = False
-        else:
-            print("Draw! Noone wins.")
-            keepPlaying = False
+    if current_player is 0:
+        minimax.bestMove(board, 0)
 
     board.window.mainloop()

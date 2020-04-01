@@ -1,5 +1,6 @@
 import tkinter as tk
-import math, random
+import math, random, time
+import minimax
 
 class Node():
     def __init__(self, obj, value):
@@ -35,7 +36,6 @@ class TicTacToe():
 
         # Bind Events
         self.canvas.bind("<Button 1>", lambda event : self.insert(event, 0))
-        self.canvas.bind("<Button 3>", lambda event : self.insert(event, 1))
 
     def insert(self, event, item):
         # FIXME Check if grid contains item already
@@ -43,17 +43,21 @@ class TicTacToe():
         y = math.floor(event.y / self.h)
         mid_x = (x * self.w + (x * self.w + self.w))/2
         mid_y = (y * self.h + (y * self.h + self.h))/2
-        if item is 0:
-            obj = self.canvas.create_text(mid_x, mid_y, font=("Purisa", 60), text = "O", fill="blue")
+        obj = self.canvas.create_text(mid_x, mid_y, font=("Purisa", 60), text = "X", fill="red")
+        self.board[x][y] = Node(obj, 1)
+        self.canvas.update()
+        status = self.check_status()
+        if status is not None:
+            print("Winner is: Player " + str(status))
         else:
-            obj = self.canvas.create_text(mid_x, mid_y, font=("Purisa", 60), text = "X", fill="red")
-        self.board[y][x] = Node(obj, 0) #FIXME
-        #print(" Row: " + str(y) + " Col: " + str(x))
-        #print(self.grid[x][y])
-        self.get_board_state()
+            #time.sleep(1)
+            #minimax.randomPlay(self, 0)
+            minimax.bestMove(self, 0)
+
+        #print(self.get_available_moves())
 
     # Get tiles with available movement
-    def get_board_state(self):
+    def get_available_moves(self):
         state = []
         for col in range(0, len(self.board)):
             for row in range(0, len(self.board[col])):
@@ -103,10 +107,4 @@ class TicTacToe():
         else:
             value = 1
             obj = self.canvas.create_text(mid_x, mid_y, font=("Purisa", 60), text = "X", fill="red")
-            self.board[move[0]][move[1]] = Node(obj, value)
-
-        status = self.check_status()
-        if status is not None:
-            return status
-        
-        return True
+            self.board[move[0]][move[1]] = Node(obj, value)        
