@@ -94,7 +94,11 @@ class TicTacToe():
         if self.board[2][0] and self.board[1][1] and self.board[0][2] and self.is_equal(self.board[2][0], self.board[1][1], self.board[0][2]):
             winner = self.board[2][0].value
             self.calculate_line([2, 0], [0, 2])
-        return winner
+
+        if winner is None and len(self.get_available_moves()) is 0:
+            return 2
+        else:
+            return winner
 
     # Function to make a move with the player as parameter
     def play(self, player, move):
