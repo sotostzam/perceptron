@@ -1,8 +1,13 @@
 import game
 import time, random
 
-def minimax():
-    pass
+def randomPlay(board):
+    current_state = board.get_board_state()
+    if not current_state:
+        return False
+    else:
+        move = random.choice(current_state)
+        return move
 
 if __name__ == "__main__":
     board = game.TicTacToe()
@@ -11,7 +16,8 @@ if __name__ == "__main__":
     keepPlaying = True
 
     while keepPlaying:
-        status = board.play(current_player)
+        move = randomPlay(board)
+        status = board.play(current_player, move)
         board.canvas.update()
 
         if status is True:
@@ -19,8 +25,8 @@ if __name__ == "__main__":
                 current_player = board.players[1]
             else:
                 current_player = board.players[0]
-            time.sleep(0.1)
-        elif status is not False:
+            time.sleep(1)
+        elif status is not None:
             print("Winner is: Player " + str(status))
             keepPlaying = False
         else:

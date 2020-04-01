@@ -52,6 +52,7 @@ class TicTacToe():
         #print(self.grid[x][y])
         self.get_board_state()
 
+    # Get tiles with available movement
     def get_board_state(self):
         state = []
         for col in range(0, len(self.board)):
@@ -60,46 +61,52 @@ class TicTacToe():
                     state.append([col, row])
         return state
 
+    # Helper function check if 3 items are equal
+    def is_equal(self, item_1, item_2, item_3):
+        return item_1.value is item_2.value and item_2.value is item_3.value and item_1.value is item_3.value
+
+    # Create and display line crossing the three tiles
+    def calculate_line(self, point_1, point_2):
+        x1 = (point_1[0] * self.w + (point_1[0] * self.w + self.w))/2
+        y1 = (point_1[1] * self.h + (point_1[1] * self.h + self.h))/2
+        x2 = (point_2[0] * self.w + (point_2[0] * self.w + self.w))/2
+        y2 = (point_2[1] * self.h + (point_2[1] * self.h + self.h))/2
+        self.canvas.create_line(x1, y1, x2, y2, width = 4, fill = 'black')
+
+    # Check if there is a winner either vertically, horizontally or diagonally
     def check_status(self):
-        for col in self.board:
-            if col[0] != None and col[1] != None and col[2] != None:
-                if col[0].value == col[1].value == col[2].value:
-                    return col[0].value
+        winner = None
+        for col in range(0, len(self.board)):
+            if self.board[col][0] and self.board[col][1] and self.board[col][2] and self.is_equal(self.board[col][0], self.board[col][1], self.board[col][2]):
+                winner = self.board[col][0].value
+                self.calculate_line([col, 0], [col, 2])
+        for row in range(0, len(self.board[0])):
+            if self.board[0][row] and self.board[1][row] and self.board[2][row] and self.is_equal(self.board[0][row], self.board[1][row], self.board[2][row]):
+                winner = self.board[0][row].value
+                self.calculate_line([0, row], [2, row])
+        if self.board[0][0] and self.board[1][1] and self.board[2][2] and self.is_equal(self.board[0][0], self.board[1][1], self.board[2][2]):
+            winner = self.board[0][0].value
+            self.calculate_line([0, 0], [2, 2])
+        if self.board[2][0] and self.board[1][1] and self.board[0][2] and self.is_equal(self.board[2][0], self.board[1][1], self.board[0][2]):
+            winner = self.board[2][0].value
+            self.calculate_line([2, 0], [0, 2])
+        return winner
 
-        for row in range(0, len(self.board)):
-            if self.board[0][row] != None and self.board[1][row] != None and self.board[2][row] != None:
-                if self.board[0][row].value == self.board[1][row].value == self.board[2][row].value:
-                    return self.board[0][row].value
-
-        if self.board[0][0] != None and self.board[1][1] != None and self.board[2][2] != None:
-            if self.board[0][0].value == self.board[1][1].value == self.board[2][2].value:
-                return self.board[0][0].value
-
-        if self.board[2][0] != None and self.board[1][1] != None and self.board[0][2] != None:
-            if self.board[2][0].value == self.board[1][1].value == self.board[0][2].value:
-                return self.board[2][0].value
-
-        return False
-
-    def play(self, player):
-        current_state = self.get_board_state()
-        if not current_state:
-            return False
+    # Function to make a move with the player as parameter
+    def play(self, player, move):
+        mid_x = (move[0] * self.w + (move[0] * self.w + self.w))/2
+        mid_y = (move[1] * self.h + (move[1] * self.h + self.h))/2
+        if player is 0:
+            value = 0
+            obj = self.canvas.create_text(mid_x, mid_y, font=("Purisa", 60), text = "O", fill="blue")
+            self.board[move[0]][move[1]] = Node(obj, value)
         else:
-            move = random.choice(current_state)
-            mid_x = (move[0] * self.w + (move[0] * self.w + self.w))/2
-            mid_y = (move[1] * self.h + (move[1] * self.h + self.h))/2
-            if player is 0:
-                value = 0
-                obj = self.canvas.create_text(mid_x, mid_y, font=("Purisa", 60), text = "O", fill="blue")
-                self.board[move[0]][move[1]] = Node(obj, value)
-            else:
-                value = 1
-                obj = self.canvas.create_text(mid_x, mid_y, font=("Purisa", 60), text = "X", fill="red")
-                self.board[move[0]][move[1]] = Node(obj, value)
+            value = 1
+            obj = self.canvas.create_text(mid_x, mid_y, font=("Purisa", 60), text = "X", fill="red")
+            self.board[move[0]][move[1]] = Node(obj, value)
 
-            status = self.check_status()
-            if status is not False:
-                return status
-            
-            return True
+        status = self.check_status()
+        if status is not None:
+            return status
+        
+        return True
