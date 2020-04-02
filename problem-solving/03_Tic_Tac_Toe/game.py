@@ -9,30 +9,27 @@ class Node():
 
 class TicTacToe():
     def __init__(self):
+        self.board = [[None, None, None],
+                      [None, None, None],
+                      [None, None, None]]
+        self.current_player = None
+        self.game_on_progress = True
+
+        # Window and canvas initialization parameters
         self.width  = 400
         self.height = 400
-
         self.w = self.width / 3
         self.h = self.height / 3
-
         self.window = tk.Tk()
         self.window.title("Tic Tac Toe Minimax and Alpha-Beta prunning")
-
         self.canvas = tk.Canvas(master = self.window, width = self.width, height = self.height, bg = "white")
         self.canvas.grid(row = 0, column = 0, sticky = "nsew")
-
-        self.board = []
-        self.players = [0, 1]  # 0 is circle, 1 is X
 
         # Create grid lines
         self.canvas.create_line(self.w, 0, self.w, self.height, width = 4, fill = 'black')
         self.canvas.create_line(self.w * 2, 0, self.w * 2, self.height, width = 4, fill = 'black')
         self.canvas.create_line(0, self.h, self.width, self.h, width = 4, fill = 'black')
         self.canvas.create_line(0, self.h * 2, self.width, self.h * 2, width = 4, fill = 'black')
-
-        for _ in range(0, 3):
-            temp_list = [None, None, None]
-            self.board.append(temp_list)
 
         # Bind Events
         self.canvas.bind("<Button 1>", lambda event : self.insert(event, 0))
@@ -41,7 +38,7 @@ class TicTacToe():
     def insert(self, event, item):
         x = math.floor(event.x / self.w)
         y = math.floor(event.y / self.h)
-        if self.board[x][y] is None:
+        if self.board[x][y] is None and self.game_on_progress and self.current_player is "Player":
             mid_x = (x * self.w + (x * self.w + self.w))/2
             mid_y = (y * self.h + (y * self.h + self.h))/2
             obj = self.canvas.create_text(mid_x, mid_y, font=("Purisa", 60), text = "X", fill="red")
@@ -53,7 +50,8 @@ class TicTacToe():
             if status is not None:
                 if status is not 2:
                     self.calculate_line(points[0], points[1])
-                    print("Winner is: Player " + str(status))
+                    print("Winner is: " + self.current_player)
+                    self.game_on_progress = False
                 else:
                     print("Draw! No winner.")
             else:
@@ -68,10 +66,6 @@ class TicTacToe():
                     state.append([col, row])
         return state
 
-    # Helper function check if 3 items are equal
-    def is_equal(self, item_1, item_2, item_3):
-        return item_1.value is item_2.value and item_2.value is item_3.value and item_1.value is item_3.value
-
     # Create and display line crossing the three tiles
     def calculate_line(self, point_1, point_2):
         x1 = (point_1[0] * self.w + (point_1[0] * self.w + self.w))/2
@@ -79,6 +73,10 @@ class TicTacToe():
         x2 = (point_2[0] * self.w + (point_2[0] * self.w + self.w))/2
         y2 = (point_2[1] * self.h + (point_2[1] * self.h + self.h))/2
         self.canvas.create_line(x1, y1, x2, y2, width = 4, fill = 'black')
+
+    # Helper function check if 3 items are equal
+    def is_equal(self, item_1, item_2, item_3):
+        return item_1.value is item_2.value and item_2.value is item_3.value and item_1.value is item_3.value
 
     # Check if there is a winner either vertically, horizontally or diagonally
     def check_status(self):

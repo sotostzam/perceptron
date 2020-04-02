@@ -1,11 +1,19 @@
 import game, minimax
 import random
 
-if __name__ == "__main__":
+def main():
     board = game.TicTacToe()
-    current_player = random.choice(board.players)
+    board.current_player = random.choice((0, 1))
 
-    if current_player is 0:
+    if board.current_player is 0:
+        board.current_player = "A.I"
+        print("A.I plays first.\nThinking...")
         minimax.bestMove(board)
+    else:
+        board.current_player = "Player"
+        print("Human plays first. Please select your move.")
 
     board.window.mainloop()
+
+if __name__ == "__main__":
+    main()
