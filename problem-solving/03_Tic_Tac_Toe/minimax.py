@@ -1,58 +1,44 @@
 import random, math
 import game
 
-# Scores
-scores = {
-    0:  10,      # Player 0 Won
-    1: -10,      # Player 1 Won
-    2:  0        # Draw
-}
-
 # Initial call for the Minimax algorithm
 def bestMove(board):
     bestScore = -math.inf
     next_move = None
     moves = board.get_available_moves()
     for move in moves:
-        board.board[move[0]][move[1]] = game.Node(None, 0)
-        score = minimax(board, 0, False)
+        board.board[move[0]][move[1]] = game.Node(None, board.players[0])
+        score = minimax(board, 0, False, -math.inf, math.inf)
         board.board[move[0]][move[1]] = None
         if score > bestScore:
             bestScore = score
             next_move  = move
-    board.play(0, next_move)
-    board.canvas.update()
-
-    # Check if winner is found after AI makes a move
-    status, points = board.check_status()
-    if status is not None:
-        if status is not 2:
-            board.calculate_line(points[0], points[1])
-            print("Winner is: " + board.current_player)
-            board.game_on_progress = False
-        else:
-            print("Draw! No winner.")
-
-    board.current_player = "Player"
+    board.play(board.players[0], next_move)
 
 # Minimax recursive algorithm
-def minimax(board, depth, maximizingPlayer):
-    status, _ = board.check_status()
+def minimax(board, depth, maximizingPlayer, alpha = None, beta = None):
+    status = board.check_status(False)
     if status is not None:
-        return scores[status]
+        return board.score[status]
     if maximizingPlayer:
         value = -math.inf
         moves = board.get_available_moves()
         for move in moves:
-            board.board[move[0]][move[1]] = game.Node(None, 0)
-            value = max(value, minimax(board, depth + 1, False))
+            board.board[move[0]][move[1]] = game.Node(None, board.players[0])
+            value = max(value, minimax(board, depth + 1, False, alpha, beta))
             board.board[move[0]][move[1]] = None
-        return value - depth
+            alpha = max(alpha, value)
+            if beta <= alpha:
+                break               # Beta cut-off
+        return value - depth        # Substract depth for shorter path moves
     else:
         value = math.inf
         moves = board.get_available_moves()
         for move in moves:
-            board.board[move[0]][move[1]] = game.Node(None, 1)
-            value = min(value, minimax(board, depth + 1, True))
+            board.board[move[0]][move[1]] = game.Node(None, board.players[1])
+            value = min(value, minimax(board, depth + 1, True, alpha, beta))
             board.board[move[0]][move[1]] = None
-        return value + depth
+            beta = min(beta, value)
+            if beta <= alpha:
+                break               # Alpha cut-off
+        return value + depth        # Substract depth for shorter path moves
