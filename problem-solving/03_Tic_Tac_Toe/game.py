@@ -37,24 +37,27 @@ class TicTacToe():
         # Bind Events
         self.canvas.bind("<Button 1>", lambda event : self.insert(event, 0))
 
+    # Player makes a move by selecting a tile
     def insert(self, event, item):
-        # FIXME Check if grid contains item already
         x = math.floor(event.x / self.w)
         y = math.floor(event.y / self.h)
-        mid_x = (x * self.w + (x * self.w + self.w))/2
-        mid_y = (y * self.h + (y * self.h + self.h))/2
-        obj = self.canvas.create_text(mid_x, mid_y, font=("Purisa", 60), text = "X", fill="red")
-        self.board[x][y] = Node(obj, 1)
-        self.canvas.update()
-        status = self.check_status()
-        if status is not None:
-            print("Winner is: Player " + str(status))
-        else:
-            #time.sleep(1)
-            #minimax.randomPlay(self, 0)
-            minimax.bestMove(self, 0)
+        if self.board[x][y] is None:
+            mid_x = (x * self.w + (x * self.w + self.w))/2
+            mid_y = (y * self.h + (y * self.h + self.h))/2
+            obj = self.canvas.create_text(mid_x, mid_y, font=("Purisa", 60), text = "X", fill="red")
+            self.board[x][y] = Node(obj, 1)
+            self.canvas.update()
 
-        #print(self.get_available_moves())
+            # Check if winner is found after Player makes a move
+            status, points = self.check_status()
+            if status is not None:
+                if status is not 2:
+                    self.calculate_line(points[0], points[1])
+                    print("Winner is: Player " + str(status))
+                else:
+                    print("Draw! No winner.")
+            else:
+                minimax.bestMove(self)
 
     # Get tiles with available movement
     def get_available_moves(self):
@@ -80,25 +83,26 @@ class TicTacToe():
     # Check if there is a winner either vertically, horizontally or diagonally
     def check_status(self):
         winner = None
+        points = []
         for col in range(0, len(self.board)):
             if self.board[col][0] and self.board[col][1] and self.board[col][2] and self.is_equal(self.board[col][0], self.board[col][1], self.board[col][2]):
                 winner = self.board[col][0].value
-                self.calculate_line([col, 0], [col, 2])
+                points = ([col, 0], [col, 2])
         for row in range(0, len(self.board[0])):
             if self.board[0][row] and self.board[1][row] and self.board[2][row] and self.is_equal(self.board[0][row], self.board[1][row], self.board[2][row]):
                 winner = self.board[0][row].value
-                self.calculate_line([0, row], [2, row])
+                points = ([0, row], [2, row])
         if self.board[0][0] and self.board[1][1] and self.board[2][2] and self.is_equal(self.board[0][0], self.board[1][1], self.board[2][2]):
             winner = self.board[0][0].value
-            self.calculate_line([0, 0], [2, 2])
+            points = ([0, 0], [2, 2])
         if self.board[2][0] and self.board[1][1] and self.board[0][2] and self.is_equal(self.board[2][0], self.board[1][1], self.board[0][2]):
             winner = self.board[2][0].value
-            self.calculate_line([2, 0], [0, 2])
+            points = ([2, 0], [0, 2])
 
         if winner is None and len(self.get_available_moves()) is 0:
-            return 2
+            return 2, points
         else:
-            return winner
+            return winner, points
 
     # Function to make a move with the player as parameter
     def play(self, player, move):

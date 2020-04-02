@@ -6,6 +6,6 @@ if __name__ == "__main__":
     current_player = random.choice(board.players)
 
     if current_player is 0:
-        minimax.bestMove(board, 0)
+        minimax.bestMove(board)
 
     board.window.mainloop()

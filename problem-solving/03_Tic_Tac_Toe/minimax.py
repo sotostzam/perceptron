@@ -8,7 +8,8 @@ scores = {
     2:  0       # Draw
 }
 
-def bestMove(board, player):
+# Initial call for the Minimax algorithm
+def bestMove(board):
     bestScore = -math.inf
     next_move = None
     moves = board.get_available_moves()
@@ -21,38 +22,19 @@ def bestMove(board, player):
             next_move  = move
     board.play(0, next_move)
     board.canvas.update()
-    status = board.check_status()
-    if status is None:
-        if player is board.players[0]:
-            player = board.players[1]
-        else:
-            player = board.players[0]
-    else:
-        print("Winner is: Player " + str(status))
 
-def randomPlay(board, player):
-    moves = board.get_available_moves()
-    if not moves:
-        return False
-    else:
-        move = random.choice(moves)
-        if move is False:
-            print("Draw! Noone wins.")
+    # Check if winner is found after AI makes a move
+    status, points = board.check_status()
+    if status is not None:
+        if status is not 2:
+            board.calculate_line(points[0], points[1])
+            print("Winner is: Player " + str(status))
         else:
-            board.play(0, move)
-            board.canvas.update()
-            status = board.check_status()
-            if status is None:
-                if player is board.players[0]:
-                    player = board.players[1]
-                else:
-                    player = board.players[0]
-            else:
-                print("Winner is: Player " + str(status))
+            print("Draw! No winner.")
 
+# Minimax recursive algorithm
 def minimax(board, depth, maximizingPlayer):
-    print(depth)
-    status = board.check_status()
+    status, _ = board.check_status()
     if status is not None:
         return scores[status]
     if maximizingPlayer:
@@ -71,4 +53,3 @@ def minimax(board, depth, maximizingPlayer):
             value = min(value, minimax(board, depth + 1, True))
             board.board[move[0]][move[1]] = None
         return value
-    return 0
