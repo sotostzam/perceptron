@@ -1,4 +1,5 @@
 import tkinter as tk
+import random, time
 
 class Node():
     def __init__(self, value, pos, color, obj):
@@ -23,6 +24,7 @@ class Region():
 
         self.states = []
         self.lines  = []
+        self.colors = []
 
     def get_node_obj(self, node):
         for item in self.states:
@@ -51,10 +53,20 @@ class Region():
         self.get_node_obj("SA").set_neighbor(self.get_node_obj("NSW"))
         self.get_node_obj("SA").set_neighbor(self.get_node_obj("V"))
         self.get_node_obj("WA").set_neighbor(self.get_node_obj("NT"))
+        self.get_node_obj("SA").set_neighbor(self.get_node_obj("NT"))
         self.get_node_obj("NT").set_neighbor(self.get_node_obj("Q"))
+        self.get_node_obj("NT").set_neighbor(self.get_node_obj("WA"))
+        self.get_node_obj("NT").set_neighbor(self.get_node_obj("SA"))
         self.get_node_obj("Q").set_neighbor(self.get_node_obj("NSW"))
+        self.get_node_obj("Q").set_neighbor(self.get_node_obj("NT"))
+        self.get_node_obj("Q").set_neighbor(self.get_node_obj("SA"))
         self.get_node_obj("NSW").set_neighbor(self.get_node_obj("V"))
+        self.get_node_obj("NSW").set_neighbor(self.get_node_obj("SA"))
+        self.get_node_obj("NSW").set_neighbor(self.get_node_obj("Q"))
         self.get_node_obj("V").set_neighbor(self.get_node_obj("T"))
+        self.get_node_obj("V").set_neighbor(self.get_node_obj("SA"))
+        self.get_node_obj("V").set_neighbor(self.get_node_obj("NSW"))
+        self.get_node_obj("T").set_neighbor(self.get_node_obj("V"))
 
         for state in self.states:
             neighbors = state.neighbors
@@ -71,3 +83,32 @@ class Region():
                     self.lines.append((state, neighbor))
                     line = self.canvas.create_line(state.pos[0], state.pos[1], neighbor.pos[0], neighbor.pos[1], width = 2, fill = 'black')
                     self.canvas.tag_lower(line)
+
+    def set_colors(self, colors):
+        self.colors = colors
+    
+    def is_valid_color(self, state, color):
+        for neighbor in state.neighbors:
+            if state.color is neighbor.color:
+                return False
+        return True
+
+    def set_color(self, state, color):
+        state.color = color
+        self.canvas.itemconfig(state.obj, fill=color)
+
+    def find_sceme(self):
+        satisfy_constrains = False
+
+        while not satisfy_constrains:
+            satisfy_constrains = True
+            for state in self.states:
+                self.set_color(state, random.choice(self.colors))
+
+            for state in self.states:
+                if self.is_valid_color(state, state.color) is False:
+                    satisfy_constrains = False
+                    break
+
+            self.canvas.update()
+            # time.sleep(0.1)
