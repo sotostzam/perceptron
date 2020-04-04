@@ -24,7 +24,7 @@ class Region():
 
         self.states = []
         self.lines  = []
-        self.colors = []
+        self.colors = ["red", "green", "#3C3CFF"]
 
     def get_node_obj(self, node):
         for item in self.states:
@@ -63,10 +63,8 @@ class Region():
         self.get_node_obj("NSW").set_neighbor(self.get_node_obj("V"))
         self.get_node_obj("NSW").set_neighbor(self.get_node_obj("SA"))
         self.get_node_obj("NSW").set_neighbor(self.get_node_obj("Q"))
-        self.get_node_obj("V").set_neighbor(self.get_node_obj("T"))
         self.get_node_obj("V").set_neighbor(self.get_node_obj("SA"))
         self.get_node_obj("V").set_neighbor(self.get_node_obj("NSW"))
-        self.get_node_obj("T").set_neighbor(self.get_node_obj("V"))
 
         for state in self.states:
             neighbors = state.neighbors
@@ -83,19 +81,42 @@ class Region():
                     self.lines.append((state, neighbor))
                     line = self.canvas.create_line(state.pos[0], state.pos[1], neighbor.pos[0], neighbor.pos[1], width = 2, fill = 'black')
                     self.canvas.tag_lower(line)
-
-    def set_colors(self, colors):
-        self.colors = colors
     
+    def get_unassigned_state(self):
+        for state in self.states:
+            if state.color is None:
+                return state
+
     def is_valid_color(self, state, color):
-        for neighbor in state.neighbors:
-            if state.color is neighbor.color:
+        if len(state.neighbors) > 0:
+            for neighbor in state.neighbors:
+                if neighbor.color is None:
+                    continue
+                if state.color is neighbor.color:
+                    return False
+            return True
+        else:
+            return True
+
+    def constrains_satisfied(self):
+        for state in self.states:
+            if state.color is None:
+                return False
+            if self.is_valid_color(state, state.color) is False:
                 return False
         return True
 
     def set_color(self, state, color):
         state.color = color
         self.canvas.itemconfig(state.obj, fill=color)
+        self.canvas.update()
+        time.sleep(0.05)
+
+    def uncolor(self, state):
+        state.color = None
+        self.canvas.itemconfig(state.obj, fill="white")
+        self.canvas.update()
+        time.sleep(0.05)
 
     def find_sceme(self):
         satisfy_constrains = False
@@ -110,5 +131,19 @@ class Region():
                     satisfy_constrains = False
                     break
 
-            self.canvas.update()
-            # time.sleep(0.1)
+    def backtracking_search(self):
+        self.recursive_backtracking(self.states)
+
+    def recursive_backtracking(self, states):
+        if self.constrains_satisfied():
+            return self.states
+        current_state = self.get_unassigned_state()
+        if current_state:
+            for color in self.colors:
+                if self.is_valid_color(current_state, color):
+                    self.set_color(current_state, color)
+                    result = self.recursive_backtracking(states)
+                    if result is not False:
+                        return result
+                    self.uncolor(current_state)
+        return False
