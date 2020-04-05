@@ -1,10 +1,10 @@
-import map
+import graph, bs
 
 def main():
-    australia = map.Region()
-    australia.populate()
-    australia.backtracking_search()
-    australia.window.mainloop()
+    # Randomize means the order of the state-nodes is randomized
+    region = graph.Region(randomize = True)
+    bs.backtracking_search(region)
+    region.window.mainloop()
 
 if __name__ == "__main__":
     main()
