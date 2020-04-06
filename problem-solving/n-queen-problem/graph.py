@@ -2,33 +2,27 @@ import tkinter as tk
 import random, time
 
 class Node():
-    def __init__(self, obj, number, pos = None):
-        self.obj = obj
-        self.number = number
-        self.pos = pos
+    def __init__(self, obj, num, pos):
+        self.obj = obj      # Canvas object ID
+        self.num = num      # Queen number (column)
+        self.pos = pos      # Queen current position (row number)
 
 class Board():
     def __init__(self, num):
-        self.grid = []
+        self.grid   = []
         self.queens = []
 
         # Window and canvas initialization parameters
         self.size  = num * 100
         self.s = self.size / num
         self.window = tk.Tk()
-        self.window.title(str(num) + " Queen Problem")
-        self.canvas = tk.Canvas(master = self.window, width = self.size, height = self.size, bg = "white")
-        self.canvas.grid(row = 0, column = 0, sticky = "nsew")
+        self.window.title(str(num) + ' Queen Problem')
+        self.canvas = tk.Canvas(master = self.window, width = self.size, height = self.size, bg = 'white')
+        self.canvas.grid(row = 0, column = 0, sticky = 'nsew')
+        self.queen_image = tk.PhotoImage(file = 'queen.png')
 
-        for col in range(num):
-            x = ((col * self.s) + (self.s * col + self.s))/2        # FIXME Midpoint
-            y = -self.s/2                                           # FIXME Midpoint
-
-            # Initialize queens
-            obj =  self.canvas.create_oval(x - self.s/2 + 5, y - self.s/2 + 5, x - self.s/2 - 5, y - self.s/2 - 5, fill="black")
-            #canvas.itemconfigure(obj, state='hidden')
-            self.queens.append(Node(obj, col, (col, -1)))
-            
+        # Initialize checkerboard
+        for col in range(num):            
             tempList = []
             for row in range(num):
                 if (col % 2 == 0 and row % 2 == 0) or (col % 2 != 0 and row % 2 != 0):
@@ -39,19 +33,33 @@ class Board():
                 tempList.append([])
             self.grid.append(tempList)
 
-        # self.move_queen(self.queens[0], (0, 3))
-        # self.move_queen(self.queens[1], (1, 2))
+            # Initialize queens
+            init_pos = ((col * self.s) + (self.s * col + self.s))/2
+            obj = self.canvas.create_image(init_pos, -self.s/2, image = self.queen_image)
+            self.queens.append(Node(obj, col, -1))
 
+        self.move_queen(self.queens[0], 2)
+        self.move_queen(self.queens[1], 3)
+        self.reset_queen(self.queens[0])
+
+    # Helper function to move a queen among rows
     def move_queen(self, queen, pos):
-        pass
-        # print(queen.pos)
-        # current_pos = queen.pos
-        # while current_pos[0] != pos[0] or current_pos[1] != pos[1]:
-        #     if current_pos[0] != pos[0]:
-        #         print("Move right")
-        #         self.canvas.move(queen.obj, self.s, 0)
-        #     if current_pos[1] != pos[1]:
-        #         print("Move down")
-        #         self.canvas.move(queen.obj, 0, self.s)
-        #     self.canvas.update()
-        #     time.sleep(1)
+        _ , queen_y = self.canvas.coords(queen.obj)
+        new_y  = ((pos * self.s) + (self.s * pos + self.s)) / 2
+        move_y = new_y - queen_y
+
+        # Create the moving animation
+        while move_y != 0:
+            if move_y > 0:
+                self.canvas.move(queen.obj, 0, 10)
+                move_y -= 10
+            elif move_y < 0:
+                self.canvas.move(queen.obj, 0, -10)
+                move_y += 10
+            time.sleep(0.05)
+            self.canvas.update()
+        queen.pos = pos
+
+    # Helper finction to reset/move a queen out of the canvas
+    def reset_queen(self, queen):
+        self.move_queen(queen, -1)
