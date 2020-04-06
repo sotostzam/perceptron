@@ -1,4 +1,5 @@
 import time
+# Helper function to start the backtracking algorithm
 def bt_search(graph):
     result = backtracking(graph)
     if result:
@@ -7,6 +8,7 @@ def bt_search(graph):
     else:
         print("Can not find solution.")
 
+# Backtracking algorithm
 def backtracking(graph):
     if not graph.get_unassigned_queen():
         return graph.grid
@@ -21,6 +23,7 @@ def backtracking(graph):
         graph.reset_queen(current_queen)
     return False
 
+# Helper function to start the backtracking with mrv algorithm
 def bt_mrv(graph):
     result = fc(graph)
     if result:
@@ -29,6 +32,7 @@ def bt_mrv(graph):
     else:
         print("Can not find solution.")
 
+# Backtracking algorithm with mrv
 def fc(graph):
     if not graph.get_unassigned_queen():
         return graph.grid
@@ -44,6 +48,7 @@ def fc(graph):
         graph.reset_queen(current_queen)
     return False
 
+# Forward checking
 def fw_check(graph, queen):
     old_domains = []
     for item in graph.queens:
@@ -74,6 +79,7 @@ def fw_check(graph, queen):
 
     return old_domains
 
+# Helper function to rever the movement domains of the queens
 def revert_domains(queens, old_domains):
     for i in range(0, len(queens)):
         queens[i].domain = []
@@ -88,5 +94,3 @@ def print_grid(grid):
             tempRow += str(grid[i][item]) + ", "
         print(tempRow[0:-2] + "")
         item += 1
-    print()
-    time.sleep(1)

@@ -21,17 +21,3 @@ Machine learning is a subset of Artificial Intelligence. It is the study of algo
 Most of the examples contain an algorithm commonly used in machine learning, called gradient descent. If you wish to understand how gradient descent works and run some examples on your own machine, navigating to the gradient-descent folder or click on the following link:
 
 * [Gradient Descent](https://github.com/sotostzam/artificial-intelligence/tree/master/gradient-descent)
-
-## How to run code
-
-In order to run the examples you need to have the following requirements:
-
-1) [Python 3](https://www.python.org/downloads/)
-2) [NumPy](http://www.numpy.org/)
-3) [Matplotlib](http://matplotlib.org/)
-
-For your convenience there is a file named requirements, which holds the information about all the required libraries. After making sure you have python up and running in your machine, you can install all the requirements by using the following command:
-
-```Python
-pip install -r requirements.txt
-```

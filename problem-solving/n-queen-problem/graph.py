@@ -71,6 +71,7 @@ class Board():
     def reset_queen(self, queen):
         self.place_queen(queen, -1)
 
+    # Helper function to check if queen is taking a valid move
     def is_valid_move(self, queen, pos):
         for i in range(len(self.grid)):
             if self.grid[i][pos] != 0 and i != queen.num-1:
@@ -94,10 +95,4 @@ class Board():
             temp_col -= 1
             temp_row += 1
         return True
-
-    def get_avail_movement(self, queen, grid):
-        moves = []
-        for row in range(0, len(grid[queen.num-1])):
-            if grid[queen.num-1][row] == 0:
-                moves.append(row)
-        return moves
+        
