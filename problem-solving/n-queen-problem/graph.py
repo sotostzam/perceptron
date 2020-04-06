@@ -1,11 +1,12 @@
 import tkinter as tk
-import random, time
+import random
 
 class Node():
-    def __init__(self, obj, num, pos):
-        self.obj = obj      # Canvas object ID
-        self.num = num      # Queen number (column)
-        self.pos = pos      # Queen current position (row number)
+    def __init__(self, obj, num, pos, domain):
+        self.obj    = obj      # Canvas object ID
+        self.num    = num      # Queen number (column)
+        self.pos    = pos      # Queen current position (row number)
+        self.domain = domain   # Domain of the Queen
 
 class Board():
     def __init__(self, num):
@@ -36,7 +37,7 @@ class Board():
             # Initialize queens
             init_pos = ((col * self.s) + (self.s * col + self.s))/2
             obj = self.canvas.create_image(init_pos, -self.s/2, image = self.queen_image)
-            self.queens.append(Node(obj, col + 1, -1))
+            self.queens.append(Node(obj, col + 1, -1, list(range(0, num))))
 
     # Helper function to return next unassigned queen
     def get_unassigned_queen(self):
@@ -58,7 +59,7 @@ class Board():
             elif move_y < 0:
                 self.canvas.move(queen.obj, 0, -25)
                 move_y += 25
-            self.canvas.after(5, self.canvas.update())
+            self.canvas.after(10, self.canvas.update())
 
         # Change queen's location in the grid
         self.grid[queen.num-1][queen.pos] = 0
@@ -92,5 +93,11 @@ class Board():
                 return False
             temp_col -= 1
             temp_row += 1
-
         return True
+
+    def get_avail_movement(self, queen, grid):
+        moves = []
+        for row in range(0, len(grid[queen.num-1])):
+            if grid[queen.num-1][row] == 0:
+                moves.append(row)
+        return moves

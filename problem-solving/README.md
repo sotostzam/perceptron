@@ -14,6 +14,7 @@ Given a problem and a description of its state space, we want to find a solution
 ## Constraint Satisfaction Problems
 
 * [Coloring the map of Australia using backtracking](https://github.com/sotostzam/artificial-intelligence/tree/master/problem-solving/coloring-map-csp)
+* [N-Queens Problem using backtracking and MRV](https://github.com/sotostzam/artificial-intelligence/tree/master/problem-solving/n-queen-problem)
 
 ## Genetic Algorithms
 
