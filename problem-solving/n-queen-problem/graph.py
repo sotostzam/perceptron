@@ -30,20 +30,22 @@ class Board():
                 else:
                     tile = self.canvas.create_rectangle(col * self.s, row * self.s, col * self.s + self.s, row * self.s + self.s, fill = '#66442e')
                 self.canvas.tag_lower(tile)
-                tempList.append([])
+                tempList.append(0)
             self.grid.append(tempList)
 
             # Initialize queens
             init_pos = ((col * self.s) + (self.s * col + self.s))/2
             obj = self.canvas.create_image(init_pos, -self.s/2, image = self.queen_image)
-            self.queens.append(Node(obj, col, -1))
+            self.queens.append(Node(obj, col + 1, -1))
 
-        self.move_queen(self.queens[0], 2)
-        self.move_queen(self.queens[1], 3)
-        self.reset_queen(self.queens[0])
+    # Helper function to return next unassigned queen
+    def get_unassigned_queen(self):
+        for queen in self.queens:
+            if queen.pos == -1:
+                return queen
 
     # Helper function to move a queen among rows
-    def move_queen(self, queen, pos):
+    def place_queen(self, queen, pos):
         _ , queen_y = self.canvas.coords(queen.obj)
         new_y  = ((pos * self.s) + (self.s * pos + self.s)) / 2
         move_y = new_y - queen_y
@@ -51,15 +53,44 @@ class Board():
         # Create the moving animation
         while move_y != 0:
             if move_y > 0:
-                self.canvas.move(queen.obj, 0, 10)
-                move_y -= 10
+                self.canvas.move(queen.obj, 0, 25)
+                move_y -= 25
             elif move_y < 0:
-                self.canvas.move(queen.obj, 0, -10)
-                move_y += 10
-            time.sleep(0.05)
-            self.canvas.update()
+                self.canvas.move(queen.obj, 0, -25)
+                move_y += 25
+            self.canvas.after(5, self.canvas.update())
+
+        # Change queen's location in the grid
+        self.grid[queen.num-1][queen.pos] = 0
         queen.pos = pos
+        if pos >= 0:
+            self.grid[queen.num-1][queen.pos] = queen.num
 
     # Helper finction to reset/move a queen out of the canvas
     def reset_queen(self, queen):
-        self.move_queen(queen, -1)
+        self.place_queen(queen, -1)
+
+    def is_valid_move(self, queen, pos):
+        for i in range(len(self.grid)):
+            if self.grid[i][pos] != 0 and i != queen.num-1:
+                return False
+
+        # Upper diagonal
+        temp_col = queen.num - 2
+        temp_row = pos - 1
+        while temp_row >= 0 and temp_col >= 0:
+            if self.grid[temp_col][temp_row] != 0:
+                return False
+            temp_col -= 1
+            temp_row -= 1
+
+        # Lower diagonal
+        temp_col = queen.num - 2
+        temp_row = pos + 1
+        while temp_row < len(self.grid) and temp_col >= 0:
+            if self.grid[temp_col][temp_row] != 0:
+                return False
+            temp_col -= 1
+            temp_row += 1
+
+        return True
