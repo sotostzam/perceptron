@@ -16,12 +16,14 @@ def normalize_fitness(population):
         pop.fitness = pop.fitness / total_sum
 
 # Assign values to items for next generation
-def nextGen(population):
+def advance_generation(population):
     new_population = []
     for _ in range(len(population)):
-        selected_population = pool_selection(population)
-        mutate(selected_population, 0.01)
-        new_population.append(selected_population)
+        selected_parent_1 = pool_selection(population)
+        selected_parent_2 = pool_selection(population)
+        offspring = crossover(selected_parent_1, selected_parent_2)
+        mutate(offspring, 0.01)
+        new_population.append(offspring)
     return new_population
 
 # Pool selection algorithm based on probabilities
@@ -33,6 +35,17 @@ def pool_selection(population):
         index += 1
     index -= 1
     return population[index]
+
+# Crossover method
+def crossover(parent_1, parent_2):
+    start_index = math.floor(random.randint(0, len(parent_1.nodes)-1))
+    end_index = math.floor(random.randint(start_index, len(parent_1.nodes)-1))
+    new_order = parent_1.nodes[start_index: end_index]
+    while len(new_order) != len(parent_1.nodes):
+        for node in parent_2.nodes:
+            if node not in new_order:
+                new_order.append(node)
+    return graph.Population(new_order)
 
 # Mutate method
 def mutate(population, rate):

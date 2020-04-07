@@ -40,7 +40,7 @@ class Graph():
         self.best_path_obj = None
         self.current_path_obj = None
 
-        
+
         
 class Population:
     def __init__(self, nodes):
