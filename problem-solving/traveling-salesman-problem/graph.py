@@ -15,7 +15,6 @@ class Node:
         return self.x < other.x
 
 class Graph():
-    
     def __init__(self, num):
         self.width  = 400
         self.height = 400
@@ -41,7 +40,7 @@ class Graph():
 class Population:
     def __init__(self, nodes):
         self.nodes = nodes
-        self.fitness = None
+        self.fitness = 0
 
 # Create population object and find fitness
 def get_population(nodes, num):
@@ -49,14 +48,15 @@ def get_population(nodes, num):
     for _ in range(num):
         current_pop = Population(nodes)
         random.shuffle(current_pop.nodes)
-        current_pop.fitness = get_total_distance(current_pop.nodes)
         population_list.append(current_pop)
     return population_list
 
+# Euclidean Distance between two points
 def euclidean_distance(node_1, node_2):
     distance = math.sqrt((node_2.x - node_1.x)**2 + (node_2.y - node_1.y)**2)
     return distance
 
+# Total distance for a path of nodes
 def get_total_distance(node_list):
     total_distance = 0
     for i in range(0, len(node_list)-2):
