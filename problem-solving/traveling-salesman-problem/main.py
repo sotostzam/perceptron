@@ -1,44 +1,43 @@
 import math, time, random
-import graph
+import graph, genetic_algorithm
 
-def euclidean_distance(node_1, node_2):
-    distance = math.sqrt((node_2.x - node_1.x)**2 + (node_2.y - node_1.y)**2)
-    return distance
+def main():
+    pop_size = 10
+    nodes_num = 7
 
-def get_total_distance(node_list):
-    total_distance = 0
-    for i in range(0, len(node_list)-2):
-        total_distance += euclidean_distance(node_list[i], node_list[i+1])
-    return total_distance
-
-def solve(graph):
+    tsp = graph.Graph(nodes_num)
+    pop_list = graph.get_population(tsp.nodes, pop_size)
+    genetic_algorithm.normalize_fitness(pop_list)
+    
+    best_path_obj = None
+    current_path_obj = None
     best_distance = math.inf
-    checked = []
+
     while True:
-        checked.append(graph.nodes)
-        path = []
-        for node in graph.nodes:
-            path.append(node.x)
-            path.append(node.y)
+        pop_best_distance = math.inf
 
-        current_distance = get_total_distance(graph.nodes)
-        if current_distance < best_distance:
-            best_distance = current_distance
-            graph.canvas_right.delete(graph.best_pathLine)
-            graph.best_pathLine = graph.canvas_right.create_line(path, width = 2, fill = 'green')
-            print(best_distance)
+        # Get population's best fitness (lowest distance)
+        for i in range(len(pop_list)):
+            if pop_list[i].fitness < math.inf:
+                pop_best_distance = pop_list[i].fitness
+                current_path = []
+                for node in pop_list[i].nodes:
+                    current_path.append(node.x)
+                    current_path.append(node.y)
 
-        graph.canvas_left.delete(graph.current_pathLine)
-        graph.current_pathLine = graph.canvas_left.create_line(path, width = 2, fill = 'red')
-        graph.canvas_left.tag_lower(graph.current_pathLine)
-        graph.canvas_right.tag_lower(graph.best_pathLine)
-        graph.canvas_left.update()
-        graph.canvas_right.update()
+        if pop_best_distance < best_distance:
+            best_distance = pop_best_distance
+            tsp.canvas_right.delete(best_path_obj)
+            best_path_obj = tsp.canvas_right.create_line(current_path, width = 2, fill = 'green')
 
-        random.shuffle(graph.nodes)
-        #time.sleep(.05)
+        tsp.canvas_left.delete(current_path_obj)
+        current_path_obj = tsp.canvas_left.create_line(current_path, width = 2, fill = 'red')
+        tsp.canvas_left.tag_lower(current_path_obj)
+        tsp.canvas_right.tag_lower(best_path_obj)
+        tsp.canvas_left.update()
+        tsp.canvas_right.update()
+
+    tsp.window.mainloop()
 
 if __name__ == "__main__":
-    graph = graph.Graph(7)
-    solve(graph)
-    graph.window.mainloop()
+    main()
