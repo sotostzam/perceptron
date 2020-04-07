@@ -36,10 +36,16 @@ class Graph():
             self.canvas_right.create_rectangle(x - 10, y - 10, x + 10, y + 10, fill="blue", outline="green", width=5)
             new_node = Node(x, y, obj)
             self.nodes.append(new_node)
+         
+        self.best_path_obj = None
+        self.current_path_obj = None
+
+        
         
 class Population:
     def __init__(self, nodes):
         self.nodes = nodes
+        self.distance = 0
         self.fitness = 0
 
 # Create population object and find fitness
