@@ -5,7 +5,7 @@ def assign_fitness(pop_list):
     for population in pop_list:
         eucl_dist = graph.get_total_distance(population.nodes)
         population.distance = eucl_dist
-        population.fitness = 1 / eucl_dist
+        population.fitness = 1 / (eucl_dist ** 8)
 
 # Normalizing fitness means dividing all fitness values by the sum
 def normalize_fitness(population):
@@ -26,7 +26,7 @@ def advance_generation(population):
         new_population.append(offspring)
     return new_population
 
-# Pool selection algorithm based on probabilities
+# Pool selection algorithm based on the formalized fitness
 def pool_selection(population):
     index = 0
     r = random.random()
@@ -38,8 +38,8 @@ def pool_selection(population):
 
 # Crossover method
 def crossover(parent_1, parent_2):
-    start_index = math.floor(random.randint(0, len(parent_1.nodes)-1))
-    end_index = math.floor(random.randint(start_index, len(parent_1.nodes)-1))
+    start_index = math.floor(random.randint(0, len(parent_1.nodes)-2))
+    end_index = math.floor(random.randint(start_index + 1, len(parent_1.nodes)-1))
     new_order = parent_1.nodes[start_index: end_index]
     while len(new_order) != len(parent_1.nodes):
         for node in parent_2.nodes:
@@ -47,11 +47,14 @@ def crossover(parent_1, parent_2):
                 new_order.append(node)
     return graph.Population(new_order)
 
-# Mutate method
+# Mutate process swaping two neighbor nodes
 def mutate(population, rate):
     for _ in range(len(population.nodes)):
         if random.random() < rate:
-            itemA = math.floor(random.randint(0, len(population.nodes)-1))
-            itemB = math.floor(random.randint(0, len(population.nodes)-1))
-            population.nodes[itemA], population.nodes[itemB] = population.nodes[itemB], population.nodes[itemA] 
+            index_A = math.floor(random.randint(0, len(population.nodes)-1))
+            if index_A == (len(population.nodes)-1):
+                index_B = 0
+            else:
+                index_B = index_A + 1
+            population.nodes[index_A], population.nodes[index_B] = population.nodes[index_B], population.nodes[index_A] 
     return population

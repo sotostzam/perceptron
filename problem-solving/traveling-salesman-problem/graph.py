@@ -29,6 +29,10 @@ class Graph():
         self.canvas_right = tk.Canvas(master = self.window, width = self.width, height = self.height, bg = "white")
         self.canvas_right.grid(row = 1, column = 1, sticky = "nsew")
 
+        # Path canvas objects
+        self.best_path_obj = None
+        self.current_path_obj = None
+
         for _ in range(0, num):
             x = random.randrange(0, self.width)
             y = random.randrange(0, self.height)
@@ -36,12 +40,17 @@ class Graph():
             self.canvas_right.create_rectangle(x - 10, y - 10, x + 10, y + 10, fill="blue", outline="green", width=5)
             new_node = Node(x, y, obj)
             self.nodes.append(new_node)
-         
-        self.best_path_obj = None
-        self.current_path_obj = None
 
+    def update_current_path(self, path):
+        self.canvas_left.delete(self.current_path_obj)
+        self.current_path_obj = self.canvas_left.create_line(path, width = 2, fill = 'red')
+        self.canvas_left.tag_lower(self.current_path_obj)
 
-        
+    def update_best_path(self, path):
+        self.canvas_right.delete(self.best_path_obj)
+        self.best_path_obj = self.canvas_right.create_line(path, width = 2, fill = 'green')
+        self.canvas_right.tag_lower(self.best_path_obj)
+
 class Population:
     def __init__(self, nodes):
         self.nodes = nodes
