@@ -18,4 +18,4 @@ Given a problem and a description of its state space, we want to find a solution
 
 ## Genetic Algorithms
 
-* [Traveling salesman Problem](https://github.com/sotostzam/artificial-intelligence/tree/master/problem-solving/traveling-salesman-problem) (In progress)
+* [Traveling salesman Problem](https://github.com/sotostzam/artificial-intelligence/tree/master/problem-solving/traveling-salesman-problem)
