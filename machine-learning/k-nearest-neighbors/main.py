@@ -1,4 +1,5 @@
 import numpy as np
+import pandas as pd
 import matplotlib.pyplot as plt
 import math, random
 
@@ -18,22 +19,8 @@ def find_k_neighbors(k, item, dataset):
     return neighbor_distances[0: k]
 
 def main():
-    # Read and generate the first and second feature of the dataset
-    dataset_values = np.genfromtxt('iris.data', delimiter=',', usecols=(0, 1))
-    # Read and generate the names of the two classes
-    dataset_target_names = np.genfromtxt('iris.data', delimiter=',', usecols=(4), dtype = np.str_)
-    dataset_targets = np.zeros((dataset_target_names.shape[0], 1), dtype = float)
-    # Iterate through the names and tranform them to two classes of 0, 1 and 2
-    for i in range (0, len(dataset_target_names)):
-        if dataset_target_names[i] == "Iris-setosa":
-            dataset_targets[i] = float(0)
-        elif dataset_target_names[i] == "Iris-versicolor":
-            dataset_targets[i] = float(1)
-        else:
-            dataset_targets[i] = float(2)
-
-    # Final dataset with the values as well as the classes as the last column
-    dataset = np.column_stack((dataset_values, dataset_targets))
+    # Read the iris dataset
+    dataset = pd.read_csv("iris.csv")
 
     train_data_indexes = []
     while len(train_data_indexes) < 30:
@@ -47,24 +34,20 @@ def main():
             train_data_indexes.append(second)
             train_data_indexes.append(third)
 
-    train_data = np.zeros([0, dataset.shape[1]])
-    for i in range(len(train_data_indexes)):
-        train_data = np.append(train_data, ([dataset[train_data_indexes[i]]]), 0)
-    #dataset = np.delete(dataset, train_data_indexes, 0)
+    test_dataset = dataset.iloc[train_data_indexes]
+    dataset.drop(train_data_indexes, inplace=True)
 
-    class_1 = np.where(dataset[:,2] == 0)
-    class_2 = np.where(dataset[:,2] == 1)
-    class_3 = np.where(dataset[:,2] == 2)
+    class_1 = dataset[dataset['species'] == 'setosa']
+    class_2 = dataset[dataset['species'] == 'versicolor']
+    class_3 = dataset[dataset['species'] == 'virginica']
 
     fig = plt.figure('k-nearest neighbors')
     ax = fig.add_subplot(1, 1, 1)
-
     ax.set_xlabel('X Label')
     ax.set_ylabel('Y Label')
-
-    ax.scatter(dataset_values[class_1, 0], dataset_values[class_1, 1], marker='x', color='r', label='Setosa')
-    ax.scatter(dataset_values[class_2, 0], dataset_values[class_2, 1], marker='o', color='g', label='Versicolor')
-    ax.scatter(dataset_values[class_3, 0], dataset_values[class_3, 1], marker='s', color='b', label='Virginica')
+    ax.scatter(class_1['sepal_length'], class_1['sepal_width'], marker='x', color='r', label='Setosa')
+    ax.scatter(class_2['sepal_length'], class_2['sepal_width'], marker='o', color='g', label='Versicolor')
+    ax.scatter(class_3['sepal_length'], class_3['sepal_width'], marker='s', color='b', label='Virginica')
     ax.legend(loc='upper right')
     plt.show()
 
