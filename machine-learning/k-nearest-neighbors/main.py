@@ -10,10 +10,10 @@ def euclidean_distance(item_1, item_2):
 # Main k-neughbors classification algorithm
 def find_k_neighbors(k, item, dataset):
     neighbor_distances = []
-    for i in range(len(dataset)):
-        if (dataset[i] == item).all():
+    for i in range(dataset.shape[0]):
+        if (dataset.iloc[i].equals(item)):
             continue
-        distance = euclidean_distance(item, dataset[i])
+        distance = euclidean_distance(item, dataset.iloc[i])
         neighbor_distances.append((i, distance))
     neighbor_distances.sort(key = lambda x: x[1])
     return neighbor_distances[0: k]
@@ -36,6 +36,11 @@ def main():
 
     test_dataset = dataset.iloc[train_data_indexes]
     dataset.drop(train_data_indexes, inplace=True)
+
+    correct = 0
+    for i in range(test_dataset.shape[0]):
+        result = find_k_neighbors(3, test_dataset.iloc[i], dataset)
+        print(result)
 
     class_1 = dataset[dataset['species'] == 'setosa']
     class_2 = dataset[dataset['species'] == 'versicolor']
