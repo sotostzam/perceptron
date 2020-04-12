@@ -15,9 +15,3 @@ For the automation of this procedure, there are search algorithms, which given a
 Machine learning is a subset of Artificial Intelligence. It is the study of algorithms and statistical models that various computer systems use in order to perform a task without any implicit instructions.
 
 * [Machine Learning](https://github.com/sotostzam/artificial-intelligence/tree/master/machine-learning)
-
-## Prerequisites
-
-Most of the examples contain an algorithm commonly used in machine learning, called gradient descent. If you wish to understand how gradient descent works and run some examples on your own machine, navigating to the gradient-descent folder or click on the following link:
-
-* [Gradient Descent](https://github.com/sotostzam/artificial-intelligence/tree/master/gradient-descent)
