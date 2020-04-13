@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 
-# Find regression line using ordinary least squares method
+# Find the regression line using ordinary least squares method
 def regression(x_values, y_values):
     x_mean = np.sum(x_values) / len(x_values)
     y_mean = np.sum(y_values) / len(y_values)
