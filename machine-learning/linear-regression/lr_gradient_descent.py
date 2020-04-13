@@ -2,18 +2,25 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 
+# Residual sum of squares
+def compute_error(m, b, x_values, y_values):
+    total = 0
+    for i in range(0, len(x_values)):
+        total += (y_values[i] - (m * x_values[i] + b)) ** 2
+    return total / len(x_values)
+        
 # Find the regression line using gradient descent
-def gradient_descent(x_values, y_values, m, b, learning_rate):
-    d_m = 0
-    d_b = 0
-    for i in range(len(x_values)):
-        guess = m * x_values[i] + b
-        error = y_values[i] - guess
-        d_m += x_values[i] * error
-        d_b += error
-    m += d_m * learning_rate
-    b += d_b * learning_rate
-    return m, b
+def gradient_descent(x_values, y_values, current_m, current_b, learning_rate):
+    m_grad = 0
+    b_grad = 0
+    for i in range(0, len(x_values)):
+        x = x_values[i]
+        y = y_values[i]
+        m_grad += -(2 / len(x_values)) * x * (y - ((current_m * x) + current_b))
+        b_grad += -(2 / len(x_values)) * (y - ((current_m * x) + current_b))
+    current_m = current_m - (learning_rate * m_grad)
+    current_b = current_b - (learning_rate * b_grad)
+    return current_m, current_b
 
 def main():
     # Load different sets (I, II, III, IV)
@@ -22,11 +29,11 @@ def main():
     x = data.x.tolist()
     y = data.y.tolist()
 
-    # Initialize line (y = m*x + b) where m is slope and b is y-intercept
-    m = 0   # Slope
-    b = 0   # Y-intercept
-    learning_rate = 0.0001
-    iterations = 100
+    # Initialize line (y = m*x + b)
+    m = 0                   # Line's slope
+    b = 0                   # Line's y-intercept
+    learning_rate = 0.001   # Learning rate
+    iterations = 100        # Number of iterations
 
     x_range = np.array([np.min(x) - 2, np.max(x) + 2])
     fig = plt.figure('Linear Regression using Gradient Descent')
@@ -42,6 +49,7 @@ def main():
         line = m * x_range + b
         ax.plot(x_range, line, linewidth=1, color='r')
         plt.pause(0.01)
+        print("Slope: " + str(round(m, 5)) + "\ty-intercept: " + str(round(b, 5)) + "\terror: " + str(round(compute_error(m, b, x, y), 5)))
     plt.show()
 
 if __name__ == "__main__":
