@@ -1,3 +1,4 @@
+import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -16,24 +17,68 @@ def regression(x_values, y_values):
     return m, b
 
 def main():
-    x = np.array([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]) 
-    y = np.array([1, 3, 2, 5, 7, 8, 8, 9, 10, 12])
+    dataset = pd.read_csv("anscombes.csv", index_col=0)
 
-    x_min = np.amin(x) - 1
-    x_max = np.amax(x) + 1
-    y_min = np.amin(y) - 1
-    y_max = np.amax(y) + 1
+    set_1 = dataset[dataset['dataset'] == 'I']
+    set_2 = dataset[dataset['dataset'] == 'II']
+    set_3 = dataset[dataset['dataset'] == 'III']
+    set_4 = dataset[dataset['dataset'] == 'IV']
 
-    m, b = regression(x, y)
+    x1 = set_1.x.tolist()
+    y1 = set_1.y.tolist()
+    x2 = set_2.x.tolist()
+    y2 = set_2.y.tolist()
+    x3 = set_3.x.tolist()
+    y3 = set_3.y.tolist()
+    x4 = set_4.x.tolist()
+    y4 = set_4.y.tolist()
+
+    x_min = 2
+    x_max = 20
+    y_min = 2
+    y_max = 14
+
+    m1, b1 = regression(x1, y1)
+    m2, b2 = regression(x2, y2)
+    m3, b3 = regression(x3, y3)
+    m4, b4 = regression(x4, y4)
 
     x_range = np.linspace(x_min, x_max, endpoint = True)
-    line = m * x_range + b
 
-    plt.title('Linear Regression')
-    plt.xlim(x_min, x_max)
-    plt.ylim(y_min, y_max)
-    plt.scatter(x, y, color='b')
-    plt.plot(x_range, line, linewidth=1, color='g')
+    line1 = m1 * x_range + b1
+    line2 = m2 * x_range + b2
+    line3 = m3 * x_range + b3
+    line4 = m4 * x_range + b4
+
+    fig, ((ax1, ax2), (ax3, ax4)) = plt.subplots(2, 2)
+    fig.canvas.set_window_title('Linear Regression')
+    fig.suptitle("Anscombe's quartet")
+
+    ax1.scatter(x1, y1)
+    ax1.plot(x_range, line1, linewidth=1, color='r')
+    ax1.set_xlim(x_min, x_max)
+    ax1.set_ylim(y_min, y_max)
+    ax1.set_title('Set I')
+
+    ax2.scatter(x2, y2)
+    ax2.plot(x_range, line2, linewidth=1, color='r')
+    ax2.set_xlim(x_min, x_max)
+    ax2.set_ylim(y_min, y_max)
+    ax2.set_title('Set II')
+
+    ax3.scatter(x3, y3)
+    ax3.plot(x_range, line3, linewidth=1, color='r')
+    ax3.set_xlim(x_min, x_max)
+    ax3.set_ylim(y_min, y_max)
+    ax3.set_title('Set III')
+
+    ax4.scatter(x4, y4)
+    ax4.plot(x_range, line4, linewidth=1, color='r')
+    ax4.set_xlim(x_min, x_max)
+    ax4.set_ylim(y_min, y_max)
+    ax4.set_title('Set IV')
+
+    plt.tight_layout()
     plt.show()
 
 if __name__ == "__main__":
