@@ -1,12 +1,6 @@
 import numpy as np
 from matplotlib import pyplot as plt
-
-# Function to train the support vector machine
-def train_svm(points, targets, learning_rate, epochs):
-    # Initialize weights of the support vector machine
-    weights = np.zeros(len(points[0]))
-    # Implement svm here
-    return weights
+import svm
 
 def main():
     # Read x-values, y-values and the bias from the dataset
@@ -14,10 +8,10 @@ def main():
     # Read the target values (desired output) from the dataset
     targets = np.genfromtxt('dataset.csv', delimiter=',')[:, 2]
 
+    support_vector_machine = svm.Support_Vector_Machine()
+
     learning_rate = 0.1
     iterations = 10000
-
-    weights = train_svm(dataset, targets, learning_rate, iterations)
   
     points1 = np.where(targets == 1)
     points2 = np.where(targets == -1)
@@ -25,6 +19,17 @@ def main():
     plt.title('Support Vector Machine')
     plt.scatter(dataset[points1, 0], dataset[points1, 1], marker='+', color='b', label='Class 1')
     plt.scatter(dataset[points2, 0], dataset[points2, 1], marker='_', color='r', label='Class 2')
+    #plt.plot(weights[0], weights[1], -weights[1], weights[0])
+
+    x2 = [weights[0], weights[1], -weights[1], weights[0]]
+    x3 = [weights[0], weights[1], weights[1], -weights[0]]
+
+    x2x3 = np.array([x2, x3])
+    X, Y, U, V = zip(*x2x3)
+
+    ax = plt.gca()
+    ax.quiver(X,Y,U,V, scale = 1, color = 'blue')
+    #plt.pause(0.0001)
     plt.show()
 
 if __name__ == "__main__":
