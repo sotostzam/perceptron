@@ -1,5 +1,4 @@
 import numpy as np
-import heapq
 
 class Support_Vector_Machine():
     def __init__(self):
@@ -28,21 +27,44 @@ class Support_Vector_Machine():
 
         transforms = [[1, 1], [-1, 1], [-1, -1], [1, -1]]
 
-        max_value = np.amax(np.amax(self.data, axis=0))
-        min_value = np.amin(np.amin(self.data, axis=0))
+        self.max_value = np.amax(np.amax(self.data, axis=0))
+        self.min_value = np.amin(np.amin(self.data, axis=0))
 
-        # Initialize weight vector of the support vector machine
-        self.weights = np.array([max_value * 10, max_value * 10])
-        
-        for b in range(int(-1 * max_value * 10), int(max_value * 10), 5):
-            for transformation in transforms:
-                transformed_w = self.weights * transformation
-                classified = True
-                for i in range(0, len(self.data)):
-                    yi = self.targets[i]
-                    if not yi * (np.dot(transformed_w, self.data[i]) + b) >= 1:
-                        classified = False
-                if classified:
-                    heapq.heappush(magnitudes, (50, 50))
+        steps = [self.max_value * 0.1,
+                 self.max_value * 0.01,
+                 self.max_value * 0.001]
+
+        b_multiplier = 10
+        b_step_size = 5
+        w_optimum = self.max_value * 10
+
+        for step in steps:
+            # Initialize weight vector of the support vector machine
+            weights = np.array([w_optimum, w_optimum])
+            optimized = False
+            while not optimized:
+                for b in np.arange(-1 * self.max_value * b_multiplier, self.max_value * b_multiplier, b_step_size):
+                    for transformation in transforms:
+                        transformed_w = weights * transformation
+                        classified = True
+                        for i in range(0, len(self.data)):
+                            yi = self.targets[i]
+                            if not yi*(np.dot(transformed_w, self.data[i]) + b) >= 1:
+                                classified = False
+                        if classified:
+                            magnitudes.append((np.linalg.norm(transformed_w), transformed_w, b))
+
+                if weights[0] < 0:
+                    optimized = True
+                else:
+                    weights = weights - step
+
+            magnitudes = sorted(magnitudes, key=lambda x: x[0])
+
+            # Take the smallest value of the magnitudes (we want to minimize that)
+            choice = magnitudes[0]
+            self.weights = choice[1]
+            self.b = choice[2]
+            w_optimum = self.weights[0] + step * 2
 
         print(self.weights)

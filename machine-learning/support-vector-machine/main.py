@@ -10,9 +10,6 @@ def main():
 
     model = svm.Support_Vector_Machine()
     model.train(dataset, targets)
-
-    learning_rate = 0.1
-    iterations = 10000
   
     points1 = np.where(targets == 1)
     points2 = np.where(targets == -1)
