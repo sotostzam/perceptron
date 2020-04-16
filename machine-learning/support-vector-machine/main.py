@@ -10,14 +10,7 @@ def main():
 
     model = svm.Support_Vector_Machine()
     model.train(dataset, targets)
-  
-    points1 = np.where(targets == 1)
-    points2 = np.where(targets == -1)
-    plt.clf()
-    plt.title('Support Vector Machine')
-    plt.scatter(dataset[points1, 0], dataset[points1, 1], marker='+', color='b', label='Class 1')
-    plt.scatter(dataset[points2, 0], dataset[points2, 1], marker='_', color='r', label='Class 2')
-    plt.show()
+    model.visualize()
 
 if __name__ == "__main__":
     main()

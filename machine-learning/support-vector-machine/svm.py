@@ -1,25 +1,31 @@
 import numpy as np
+import matplotlib.pyplot as plt
 
 class Support_Vector_Machine():
     def __init__(self):
-        pass
+        self.fig = plt.figure('Support Vector Machine')
+        self.ax = self.fig.add_subplot(1,1,1)
 
-    # Prediction method that returns a value of either -1 or 1
-    def predict(self, features):
-        # The equation of the prediction is: 'Xi dot W + b'
-        prediction = np.sign(np.dot(features, self.weights) + self.b)
-        return prediction
+    def visualize(self):
+        points1 = np.where(self.targets == 1)
+        points2 = np.where(self.targets == -1)
+        self.ax.scatter(self.data[points1, 0], self.data[points1, 1], marker='+', color='b', label='Class 1')
+        self.ax.scatter(self.data[points2, 0], self.data[points2, 1], marker='_', color='r', label='Class 2')
+        plt.show()
 
-    ''' The goal of this optimization problem is:
-            1. Minimize ||w|| (the magnitude of vector w)
-            2. Maximize the value of b (bias)
-        The basic equation is:
-            Yi * (Xi * w + bias) >= 1
-        where:
-            Yi represents either class (- or +)
-            Xi represents the training data
-    '''
+        def hyperplane(x, w, b, u):
+            pass
+
     def train(self, data, targets):
+        ''' The goal of this optimization problem is:
+                1. Minimize ||w|| (the magnitude of vector w)
+                2. Maximize the value of b (bias)
+            The basic equation is:
+                Yi * (Xi * w + bias) >= 1
+            where:
+                Yi represents either class (- or +)
+                Xi represents the training data
+        '''
         self.data = data
         self.targets = targets
 
@@ -68,3 +74,9 @@ class Support_Vector_Machine():
             w_optimum = self.weights[0] + step * 2
 
         print(self.weights)
+
+    # Prediction method that returns a value of either -1 or 1
+    def predict(self, features):
+        # The equation of the prediction is: 'Xi dot W + b'
+        prediction = np.sign(np.dot(features, self.weights) + self.b)
+        return prediction
