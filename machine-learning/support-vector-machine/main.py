@@ -1,5 +1,4 @@
 import numpy as np
-from matplotlib import pyplot as plt
 import svm
 
 def main():
@@ -11,6 +10,8 @@ def main():
     model = svm.Support_Vector_Machine()
     model.train(dataset, targets)
     model.visualize()
+
+    print(model.predict([0.5, 2.2]))
 
 if __name__ == "__main__":
     main()
