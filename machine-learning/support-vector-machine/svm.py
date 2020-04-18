@@ -67,41 +67,50 @@ class Support_Vector_Machine():
                  self.max_value * 0.01,
                  self.max_value * 0.001]
 
-        b_multiplier = 5
-        b_step_size = 5
-        w_optimum = self.max_value * 10
+        b_multiplier = 5                        # Bias does not need to be as precise as w
+        b_step_size = 5                         # Bias can take bigger steps than w
+        weight_value = self.max_value * 10      # Initial value for the weight vector
 
         for step in steps:
-            weights = np.array([w_optimum, w_optimum])      # Initialize weight vector of the support vector machine
-            optimized = False                               # This value indicates if we surpassed the global best
+            weights = np.array([weight_value, weight_value])    # Initialize current weight vector
+            step_optimized = False                              # Indicates if we surpassed the global best of convex function
 
-            while not optimized:
+            while not step_optimized:
                 for b in np.arange(-1 * self.max_value * b_multiplier, self.max_value * b_multiplier, step * b_step_size):
                     for transform in transformation_matrix:
                         transformed_w = weights * transform
-                        classified = True
+                        data_misfits = False
+
+                        # Check if everything in dataset fits this equation Yi*(Xi.w+b) >= 1
                         for i in range(0, len(self.data)):
                             yi = self.targets[i]
                             if not yi*(np.dot(transformed_w, self.data[i]) + b) >= 1:
-                                classified = False
+                                data_misfits = True
                                 break
-                        if classified:
+
+                        # If there all data correctly fit
+                        if not data_misfits:
+                            ''' Tuple is of form: 
+                                    1. Magnitude: math.sqrt(transformed_w[0] ** 2 + transformed_w[1] ** 2))
+                                    2. Transformed vector
+                                    3. Bias
+                            '''
                             magnitudes.append((np.linalg.norm(transformed_w), transformed_w, b))
 
+                # Check if we surpassed the global best (which is zero)
                 if weights[0] < 0:
-                    optimized = True
-                    print('Optimized step ' + str(step) + '.')
+                    step_optimized = True
+                    print('Step value ' + str(step/self.max_value) + ' found the closest value possible.')
                 else:
-                    weights = weights - step
+                    weights = weights - step    # Apparently we are doing: weights - [step, step]
 
             # Sort the list using the first element(magnitudes), in ascenting order
             magnitudes = sorted(magnitudes, key = lambda x: x[0])
-
-            # Take the smallest value of the magnitudes (we want to minimize that)
-            choice = magnitudes[0]
-            self.weights = choice[1]
-            self.b = choice[2]
-            w_optimum = self.weights[0] + step * 2
+         
+            best_value = magnitudes[0]                      # Take the smallest value of the magnitudes (we want to minimize that)
+            self.weights = best_value[1]                    # Assign current best transformed weight vector to svm's weight vector
+            self.b = best_value[2]                          # Assign current best bias to svm's bias
+            weight_value = best_value[1][0] + step * 2      # Assign current best transformed weight vector as optimal for next iterration
 
     # Prediction method that returns a value of either -1 or 1
     def predict(self, features):
