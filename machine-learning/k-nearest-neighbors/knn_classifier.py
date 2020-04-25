@@ -13,7 +13,7 @@ def euclidean_distance(item_1, item_2):
 
 class KNN_Classifier():
     def __init__(self, k):
-        self.fig = plt.figure('K-Nearest Neighbors')
+        self.fig = plt.figure(str(k) + '-Nearest Neighbors')
         self.ax = self.fig.add_subplot(1,1,1, projection='3d')
         self.colors = {'setosa': 'm', 'versicolor': 'g', 'virginica': 'b'}
         self.k = k
