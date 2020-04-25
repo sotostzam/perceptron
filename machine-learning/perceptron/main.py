@@ -3,7 +3,12 @@ import numpy as np
 import perceptron
 
 def load_dataset(option):
-    if option == 1:
+    if option == 2:
+        dataset = np.genfromtxt('datasets/classification_pixel_data.csv', delimiter=',')
+        augmented_matrix = np.ones((dataset.shape[0], 1), dtype = float)
+        augmented_matrix = np.column_stack((augmented_matrix, dataset))
+        return augmented_matrix.T
+    elif option == 1:
         # Read and generate the third and forth feature of the dataset
         dataset_values = np.genfromtxt('datasets/iris.data', delimiter=',')[0:100, [2,3]]
         
@@ -43,19 +48,17 @@ def showMenu():
             elif selection == 2:
                 print("Please enter your choice:\n" +
                     "1. Iris dataset\n" +
-                    "2. Custom test dataset\n")
+                    "2. Pixel classification dataset\n" +
+                    "3. Custom test dataset\n")
                 selection = int(input("Your selection: "))
-                if selection > 0 and selection < 3: 
+                if selection > 0 and selection < 4: 
                     dataset = load_dataset(selection)
                     neuron.train(dataset)
             elif selection == 3:
                 point_x = int(input("Enter point's x: "))
                 point_y = int(input("Enter point's y: "))
-                guess_point = np.array([1, point_x, point_y])
-                if neuron.guess(guess_point) == -1:
-                    print("Perceptron's guess: Class 1.\n")
-                else:
-                    print("Perceptron's guess: Class 2.\n")
+                prediction = neuron.guess(np.array([1, point_x, point_y]))
+                print("Perceptron's class prediction: " + prediction + ".\n")
             else: 
                 raise ValueError
         except ValueError:
@@ -65,5 +68,5 @@ def showMenu():
 
 if __name__ == "__main__":
     # Create a single perceptron with 2 features
-    neuron = perceptron.Perceptron(maxEpochs = 10, learning_rate = 0.1, features = 2)
+    neuron = perceptron.Perceptron(maxEpochs = 3000, learning_rate = 0.1, features = 2)
     showMenu()
