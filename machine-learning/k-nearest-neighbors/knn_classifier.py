@@ -47,7 +47,7 @@ class KNN_Classifier():
         self.test_dataset = dataset.drop(dataset.index[0: -int(percentage)], 0).reset_index(drop=True)
 
     # Get a prediction on a simple value
-    def predict(self, item):
+    def predict(self, item, withConfidence = True):
         neighbor_distances = []
         for i in range(self.dataset.shape[0]):
             # If it is the same item ignore it and move on
@@ -55,17 +55,15 @@ class KNN_Classifier():
                 continue
             else:
                 current_distance = euclidean_distance(item, self.dataset.iloc[i].drop(['species'], axis = 0))
-                if len(neighbor_distances) < self.k:
-                    neighbor_distances.append((current_distance, self.dataset.iloc[i].species))
-                else:
-                    for j in range(len(neighbor_distances)):
-                        if neighbor_distances[j][0] > current_distance:
-                            del neighbor_distances[j]
-                            neighbor_distances.append((current_distance, self.dataset.iloc[i].species))
-                            break
+                neighbor_distances.append((current_distance, self.dataset.iloc[i].species))
+
         # Use counter to count all unique species
-        counts = Counter(x[1] for x in neighbor_distances)
-        return counts.most_common(1)[0][0]
+        counts = Counter(x[1] for x in sorted(neighbor_distances, key=lambda x: x[0])[0:self.k])
+        if withConfidence:
+            print("Prediction: " + str(counts.most_common(1)[0][0]) + 
+                  ", Confidence: " + str((counts.most_common(1)[0][1]/self.k)*100) + "%")
+        else:
+            return counts.most_common(1)[0][0]
 
     # Helper function to get the accuracy by using the test_dataset on the model
     def accuracy(self):
@@ -73,7 +71,7 @@ class KNN_Classifier():
         for i in range(self.test_dataset.shape[0]):
             item = self.test_dataset.iloc[i]
             # Get prediction on the test sample
-            result = self.predict(item.drop(['species'], axis = 0))
+            result = self.predict(item.drop(['species'], axis = 0), False)
             if result == item.species:
                 correct += 1
                 self.ax.scatter(item['sepal_width'], item['petal_length'], item['petal_width'], marker='*', color=self.colors[result])
