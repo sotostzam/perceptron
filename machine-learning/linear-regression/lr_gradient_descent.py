@@ -1,13 +1,28 @@
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+from statistics import mean
 
 # Residual sum of squares
 def compute_error(m, b, x_values, y_values):
     total = 0
     for i in range(0, len(x_values)):
-        total += (y_values[i] - (m * x_values[i] + b)) ** 2
+        prediction = m * x_values[i] + b
+        total += (prediction - y_values[i]) ** 2
     return total / len(x_values)
+
+# Squared Error
+def squared_error(y_values, line):
+    return sum((line - y_values) ** 2)
+
+# Coefficient of determination
+def cod(y_values, m, b, x):
+    line = np.array(x)
+    line = line * m + b
+    y_mean = np.array([mean(y_values) for y in y_values])
+    ser = squared_error(y_values, line)
+    sem = squared_error(y_values, y_mean)
+    return 1 - (ser / sem)
         
 # Find the regression line using gradient descent
 def gradient_descent(x_values, y_values, current_m, current_b, learning_rate):
@@ -49,7 +64,9 @@ def main():
         line = m * x_range + b
         ax.plot(x_range, line, linewidth=1, color='r')
         plt.pause(0.01)
-        print("Slope: " + str(round(m, 5)) + "\ty-intercept: " + str(round(b, 5)) + "\terror: " + str(round(compute_error(m, b, x, y), 5)))
+
+    print("Residual sum of squares: " + str(round(compute_error(m, b, x, y), 5)))
+    print("Coefficient of determination: " + str(round(cod(y, m, b, x), 5)))
     plt.show()
 
 if __name__ == "__main__":
