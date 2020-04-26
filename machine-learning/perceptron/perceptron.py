@@ -26,11 +26,27 @@ class Perceptron():
     # Function to train the perceptron
     def train(self, dataset):
         x = np.delete(dataset, dataset.shape[0]-1, 0)           # Array holding sample data
-        target = dataset[-1]                                    # Array representing the desired output of the neuron    
+        target = dataset[-1]                                    # Array representing the desired output of the neuron
+
+        # Visualization
+        points1 = np.where(target == -1)
+        points2 = np.where(target == 1)
         x_min = np.amin(x[1]) * 0.9
         x_max = np.amax(x[1]) * 1.1
         y_min = np.amin(x[2]) * 0.9
         y_max = np.amax(x[2]) * 1.1
+        x_range = np.linspace(x_min, x_max, endpoint = True)
+
+        fig = plt.figure('Perceptron Neuron')
+        ax = fig.add_subplot(1,1,1)
+        ax.set_xlabel('Feature 1')
+        ax.set_ylabel('Feature 2')
+        ax.legend(loc='upper right')
+        ax.set_xlim(x_min, x_max)
+        ax.set_ylim(y_min, y_max)
+        ax.scatter(x[1, points1], x[2, points1], marker='x', color='b', label='Class -1')
+        ax.scatter(x[1, points2], x[2, points2], marker='o', color='r', label='Class 1')
+        line = None
 
         # Iterate through each epoch
         for epoch in range (0, self.maxEpochs + 1):             # Iterate through the epochs given
@@ -55,22 +71,11 @@ class Perceptron():
                 print("Training unsuccessfull after " + str(epoch) + " epochs.\n"
                       "Maybe this dataset is not linearly classifiable.\n")
             
-            # Plotting of classes and the line separating the two
-            x_range = np.linspace(x_min, x_max, endpoint = True)
+            # Plotting the line separating the two classes
             y_intercept = - 1 * (self.w[0] / self.w[2]) - 1 * (self.w[1] / self.w[2]) * x_range
-
-            points1 = np.where(target == -1)
-            points2 = np.where(target == 1)
-            plt.clf()
-            plt.title('Perceptron training...')
-            plt.xlabel('Feature 1')
-            plt.ylabel("Feature 2")
-            plt.xlim(x_min, x_max)
-            plt.ylim(y_min, y_max)
-            plt.scatter(x[1, points1], x[2, points1], marker='x', color='b', label='Class -1')
-            plt.scatter(x[1, points2], x[2, points2], marker='o', color='r', label='Class 1')
-            plt.plot(x_range, y_intercept, linewidth=1, color='g')
-            plt.legend(loc='upper right')
+            if line:
+                ax.lines.remove(line)
+            line, = plt.plot(x_range, y_intercept, linewidth=1, color='g')
             plt.pause(0.001)
 
     def show_weights(self):
