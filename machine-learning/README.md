@@ -10,8 +10,10 @@ In machine learning, we need some form of optimization techniques, one of them b
 
 ### Classification / Regression
 
+* [Linear Regression](https://github.com/sotostzam/artificial-intelligence/tree/master/machine-learning/linear-regression) (Used for regression analysis)
 * [K-Nearest Neighbors](https://github.com/sotostzam/artificial-intelligence/tree/master/machine-learning/k-nearest-neighbors) (Used for classification and regression)
 * [Support Vector Machines](https://github.com/sotostzam/artificial-intelligence/tree/master/machine-learning/support-vector-machine) (Used for classification and regression)
+* [Naive Bayes](https://github.com/sotostzam/artificial-intelligence/tree/master/machine-learning/naive-bayes) (Used for classification)
 
 ### Artificial Neural Networks
 
