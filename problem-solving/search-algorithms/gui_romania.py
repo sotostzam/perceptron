@@ -10,7 +10,7 @@ from tkinter import ttk
 from tkinter import messagebox
 import time
 
-class Gui():
+class Gui:
 
     def __init__(self, graph):
         self.graph = graph

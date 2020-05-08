@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-class Perceptron():
+class Perceptron:
 
     # Neuron Activation Function (Step function -1/1)
     def f(self, u):

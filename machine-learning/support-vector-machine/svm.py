@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 from matplotlib import style
 style.use('ggplot')
 
-class Support_Vector_Machine():
+class Support_Vector_Machine:
     def __init__(self):
         self.fig = plt.figure('Support Vector Machine')
         self.ax = self.fig.add_subplot(1,1,1)

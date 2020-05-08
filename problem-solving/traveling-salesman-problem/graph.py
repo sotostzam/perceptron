@@ -14,7 +14,7 @@ class Node:
         # Compare nodes based on their fScore value (used by priority queue)
         return self.x < other.x
 
-class Graph():
+class Graph:
     def __init__(self, num):
         self.width  = 400
         self.height = 400

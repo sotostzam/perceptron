@@ -1,6 +1,6 @@
 import pandas as pd
 
-class NaiveBayes():
+class NaiveBayes:
     def __init__(self, dataset, target_class):
         self.dataset = dataset
         self.target_attribute = target_class

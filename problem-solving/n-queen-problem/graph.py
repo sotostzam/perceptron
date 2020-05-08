@@ -1,14 +1,14 @@
 import tkinter as tk
 import random
 
-class Node():
+class Node:
     def __init__(self, obj, num, pos, domain):
         self.obj    = obj      # Canvas object ID
         self.num    = num      # Queen number (column)
         self.pos    = pos      # Queen current position (row number)
         self.domain = domain   # Domain of the Queen
 
-class Board():
+class Board:
     def __init__(self, num):
         self.grid   = []
         self.queens = []

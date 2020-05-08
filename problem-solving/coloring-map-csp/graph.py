@@ -1,7 +1,7 @@
 import tkinter as tk
 import random, time
 
-class Node():
+class Node:
     def __init__(self, canvas, value, pos, color):
         self.value = value
         self.pos = pos
@@ -13,7 +13,7 @@ class Node():
     def set_neighbor(self, neighbor):
         self.neighbors.append(neighbor)
 
-class Region():
+class Region:
     def __init__(self, randomize = False):
         # Window and canvas initialization parameters
         self.width  = 500

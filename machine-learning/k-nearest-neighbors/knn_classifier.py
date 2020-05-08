@@ -11,7 +11,7 @@ def euclidean_distance(item_1, item_2):
     distance = np.sqrt(np.sum((np.array(item_1) - np.array(item_2))**2))
     return distance
 
-class KNN_Classifier():
+class KNN_Classifier:
     def __init__(self, k):
         self.fig = plt.figure(str(k) + '-Nearest Neighbors')
         self.ax = self.fig.add_subplot(1,1,1, projection='3d')

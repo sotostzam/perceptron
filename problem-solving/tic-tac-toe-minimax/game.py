@@ -2,12 +2,12 @@ import tkinter as tk
 import math, random
 import minimax
 
-class Node():
+class Node:
     def __init__(self, obj, name):
         self.name = name
         self.obj = obj
 
-class TicTacToe():
+class TicTacToe:
     def __init__(self):
         self.board = [[None, None, None],
                       [None, None, None],

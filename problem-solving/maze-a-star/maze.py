@@ -19,7 +19,7 @@ class Node:
         # Compare nodes based on their fScore value (used by priority queue)
         return self.fScore < other.fScore
 
-class Maze():
+class Maze:
 
     def __init__(self, width, height, grid_w, grid_h):
         self.pathLine = None
