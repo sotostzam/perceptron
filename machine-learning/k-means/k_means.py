@@ -11,7 +11,10 @@ class K_Means:
         self.cohesion = cohesion
         self.max_iter = max_iter
         self.fig = plt.figure('K-Means Algorithm')
-        self.colors = ['g', 'b', 'y']
+        self.ax = self.fig.add_subplot(1,1,1, projection='3d')
+        self.fig.subplots_adjust(left=0, right=1, bottom=0, top=1)
+        self.markers = ['+', 'o', 'x', 's', 'd', 'p', 'v', '^']
+        self.colors = ['r', 'g', 'b', 'y', 'm', 'c', 'peru', 'lightgreen']
 
     def fit(self, featureset):
         # Randomly shuffle all rows
@@ -36,15 +39,14 @@ class K_Means:
                         closest_centroid = (n, feature_distance)
                 self.clusters[closest_centroid[0]].append(dataset[j])
 
-            self.fig.clf()
-            ax = self.fig.add_subplot(1,1,1, projection='3d')
-            ax.set_xlabel('Sepal length')
-            ax.set_ylabel('Petal length')
-            ax.set_zlabel('Petal width')
+            self.ax.clear()
+            self.ax.set_xlabel('Sepal length')
+            self.ax.set_ylabel('Petal length')
+            self.ax.set_zlabel('Petal width')
             for cluster in self.clusters:
-                ax.scatter(self.centroids[cluster][1], self.centroids[cluster][2], self.centroids[cluster][3], marker='x', color='r', s=50)
+                self.ax.scatter(self.centroids[cluster][1], self.centroids[cluster][2], self.centroids[cluster][3], marker=self.markers[cluster], c='k', s=30)
                 for feature in self.clusters[cluster]:
-                    ax.scatter(feature[1], feature[2], feature[3], c=self.colors[cluster])
+                    self.ax.scatter(feature[1], feature[2], feature[3], c=self.colors[cluster], marker=self.markers[cluster], s=30)
             plt.pause(0.01)
 
             # Calculate new centroids
@@ -61,8 +63,16 @@ class K_Means:
             if not cohesion_bypassed:
                 print("Clusters found! Run for " + str(i) + " iterations.")
                 break
+        plt.draw()
 
+    def predict(self, features):
+        for feature in features:
+            closest_centroid = (None, np.inf)
+            for i in range(len(self.centroids)):
+                feature_distance = euclidean_distance(self.centroids[i], feature)
+                if feature_distance < closest_centroid[1]:
+                    closest_centroid = (i, feature_distance)
+            self.ax.scatter(feature[1], feature[2], feature[3], c=self.colors[closest_centroid[0]], marker='*', s=100, linewidth='1', edgecolor='k')
+            plt.pause(0.01)
         plt.show()
-
-    def predict(self):
-        pass
+    
