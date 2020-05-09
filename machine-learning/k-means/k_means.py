@@ -13,40 +13,42 @@ class K_Means:
         self.fig = plt.figure('K-Means Algorithm')
         self.colors = ['g', 'b']
 
-    def fit(self, dataset):
+    def fit(self, featureset):
         # Randomly shuffle all rows
-        dataset = dataset.sample(frac=1).reset_index(drop=True)
-        
+        featureset = featureset.sample(frac=1).reset_index(drop=True)
+        dataset = featureset.to_numpy()
+
         # Select first k centroids from shuffled dataset
         self.centroids = []
         for i in range(self.k):
-            self.centroids.append(dataset.iloc[i])
+            self.centroids.append(dataset[i])
 
         for i in range(self.max_iter):
             self.clusters = {}
             for j in range(len(self.centroids)):
                 self.clusters[j] = []
 
-            for j in range(dataset.shape[0]):
-                closest_centroid = None
+            for j in range(len(dataset)):
+                closest_centroid = (None, None)
                 for n in range(len(self.centroids)):
-                    if closest_centroid is None or euclidean_distance(self.centroids[n], dataset.iloc[j]) < closest_centroid:
-                        closest_centroid = n
-                self.clusters[closest_centroid].append(dataset.iloc[j])
+                    distance = euclidean_distance(self.centroids[n], dataset[j])
+                    if closest_centroid is (None, None) or distance < closest_centroid[1]:
+                        closest_centroid = (n, distance)
+                self.clusters[closest_centroid[0]].append(dataset[j])
 
             # Calculate new centroids
+            for cluster in self.clusters:
+                self.centroids[cluster] = np.mean(self.clusters[cluster], axis = 0)
 
             self.fig.clf()
             ax = self.fig.add_subplot(1,1,1, projection='3d')
             ax.set_xlabel('Sepal length')
             ax.set_ylabel('Petal length')
             ax.set_zlabel('Petal width')
-            # ax.scatter(dataset['sepal_width'], dataset['petal_length'], dataset['petal_width'])
-            for i in range(len(self.clusters)):
-                for n in range(len(self.clusters[i])):
-                    ax.scatter(self.clusters[i][n]['sepal_width'], self.clusters[i][n]['petal_length'], self.clusters[i][n]['petal_width'], c=self.colors[i])
-            for centroid in self.centroids:
-                ax.scatter(centroid['sepal_width'], centroid['petal_length'], centroid['petal_width'], marker='x', color='r', s=50)
+            for cluster in self.clusters:
+                ax.scatter(self.centroids[cluster][1], self.centroids[cluster][2], self.centroids[cluster][3], marker='x', color='r', s=50)
+                for feature in self.clusters[cluster]:
+                    ax.scatter(feature[1], feature[2], feature[3], c=self.colors[cluster])
             plt.pause(0.0001)
 
         plt.show()
