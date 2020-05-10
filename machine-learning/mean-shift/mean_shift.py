@@ -6,8 +6,8 @@ def euclidean_distance(item_1, item_2):
     return distance
 
 class Mean_Shift:
-    def __init__(self, k=2, cohesion=0.001, max_iter=100):
-        self.k = k
+    def __init__(self, cohesion=0.001, max_iter=100, radius=4):
+        self.radius = radius
         self.cohesion = cohesion
         self.max_iter = max_iter
         self.fig = plt.figure('Mean-Shift Algorithm')
@@ -20,3 +20,11 @@ class Mean_Shift:
         # Randomly shuffle all rows
         featureset = featureset.sample(frac=1).reset_index(drop=True)
         dataset = featureset.to_numpy()
+
+        # Select first k centroids from shuffled dataset
+        self.centroids = []
+        for i in range(len(dataset)):
+            self.centroids.append(dataset[i])
+
+        for i in self.centroids:
+            pass
