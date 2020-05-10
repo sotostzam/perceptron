@@ -22,6 +22,12 @@ Artificial neural networks (ANNs) are tools widely used in machine learning. The
 * [Perceptron](https://github.com/sotostzam/artificial-intelligence/tree/master/machine-learning/perceptron)
 * [Multilayer Perceptron](https://github.com/sotostzam/artificial-intelligence/tree/master/machine-learning/multilayer-perceptron)
 
+## Unsupervised Learning
+
+### Clustering
+
+* [K-Means Clustering](https://github.com/sotostzam/artificial-intelligence/tree/master/machine-learning/k-means)
+
 ## Reinforcement Learning
 
 Reinforcement learning (RL) is a subset of machine learning that makes use of software agents, which take actions in a given environment. Their goal is to maximize a cumulative reward.
