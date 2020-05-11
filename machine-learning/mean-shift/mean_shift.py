@@ -6,8 +6,8 @@ def euclidean_distance(item_1, item_2):
     return distance
 
 class Mean_Shift:
-    def __init__(self, cohesion=0.001, max_iter=100, radius=4):
-        self.radius = radius
+    def __init__(self, cohesion=0.001, max_iter=100, bandwidth=4):
+        self.bandwidth = bandwidth
         self.cohesion = cohesion
         self.max_iter = max_iter
         self.fig = plt.figure('Mean-Shift Algorithm')
@@ -26,5 +26,17 @@ class Mean_Shift:
         for i in range(len(dataset)):
             self.centroids.append(dataset[i])
 
-        for i in self.centroids:
-            pass
+        while True:
+            next_centroids = []
+            for i in range(len(self.centroids)):
+                in_range = []
+                for j in range(len(dataset)):
+                    feature_distance = euclidean_distance(self.centroids[i], dataset[j])
+                    if feature_distance < self.bandwidth:
+                        in_range.append(dataset[j])
+
+                new_centroid = np.average(in_range, axis = 0)
+                next_centroids.append(new_centroid)
+
+            # We use this to break the loop for the time being
+            break
