@@ -22,21 +22,29 @@ class Mean_Shift:
         dataset = featureset.to_numpy()
 
         # Select first k centroids from shuffled dataset
-        self.centroids = []
+        curr_centroids = []
         for i in range(len(dataset)):
-            self.centroids.append(dataset[i])
+            curr_centroids.append(dataset[i])
 
         while True:
             next_centroids = []
-            for i in range(len(self.centroids)):
+            for i in range(len(curr_centroids)):
                 in_range = []
                 for j in range(len(dataset)):
-                    feature_distance = euclidean_distance(self.centroids[i], dataset[j])
+                    feature_distance = euclidean_distance(curr_centroids[i], dataset[j])
                     if feature_distance < self.bandwidth:
                         in_range.append(dataset[j])
 
                 new_centroid = np.average(in_range, axis = 0)
-                next_centroids.append(new_centroid)
+                next_centroids.append(tuple(new_centroid))
 
-            # We use this to break the loop for the time being
+            # Keep only the unique centroids in the list
+            unique_centroids = list(set(next_centroids))
+            
+            prev_centroids = np.array(curr_centroids.copy())
+            curr_centroids = np.array(unique_centroids.copy())
+
+            if not np.array_equal(curr_centroids, prev_centroids):
+                print("Not equal")
+
             break
