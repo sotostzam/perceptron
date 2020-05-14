@@ -7,7 +7,7 @@ def euclidean_distance(item_1, item_2):
     return distance
 
 class Mean_Shift:
-    def __init__(self, cohesion=0.001, max_iter=100, bandwidth=4):
+    def __init__(self, cohesion=0.001, max_iter=100, bandwidth=2):
         self.bandwidth = bandwidth
         self.cohesion = cohesion
         self.max_iter = max_iter
@@ -44,10 +44,24 @@ class Mean_Shift:
             
             # Keep previous centroids for equality checks
             prev_centroids = np.copy(shift_centroids)
+
             # Assign the found centroids
             shift_centroids = np.copy(unique_centroids)
 
             if np.array_equal(shift_centroids, prev_centroids):
                 break
+
+            self.ax.clear()
+            self.ax.set_xlabel('Sepal length')
+            self.ax.set_ylabel('Petal length')
+            self.ax.set_zlabel('Petal width')
+            for i in range(len(dataset)):
+                self.ax.scatter(dataset[i][1], dataset[i][2], dataset[i][3], marker='D', c='k', s=30)
+            for i in range(len(shift_centroids)):
+                self.ax.scatter(shift_centroids[i][1], shift_centroids[i][2], shift_centroids[i][3], marker='o', c='r', s=50)
+            plt.pause(0.01)
         
         self.centroids = np.copy(shift_centroids)
+        print("Number of centroids: " + str(len(self.centroids)))
+
+        plt.show()
