@@ -2,20 +2,15 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 def euclidean_distance(item_1, item_2):
-    distance = np.sqrt(np.sum((np.array(item_1) - np.array(item_2))**2))
     distance = np.linalg.norm(np.array(item_1) - np.array(item_2))
     return distance
 
 class Mean_Shift:
-    def __init__(self, cohesion=0.001, max_iter=100, bandwidth=2):
+    def __init__(self, bandwidth=2):
         self.bandwidth = bandwidth
-        self.cohesion = cohesion
-        self.max_iter = max_iter
         self.fig = plt.figure('Mean-Shift Algorithm')
         self.ax = self.fig.add_subplot(1,1,1, projection='3d')
         self.fig.subplots_adjust(left=0, right=1, bottom=0, top=1)
-        self.markers = ['+', 'o', 'x', 's', 'd', 'p', 'v', '^']
-        self.colors = ['r', 'g', 'b', 'y', 'm', 'c', 'peru', 'lightgreen']
 
     def fit(self, featureset):
         # Randomly shuffle all rows
@@ -48,18 +43,20 @@ class Mean_Shift:
             # Assign the found centroids
             shift_centroids = np.copy(unique_centroids)
 
-            if np.array_equal(shift_centroids, prev_centroids):
-                break
-
+            # Update plot with new centroid locations
             self.ax.clear()
             self.ax.set_xlabel('Sepal length')
             self.ax.set_ylabel('Petal length')
             self.ax.set_zlabel('Petal width')
             for i in range(len(dataset)):
-                self.ax.scatter(dataset[i][1], dataset[i][2], dataset[i][3], marker='D', c='k', s=30)
-            for i in range(len(shift_centroids)):
-                self.ax.scatter(shift_centroids[i][1], shift_centroids[i][2], shift_centroids[i][3], marker='o', c='r', s=50)
+                self.ax.scatter(dataset[i][1], dataset[i][2], dataset[i][3], c='b')
+            for i in range(len(prev_centroids)):
+                self.ax.scatter(prev_centroids[i][1], prev_centroids[i][2], prev_centroids[i][3], marker='*', c='r', s=50)
             plt.pause(0.01)
+
+            # Check if we have convergence
+            if np.array_equal(shift_centroids, prev_centroids):
+                break
         
         self.centroids = np.copy(shift_centroids)
         print("Number of centroids: " + str(len(self.centroids)))
