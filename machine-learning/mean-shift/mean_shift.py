@@ -3,6 +3,7 @@ import numpy as np
 
 def euclidean_distance(item_1, item_2):
     distance = np.sqrt(np.sum((np.array(item_1) - np.array(item_2))**2))
+    distance = np.linalg.norm(np.array(item_1) - np.array(item_2))
     return distance
 
 class Mean_Shift:
@@ -22,29 +23,31 @@ class Mean_Shift:
         dataset = featureset.to_numpy()
 
         # Select first k centroids from shuffled dataset
-        curr_centroids = []
+        shift_centroids = []
         for i in range(len(dataset)):
-            curr_centroids.append(dataset[i])
+            shift_centroids.append(dataset[i])
 
         while True:
             next_centroids = []
-            for i in range(len(curr_centroids)):
+            for centroid in shift_centroids:
                 in_range = []
-                for j in range(len(dataset)):
-                    feature_distance = euclidean_distance(curr_centroids[i], dataset[j])
-                    if feature_distance < self.bandwidth:
-                        in_range.append(dataset[j])
+                for feature in dataset:
+                    distance = euclidean_distance(centroid, feature)
+                    if distance < self.bandwidth:
+                        in_range.append(feature)
 
                 new_centroid = np.average(in_range, axis = 0)
-                next_centroids.append(tuple(new_centroid))
+                next_centroids.append(new_centroid)
 
             # Keep only the unique centroids in the list
-            unique_centroids = list(set(next_centroids))
+            unique_centroids = np.unique(next_centroids, axis=0)
             
-            prev_centroids = np.array(curr_centroids.copy())
-            curr_centroids = np.array(unique_centroids.copy())
+            # Keep previous centroids for equality checks
+            prev_centroids = np.copy(shift_centroids)
+            # Assign the found centroids
+            shift_centroids = np.copy(unique_centroids)
 
-            if not np.array_equal(curr_centroids, prev_centroids):
-                print("Not equal")
-
-            break
+            if np.array_equal(shift_centroids, prev_centroids):
+                break
+        
+        self.centroids = np.copy(shift_centroids)
