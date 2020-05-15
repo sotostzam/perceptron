@@ -26,7 +26,8 @@ Artificial neural networks (ANNs) are tools widely used in machine learning. The
 
 ### Clustering
 
-* [K-Means Clustering](https://github.com/sotostzam/artificial-intelligence/tree/master/machine-learning/k-means)
+* [K-Means](https://github.com/sotostzam/artificial-intelligence/tree/master/machine-learning/k-means)
+* [Mean shift](https://github.com/sotostzam/artificial-intelligence/tree/master/machine-learning/mean-shift)
 
 ## Reinforcement Learning
 
