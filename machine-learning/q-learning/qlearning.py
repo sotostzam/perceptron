@@ -9,6 +9,7 @@ import sys
 LEARNING_RATE = 0.05                                    # How big or small step to make each iteration
 DISCOUNT      = 0.95                                    # How much value future rewards over current rewards
 EPISODES      = 250                                     # Maximum number of episodes to run
+PENALTY       = -10                                     # Penalty for going off limits
 epsilon       = 1                                       # Epsilon greedy strategy (Exploration percentage)
 
 # Initialization of tables (10 x 10) and positions
@@ -16,13 +17,13 @@ initial_pos    = np.array([1, 0])                       # Initial position, used
 agent_pos      = np.copy(initial_pos)                   # Agent starting position (columns, rows)
 goal_pos       = np.array([8, 9])                       # Goal position
 q_table        = np.zeros((10, 10, 4))                  # Initialize Q-table state-space (states * available actions)
-reward_table   = np.ones((10, 10)) * - 1                # Initialize reward table to -1
+rewards        = np.ones((10, 10)) * - 1                # Initialize reward table to -1
 canvas_objects = np.zeros((10, 10), dtype=int)          # Canvas objects table
 
 # Save custom maze to a csv file
 def saveMaze():
-    global agent_pos, reward_table, initial_pos
-    maze_file = np.copy(reward_table)
+    global agent_pos, rewards, initial_pos
+    maze_file = np.copy(rewards)
     for i in range (0, maze_file.shape[0]):
         for j in range (0, maze_file.shape[1]):
             if maze_file[i, j] == -10:
@@ -42,16 +43,16 @@ def saveMaze():
 
 # Load custom maze from csv file
 def loadMaze():
-    global agent_pos, canvas_objects, reward_table, initial_pos, goal_pos
+    global agent_pos, canvas_objects, rewards, initial_pos, goal_pos
     try:
         maze_file = np.genfromtxt(askopenfilename(initialdir='/q-learning/'), delimiter=',', dtype = np.int)
         canvas.delete("all")
         canvas_objects.fill(0)
-        reward_table.fill(-1)
+        rewards.fill(-1)
         for i in range (0, maze_file.shape[0]):
             for j in range (0, maze_file.shape[1]):
                 if maze_file[i, j] == 1:
-                    reward_table[i, j] = -10
+                    rewards[i, j] = -10
                     canvas_objects[i, j] = canvas.create_rectangle(j * 50, i * 50, j * 50 + 50, i * 50 + 50, fill="black")
                 elif maze_file[i, j] == 2:
                     initial_pos = [i, j]
@@ -59,7 +60,7 @@ def loadMaze():
                     canvas_objects[i, j] = canvas.create_oval(agent_pos[1] * 50, agent_pos[0] * 50, agent_pos[1] * 50 + 50, agent_pos[0] * 50 + 50, fill="red")
                 elif maze_file[i, j] == 3:
                     goal_pos = [i, j]
-                    reward_table[goal_pos[0], goal_pos[1]] = 100
+                    rewards[goal_pos[0], goal_pos[1]] = 100
                     canvas_objects[goal_pos[0], goal_pos[1]] = canvas.create_rectangle(goal_pos[1] * 50, goal_pos[0] * 50, goal_pos[1] * 50 + 50, goal_pos[0] * 50 + 50, fill="green")
                 else:
                     pass
@@ -83,7 +84,7 @@ def drawOnCanvas(event, action):
             canvas.delete(canvas_objects[y][x])
             canvas_objects[y, x] = 0
             canvas_objects[y, x] = canvas.create_rectangle(x * 50, y * 50, x * 50 + 50, y * 50 + 50, fill="black")
-        reward_table[y, x] = -10
+        rewards[y, x] = -10
     elif action == 2:
         print("Q-Value at (" + str(y) + ", " + str(x) + "): " + str(q_table[y, x]))
     else:
@@ -92,17 +93,17 @@ def drawOnCanvas(event, action):
         else:
             canvas.delete(canvas_objects[y, x])
             canvas_objects[y, x] = 0
-            reward_table[y, x] = -1
+            rewards[y, x] = -1
 
 # Reset application to initial values
 def reset():
-    global agent_pos, canvas_objects, reward_table, initial_pos, goal_pos
+    global agent_pos, canvas_objects, rewards, initial_pos, goal_pos
     canvas.delete("all")
     canvas_objects.fill(0)
-    reward_table.fill(-1)
+    rewards.fill(-1)
     agent_pos = np.copy(initial_pos)
     canvas_objects[agent_pos[0], agent_pos[1]] = canvas.create_oval(agent_pos[1] * 50, agent_pos[0] * 50, agent_pos[1] * 50 + 50, agent_pos[0] * 50 + 50, fill="red")
-    reward_table[goal_pos[0], goal_pos[1]] = 100
+    rewards[goal_pos[0], goal_pos[1]] = 100
     canvas_objects[goal_pos[0], goal_pos[1]] = canvas.create_rectangle(goal_pos[1] * 50, goal_pos[0] * 50, goal_pos[1] * 50 + 50, goal_pos[0] * 50 + 50, fill="green")
 
 # Reset agent to original position
@@ -114,18 +115,18 @@ def reset_agent():
     canvas_objects[agent_pos[0], agent_pos[1]] = canvas.create_oval(agent_pos[1] * 50, agent_pos[0] * 50, agent_pos[1] * 50 + 50, agent_pos[0] * 50 + 50, fill="red")
 
 # Check every available option on a specific state
-def get_movement_availability():
+def is_valid_move(direction):
     global agent_pos
-    movement = np.array([False, False, False, False])
-    if agent_pos[1] > 0 and reward_table[agent_pos[0], agent_pos[1] - 1] > -10:  # Check left
-        movement[0] = True
-    if agent_pos[1] < 9 and reward_table[agent_pos[0], agent_pos[1] + 1] > -10:  # Check right
-        movement[1] = True
-    if agent_pos[0] > 0 and reward_table[agent_pos[0] - 1, agent_pos[1]] > -10:  # Check up
-        movement[2] = True
-    if agent_pos[0] < 9 and reward_table[agent_pos[0] + 1, agent_pos[1]] > -10:  # Check down
-        movement[3] = True
-    return movement
+    if   direction == 0 and agent_pos[1] > 0 and rewards[agent_pos[0], agent_pos[1] - 1] != -10:   # Check left
+        return True
+    elif direction == 1 and agent_pos[1] < 9 and rewards[agent_pos[0], agent_pos[1] + 1] != -10:   # Check right
+        return True
+    elif direction == 2 and agent_pos[0] > 0 and rewards[agent_pos[0] - 1, agent_pos[1]] != -10:   # Check up
+        return True
+    elif direction == 3 and agent_pos[0] < 9 and rewards[agent_pos[0] + 1, agent_pos[1]] != -10:   # Check down
+        return True
+    else:
+        return False
 
 # Move agent to new state and return a reward for this action
 def move(direction):
@@ -133,27 +134,26 @@ def move(direction):
     x, y = 0, 0
     agent_ID = canvas_objects[agent_pos[0]][agent_pos[1]]
     previous_location = np.copy(agent_pos)
-    movements_available = get_movement_availability()
 
-    if direction == 0 and movements_available[0]:         # Move Left
+    if   direction == 0 and is_valid_move(0):       # Move Left
         x = -50
         agent_pos[1] -= 1
-    elif direction == 1 and movements_available[1]:       # Move Right
+    elif direction == 1 and is_valid_move(1):       # Move Right
         x = 50
         agent_pos[1] += 1
-    elif direction == 2 and movements_available[2]:       # Move Up
+    elif direction == 2 and is_valid_move(2):       # Move Up
         y = -50
         agent_pos[0] -= 1
-    elif direction == 3 and movements_available[3]:       # Move Down
+    elif direction == 3 and is_valid_move(3):       # Move Down
         y = 50
         agent_pos[0] += 1
     else:
-        return tuple(q_table[agent_pos[0], agent_pos[1]]), -10
+        return tuple(q_table[agent_pos[0], agent_pos[1]]), PENALTY
 
     canvas.move(agent_ID, x, y)
     canvas_objects[previous_location[0], previous_location[1]] = 0
     canvas_objects[agent_pos[0], agent_pos[1]] = agent_ID
-    return tuple(q_table[agent_pos[0], agent_pos[1]]), reward_table[agent_pos[0], agent_pos[1]]
+    return tuple(q_table[agent_pos[0], agent_pos[1]]), rewards[agent_pos[0], agent_pos[1]]
 
 def start():
     global epsilon
@@ -193,7 +193,7 @@ def start():
             new_q = current_q + LEARNING_RATE * (reward + DISCOUNT * max_future_q - current_q)
             q_table[current_state[0]][current_state[1]][action] = new_q
 
-            if reward == reward_table[goal_pos[0], goal_pos[1]]:
+            if reward == rewards[goal_pos[0], goal_pos[1]]:
                 success_times += 1
                 success_text.set("Success: " + str(round((100 * success_times / i), 2)) + "%")
                 reset_agent()
@@ -205,9 +205,7 @@ def start():
             current_state = new_state
             label_epoch.update()
         
-        if best_reward == 0:
-            best_reward = max_reward
-        elif best_reward < max_reward:
+        if i == 1 or best_reward < max_reward:
             best_reward = max_reward
         b_rewards_text.set("Best score: " + str(best_reward))
 
@@ -219,7 +217,7 @@ def start():
 
 # Set agent position
 def setInputs(option):
-    global initial_pos, agent_pos, canvas_objects, goal_pos, reward_table
+    global initial_pos, agent_pos, canvas_objects, goal_pos, rewards
     try:
         if option == 0:
             agent_row = int(agent_row_input.get())
@@ -240,9 +238,9 @@ def setInputs(option):
             if canvas_objects[goal_row, goal_col] != canvas_objects[tuple(agent_pos)]:
                 canvas.delete(canvas_objects[goal_pos[0], goal_pos[1]])
                 canvas.delete(canvas_objects[goal_row, goal_col])
-                reward_table[goal_pos[0], goal_pos[1]] = -1
+                rewards[goal_pos[0], goal_pos[1]] = -1
                 goal_pos = [goal_row, goal_col]
-                reward_table[goal_pos[0], goal_pos[1]] = 100
+                rewards[goal_pos[0], goal_pos[1]] = 100
                 canvas_objects[goal_pos[0], goal_pos[1]] = canvas.create_rectangle(goal_pos[1] * 50, goal_pos[0] * 50, goal_pos[1] * 50 + 50, goal_pos[0] * 50 + 50, fill="green")
             else:
                 print("You can't place goal on top of the agent position!")
@@ -364,6 +362,6 @@ label_exploration.grid(row=5, column=0, sticky="w", pady=10)
 # Initialization of starting state parameters
 canvas_objects[agent_pos[0], agent_pos[1]] = canvas.create_oval(agent_pos[1] * 50, agent_pos[0] * 50, agent_pos[1] * 50 + 50, agent_pos[0] * 50 + 50, fill="red")
 canvas_objects[goal_pos[0], goal_pos[1]]   = canvas.create_rectangle(goal_pos[1] * 50, goal_pos[0] * 50, goal_pos[1] * 50 + 50, goal_pos[0] * 50 + 50, fill="green")
-reward_table[goal_pos[0], goal_pos[1]]     = 100
+rewards[goal_pos[0], goal_pos[1]]     = 100
 
 window.mainloop()
