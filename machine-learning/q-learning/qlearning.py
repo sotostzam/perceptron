@@ -226,7 +226,12 @@ def start():
                 success_text.set("Success: " + str(round((100 * success_times / i), 2)) + "%")
                 reset_agent()
                 break
-            if i == 1 or i % 50 == 0:
+
+            if ff_value.get() == 1:
+                if i == 1 or i % 50 == 0:
+                    canvas.update()
+                    time.sleep(.1)
+            else:
                 canvas.update()
                 time.sleep(.1)
 
@@ -363,6 +368,14 @@ epsilon_value = tk.IntVar(value=1)
 greedy_cb = tk.Checkbutton(epsilon_param, pady=15, text='ε-greedy strategy', font=mainFontStyle,
                            variable=epsilon_value, onvalue=1, offvalue=0, command=lambda: toggle_epsilon())
 greedy_cb.grid(row=0, column=2, sticky="w")
+
+# Fast-Forward Checkbox Area
+ff_param = tk.Frame(inputs)
+ff_param.grid(row=5, column=0, sticky="nwe")
+
+ff_value = tk.IntVar(value=1)
+ff_cb = tk.Checkbutton(ff_param, pady=15, text='Fast-Forward', font=mainFontStyle, variable=ff_value, onvalue=1, offvalue=0)
+ff_cb.grid(row=0, column=2, sticky="w")
 
 # Left Panel Parameters
 btn_menu = tk.Frame(main_menu)
