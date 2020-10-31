@@ -92,15 +92,16 @@ def drawOnCanvas(event, action):
     y = np.floor(event.y / tile_size).astype(int)      # Attention! This is mouse y coordinate but indicates rows in tables!
     global goal_pos
     if action == 1:
-        if canvas_objects[y, x] == 0:
-            canvas_objects[y, x] = canvas.create_rectangle(x * tile_size, y * tile_size, x * tile_size + tile_size, y * tile_size + tile_size, fill="black")
-        elif canvas_objects[y, x] == canvas_objects[tuple(agent_pos)] or canvas_objects[y, x] == canvas_objects[tuple(goal_pos)]:
+        if canvas_objects[y, x] == canvas_objects[tuple(agent_pos)] or canvas_objects[y, x] == canvas_objects[tuple(goal_pos)]:
             print("You can't place block here.")
         else:
-            canvas.delete(canvas_objects[y][x])
-            canvas_objects[y, x] = 0
-            canvas_objects[y, x] = canvas.create_rectangle(x * tile_size, y * tile_size, x * tile_size + tile_size, y * tile_size + tile_size, fill="black")
-        rewards[y, x] = -10
+            if canvas_objects[y, x] == 0:
+                canvas_objects[y, x] = canvas.create_rectangle(x * tile_size, y * tile_size, x * tile_size + tile_size, y * tile_size + tile_size, fill="black")
+            else:
+                canvas.delete(canvas_objects[y][x])
+                canvas_objects[y, x] = 0
+                canvas_objects[y, x] = canvas.create_rectangle(x * tile_size, y * tile_size, x * tile_size + tile_size, y * tile_size + tile_size, fill="black")
+            rewards[y, x] = -10
     elif action == 2:
         print("Q-Value at (" + str(y) + ", " + str(x) + "): " + str(q_table[y, x]))
     else:
