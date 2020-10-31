@@ -168,23 +168,24 @@ def start():
     success_times = 0
     b_rewards_text.set("Best score: " + str(best_reward))
     success_text.set("Success: " + str(success_times) + "%")
-    exploration_text.set("Exploration rate: " + str(100 * epsilon) + "%")
 
     for i in range (1, EPISODES + 1):
         episodes_text.set("Episode: " + str(i))
         max_reward = 0
 
         # Reduce the greedy parameter
-        if epsilon > 0.01 and i > 1:
+        if i > 1 and epsilon_value.get() == 1 and epsilon > 0.01:
             epsilon *= 97/100
             exploration_text.set("Exploration rate: " + str(round(100 * epsilon, 2)) + "%")
+        if i == 1 and epsilon_value.get() == 1:
+            exploration_text.set("Exploration rate: " + str(100 * epsilon) + "%")
 
         for j in range (200, 0, -1):
             tries_text.set("Tries left: " + str(j))
             current_state = tuple(np.copy(agent_pos))
 
             # If random number is less than ε then explore else exploit (make agent greedy)
-            if random.uniform(0, 1) < epsilon:
+            if epsilon_value.get() == 1 and random.uniform(0, 1) < epsilon:
                 action = random.randint(0, 3)
             else:
                 action = np.argmax(q_table[agent_pos[0], agent_pos[1]])
@@ -250,7 +251,13 @@ def setInputs(option):
     except Exception:
         print("Please make sure you filled both row and column number and that it is a single number (0-9)")
         pass
-    
+
+# Enable-Disable Epsilon-greedy Parameter
+def toggle_epsilon():
+    if (epsilon_value.get() == 1):
+        exploration_text.set("Exploration rate: N/A")
+    else:
+        exploration_text.set("Exploration rate: Disabled")
 
 # User Interface Parameters
 window = tk.Tk()
@@ -305,6 +312,14 @@ goal_col_input = tk.Entry(goal_params, width=2)
 goal_col_input.grid(row=0, column=3, sticky="ew")
 btn_goal = tk.Button(goal_params, text="Set", command=lambda: setInputs(1))
 btn_goal.grid(row=0, column=4, sticky="ew", padx=5)
+
+# Epsilon Checkbox Area
+epsilon_param = tk.Frame(inputs)
+epsilon_param.grid(row=4, column=0, sticky="nwe")
+
+epsilon_value = tk.IntVar(value=1)
+greedy_cb = tk.Checkbutton(epsilon_param, text='Epsilon-greedy', variable=epsilon_value, onvalue=1, offvalue=0, command=lambda: toggle_epsilon())
+greedy_cb.grid(row=0, column=2, sticky="w")
 
 # Left Panel Parameters
 btn_menu = tk.Frame(main_menu)
