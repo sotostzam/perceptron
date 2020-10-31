@@ -15,6 +15,8 @@ DISCOUNT      = 0.95                                    # How much value future 
 EPISODES      = 250                                     # Maximum number of episodes to run
 PENALTY       = -10                                     # Penalty for going off limits
 epsilon       = 1                                       # Epsilon greedy strategy (Exploration percentage)
+best_reward   = 0                                       # Best reward found (Used for visualization)
+success_times = 0                                       # Number of successful times (Used for visualization)
 
 # Initialization of tables (10 x 10) and positions
 initial_pos    = np.array([1, 0])                       # Initial position, used for starting position and resetting
@@ -114,10 +116,18 @@ def drawOnCanvas(event, action):
 
 # Reset application to initial values
 def reset():
-    global agent_pos, canvas_objects, rewards, initial_pos, goal_pos
+    global agent_pos, q_table, canvas_objects, rewards, initial_pos, goal_pos, epsilon, best_reward, success_times
+    if epsilon_value.get() == 1:
+        epsilon = 1
+        exploration_text.set("Explore: 100%")
+    best_reward = 0
+    b_rewards_text.set("Best Score: N/A")
+    success_times = 0
+    success_text.set("Success: N/A")
     canvas.delete("all")
     canvas_objects.fill(0)
     rewards.fill(-1)
+    q_table.fill(0)
     agent_pos = np.copy(initial_pos)
     canvas_objects[agent_pos[0], agent_pos[1]] = canvas.create_oval(agent_pos[1] * tile_size,
                                                                     agent_pos[0] * tile_size,
@@ -185,13 +195,11 @@ def move(direction):
     return tuple(q_table[agent_pos[0], agent_pos[1]]), rewards[agent_pos[0], agent_pos[1]]
 
 def start():
-    global epsilon
+    global epsilon, best_reward, success_times
     btn_start.config(state="disabled")
     btn_reset.config(state="disabled")
     btn_save.config(state="disabled")
     btn_load.config(state="disabled")
-    best_reward = 0
-    success_times = 0
 
     for i in range (1, EPISODES + 1):
         episodes_text.set("Episode: " + str(i))
@@ -223,8 +231,6 @@ def start():
 
             if reward == rewards[goal_pos[0], goal_pos[1]]:
                 success_times += 1
-                success_text.set("Success: " + str(round((100 * success_times / i), 2)) + "%")
-                reset_agent()
                 break
 
             if ff_value.get() == 1:
@@ -241,8 +247,9 @@ def start():
         if i == 1 or best_reward < max_reward:
             best_reward = max_reward
         b_rewards_text.set("Best score: " + str(best_reward))
-
+        success_text.set("Success: " + str(round((100 * success_times / i), 2)) + "%")
         reset_agent()
+
     btn_start.config(state="normal")
     btn_reset.config(state="normal")
     btn_save.config(state="normal")
