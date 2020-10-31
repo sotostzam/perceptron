@@ -346,7 +346,7 @@ btn_agent.grid(row=0, column=4, sticky="ew", padx=5)
 
 # Goal position inputs
 goal_frame = tk.Frame(inputs)
-goal_frame.grid(row=2, column=0, sticky="w", pady = 15)
+goal_frame.grid(row=1, column=0, sticky="w", pady = 15)
 
 goal_label = tk.Label(goal_frame, text="Goal's Position: (" + str(goal_pos[0]) + "," + str(goal_pos[1]) + ")", font=mainFontStyle)
 goal_label.grid(row=0, column=0, sticky="w")
@@ -369,24 +369,24 @@ btn_goal.grid(row=0, column=4, sticky="ew", padx=5)
 
 # Epsilon Checkbox Area
 epsilon_param = tk.Frame(inputs)
-epsilon_param.grid(row=4, column=0, sticky="nwe")
+epsilon_param.grid(row=2, column=0, sticky="w")
 
 epsilon_value = tk.IntVar(value=1)
 greedy_cb = tk.Checkbutton(epsilon_param, pady=15, text='ε-greedy strategy', font=mainFontStyle,
                            variable=epsilon_value, onvalue=1, offvalue=0, command=lambda: toggle_epsilon())
-greedy_cb.grid(row=0, column=2, sticky="w")
+greedy_cb.grid(row=0, column=0)
 
 # Fast-Forward Checkbox Area
 ff_param = tk.Frame(inputs)
-ff_param.grid(row=5, column=0, sticky="nwe")
+ff_param.grid(row=3, column=0, sticky="w")
 
 ff_value = tk.IntVar(value=1)
 ff_cb = tk.Checkbutton(ff_param, pady=15, text='Fast-Forward', font=mainFontStyle, variable=ff_value, onvalue=1, offvalue=0)
-ff_cb.grid(row=0, column=2, sticky="w")
+ff_cb.grid(row=0, column=0)
 
 # Left Panel Parameters
-btn_menu = tk.Frame(main_menu)
-btn_menu.grid(row=1, column=0, sticky="s")
+btn_menu = tk.Frame(main_menu, bg='grey')
+btn_menu.grid(row=1, column=0, sticky="s", pady=10)
 
 btn_start = tk.Button(btn_menu, width=18, height=1, command=start, text="Start", font=secondaryFontStyle)
 btn_reset = tk.Button(btn_menu, width=18, height=1, command=reset, text="Reset", font=secondaryFontStyle)
@@ -394,11 +394,11 @@ btn_save  = tk.Button(btn_menu, width=18, height=1, command=saveMaze, text="Save
 btn_load  = tk.Button(btn_menu, width=18, height=1, command=loadMaze, text="Load Custom Maze", font=secondaryFontStyle)
 btn_exit  = tk.Button(btn_menu, width=18, height=1, command=window.destroy, text="Exit", font=secondaryFontStyle)
 
-btn_start.grid(row=0, column=0, sticky="ew", padx=5, pady=10)
-btn_reset.grid(row=1, column=0, sticky="ew", padx=5, pady=10)
-btn_save.grid(row=2, column=0, sticky="ew", padx=5, pady=10)
-btn_load.grid(row=3, column=0, sticky="ew", padx=5, pady=10)
-btn_exit.grid(row=4, column=0, sticky="ew", padx=5, pady=10)
+btn_start.grid(row=0, column=0, sticky="ns", padx=10, pady=10)
+btn_reset.grid(row=1, column=0, sticky="ns", padx=10, pady=10)
+btn_save.grid(row=2, column=0, sticky="ns", padx=10, pady=10)
+btn_load.grid(row=3, column=0, sticky="ns", padx=10, pady=10)
+btn_exit.grid(row=4, column=0, sticky="ns", padx=10, pady=10)
 
 # Canvas Panel Parameters
 canvas = tk.Canvas(master = window, width = tile_size * 10, height = tile_size * 10, bg="grey")
