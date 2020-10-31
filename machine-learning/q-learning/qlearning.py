@@ -5,6 +5,9 @@ import time
 import random
 import sys
 
+# GUI parameters
+tile_size = 70                                          # Tile's size (in pixels)
+
 # Q-Learning parameters
 LEARNING_RATE = 0.05                                    # How big or small step to make each iteration
 DISCOUNT      = 0.95                                    # How much value future rewards over current rewards
@@ -53,15 +56,15 @@ def loadMaze():
             for j in range (0, maze_file.shape[1]):
                 if maze_file[i, j] == 1:
                     rewards[i, j] = -10
-                    canvas_objects[i, j] = canvas.create_rectangle(j * 50, i * 50, j * 50 + 50, i * 50 + 50, fill="black")
+                    canvas_objects[i, j] = canvas.create_rectangle(j * tile_size, i * tile_size, j * tile_size + tile_size, i * tile_size + tile_size, fill="black")
                 elif maze_file[i, j] == 2:
                     initial_pos = [i, j]
                     agent_pos = np.copy(initial_pos)
-                    canvas_objects[i, j] = canvas.create_oval(agent_pos[1] * 50, agent_pos[0] * 50, agent_pos[1] * 50 + 50, agent_pos[0] * 50 + 50, fill="red")
+                    canvas_objects[i, j] = canvas.create_oval(agent_pos[1] * tile_size, agent_pos[0] * tile_size, agent_pos[1] * tile_size + tile_size, agent_pos[0] * tile_size + tile_size, fill="red")
                 elif maze_file[i, j] == 3:
                     goal_pos = [i, j]
                     rewards[goal_pos[0], goal_pos[1]] = 100
-                    canvas_objects[goal_pos[0], goal_pos[1]] = canvas.create_rectangle(goal_pos[1] * 50, goal_pos[0] * 50, goal_pos[1] * 50 + 50, goal_pos[0] * 50 + 50, fill="green")
+                    canvas_objects[goal_pos[0], goal_pos[1]] = canvas.create_rectangle(goal_pos[1] * tile_size, goal_pos[0] * tile_size, goal_pos[1] * tile_size + tile_size, goal_pos[0] * tile_size + tile_size, fill="green")
                 else:
                     pass
     except OSError:
@@ -72,18 +75,18 @@ def loadMaze():
 
 # Method to add or remove canvas objects
 def drawOnCanvas(event, action):
-    x = np.floor(event.x / 50).astype(int)      # Attention! This is mouse x coordinate but indicates columns in tables!
-    y = np.floor(event.y / 50).astype(int)      # Attention! This is mouse y coordinate but indicates rows in tables!
+    x = np.floor(event.x / tile_size).astype(int)      # Attention! This is mouse x coordinate but indicates columns in tables!
+    y = np.floor(event.y / tile_size).astype(int)      # Attention! This is mouse y coordinate but indicates rows in tables!
     global goal_pos
     if action == 1:
         if canvas_objects[y, x] == 0:
-            canvas_objects[y, x] = canvas.create_rectangle(x * 50, y * 50, x * 50 + 50, y * 50 + 50, fill="black")
+            canvas_objects[y, x] = canvas.create_rectangle(x * tile_size, y * tile_size, x * tile_size + tile_size, y * tile_size + tile_size, fill="black")
         elif canvas_objects[y, x] == canvas_objects[tuple(agent_pos)] or canvas_objects[y, x] == canvas_objects[tuple(goal_pos)]:
             print("You can't place block here.")
         else:
             canvas.delete(canvas_objects[y][x])
             canvas_objects[y, x] = 0
-            canvas_objects[y, x] = canvas.create_rectangle(x * 50, y * 50, x * 50 + 50, y * 50 + 50, fill="black")
+            canvas_objects[y, x] = canvas.create_rectangle(x * tile_size, y * tile_size, x * tile_size + tile_size, y * tile_size + tile_size, fill="black")
         rewards[y, x] = -10
     elif action == 2:
         print("Q-Value at (" + str(y) + ", " + str(x) + "): " + str(q_table[y, x]))
@@ -102,9 +105,9 @@ def reset():
     canvas_objects.fill(0)
     rewards.fill(-1)
     agent_pos = np.copy(initial_pos)
-    canvas_objects[agent_pos[0], agent_pos[1]] = canvas.create_oval(agent_pos[1] * 50, agent_pos[0] * 50, agent_pos[1] * 50 + 50, agent_pos[0] * 50 + 50, fill="red")
+    canvas_objects[agent_pos[0], agent_pos[1]] = canvas.create_oval(agent_pos[1] * tile_size, agent_pos[0] * tile_size, agent_pos[1] * tile_size + tile_size, agent_pos[0] * tile_size + tile_size, fill="red")
     rewards[goal_pos[0], goal_pos[1]] = 100
-    canvas_objects[goal_pos[0], goal_pos[1]] = canvas.create_rectangle(goal_pos[1] * 50, goal_pos[0] * 50, goal_pos[1] * 50 + 50, goal_pos[0] * 50 + 50, fill="green")
+    canvas_objects[goal_pos[0], goal_pos[1]] = canvas.create_rectangle(goal_pos[1] * tile_size, goal_pos[0] * tile_size, goal_pos[1] * tile_size + tile_size, goal_pos[0] * tile_size + tile_size, fill="green")
 
 # Reset agent to original position
 def reset_agent():
@@ -112,7 +115,7 @@ def reset_agent():
     canvas.delete(canvas_objects[agent_pos[0], agent_pos[1]])
     canvas_objects[agent_pos[0], agent_pos[1]] = 0
     agent_pos = np.copy(initial_pos)
-    canvas_objects[agent_pos[0], agent_pos[1]] = canvas.create_oval(agent_pos[1] * 50, agent_pos[0] * 50, agent_pos[1] * 50 + 50, agent_pos[0] * 50 + 50, fill="red")
+    canvas_objects[agent_pos[0], agent_pos[1]] = canvas.create_oval(agent_pos[1] * tile_size, agent_pos[0] * tile_size, agent_pos[1] * tile_size + tile_size, agent_pos[0] * tile_size + tile_size, fill="red")
 
 # Check every available option on a specific state
 def is_valid_move(direction):
@@ -136,16 +139,16 @@ def move(direction):
     previous_location = np.copy(agent_pos)
 
     if   direction == 0 and is_valid_move(0):       # Move Left
-        x = -50
+        x = -tile_size
         agent_pos[1] -= 1
     elif direction == 1 and is_valid_move(1):       # Move Right
-        x = 50
+        x = tile_size
         agent_pos[1] += 1
     elif direction == 2 and is_valid_move(2):       # Move Up
-        y = -50
+        y = -tile_size
         agent_pos[0] -= 1
     elif direction == 3 and is_valid_move(3):       # Move Down
-        y = 50
+        y = tile_size
         agent_pos[0] += 1
     else:
         return tuple(q_table[agent_pos[0], agent_pos[1]]), PENALTY
@@ -229,7 +232,7 @@ def setInputs(option):
                 canvas_objects[agent_row, agent_col] = 0
                 initial_pos = [agent_row, agent_col]
                 agent_pos = np.copy(initial_pos)
-                canvas_objects[agent_row, agent_col] = canvas.create_oval(agent_pos[1] * 50, agent_pos[0] * 50, agent_pos[1] * 50 + 50, agent_pos[0] * 50 + 50, fill="red")
+                canvas_objects[agent_row, agent_col] = canvas.create_oval(agent_pos[1] * tile_size, agent_pos[0] * tile_size, agent_pos[1] * tile_size + tile_size, agent_pos[0] * tile_size + tile_size, fill="red")
             else:
                 print("You can't place agent on top of the goal position!")
         else:
@@ -241,7 +244,7 @@ def setInputs(option):
                 rewards[goal_pos[0], goal_pos[1]] = -1
                 goal_pos = [goal_row, goal_col]
                 rewards[goal_pos[0], goal_pos[1]] = 100
-                canvas_objects[goal_pos[0], goal_pos[1]] = canvas.create_rectangle(goal_pos[1] * 50, goal_pos[0] * 50, goal_pos[1] * 50 + 50, goal_pos[0] * 50 + 50, fill="green")
+                canvas_objects[goal_pos[0], goal_pos[1]] = canvas.create_rectangle(goal_pos[1] * tile_size, goal_pos[0] * tile_size, goal_pos[1] * tile_size + tile_size, goal_pos[0] * tile_size + tile_size, fill="green")
             else:
                 print("You can't place goal on top of the agent position!")
     except Exception:
@@ -320,7 +323,7 @@ btn_load.grid(row=3, column=0, sticky="ew", padx=5, pady=10)
 btn_exit.grid(row=4, column=0, sticky="ew", padx=5, pady=10)
 
 # Canvas Panel Parameters
-canvas = tk.Canvas(master = window, width = 500, height = 500, bg="grey")
+canvas = tk.Canvas(master = window, width = tile_size * 10, height = tile_size * 10, bg="grey")
 canvas.grid(row=0, column=1, sticky="nsew")
 
 # Bind Events
@@ -360,8 +363,8 @@ label_success.grid(row=4, column=0, sticky="w", pady=10)
 label_exploration.grid(row=5, column=0, sticky="w", pady=10)
 
 # Initialization of starting state parameters
-canvas_objects[agent_pos[0], agent_pos[1]] = canvas.create_oval(agent_pos[1] * 50, agent_pos[0] * 50, agent_pos[1] * 50 + 50, agent_pos[0] * 50 + 50, fill="red")
-canvas_objects[goal_pos[0], goal_pos[1]]   = canvas.create_rectangle(goal_pos[1] * 50, goal_pos[0] * 50, goal_pos[1] * 50 + 50, goal_pos[0] * 50 + 50, fill="green")
+canvas_objects[agent_pos[0], agent_pos[1]] = canvas.create_oval(agent_pos[1] * tile_size, agent_pos[0] * tile_size, agent_pos[1] * tile_size + tile_size, agent_pos[0] * tile_size + tile_size, fill="red")
+canvas_objects[goal_pos[0], goal_pos[1]]   = canvas.create_rectangle(goal_pos[1] * tile_size, goal_pos[0] * tile_size, goal_pos[1] * tile_size + tile_size, goal_pos[0] * tile_size + tile_size, fill="green")
 rewards[goal_pos[0], goal_pos[1]]     = 100
 
 window.mainloop()
