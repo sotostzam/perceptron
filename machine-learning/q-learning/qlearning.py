@@ -1,4 +1,5 @@
 import tkinter as tk
+import tkinter.font as tkFont
 from tkinter.filedialog import askopenfilename, asksaveasfile
 import numpy as np
 import time
@@ -56,15 +57,27 @@ def loadMaze():
             for j in range (0, maze_file.shape[1]):
                 if maze_file[i, j] == 1:
                     rewards[i, j] = -10
-                    canvas_objects[i, j] = canvas.create_rectangle(j * tile_size, i * tile_size, j * tile_size + tile_size, i * tile_size + tile_size, fill="black")
+                    canvas_objects[i, j] = canvas.create_rectangle(j * tile_size,
+                                                                   i * tile_size,
+                                                                   j * tile_size + tile_size,
+                                                                   i * tile_size + tile_size,
+                                                                   fill="black")
                 elif maze_file[i, j] == 2:
                     initial_pos = [i, j]
                     agent_pos = np.copy(initial_pos)
-                    canvas_objects[i, j] = canvas.create_oval(agent_pos[1] * tile_size, agent_pos[0] * tile_size, agent_pos[1] * tile_size + tile_size, agent_pos[0] * tile_size + tile_size, fill="red")
+                    canvas_objects[i, j] = canvas.create_oval(agent_pos[1] * tile_size,
+                                                              agent_pos[0] * tile_size,
+                                                              agent_pos[1] * tile_size + tile_size,
+                                                              agent_pos[0] * tile_size + tile_size,
+                                                              fill="red")
                 elif maze_file[i, j] == 3:
                     goal_pos = [i, j]
                     rewards[goal_pos[0], goal_pos[1]] = 100
-                    canvas_objects[goal_pos[0], goal_pos[1]] = canvas.create_rectangle(goal_pos[1] * tile_size, goal_pos[0] * tile_size, goal_pos[1] * tile_size + tile_size, goal_pos[0] * tile_size + tile_size, fill="green")
+                    canvas_objects[goal_pos[0], goal_pos[1]] = canvas.create_rectangle(goal_pos[1] * tile_size,
+                                                                                       goal_pos[0] * tile_size,
+                                                                                       goal_pos[1] * tile_size + tile_size,
+                                                                                       goal_pos[0] * tile_size + tile_size,
+                                                                                       fill="green")
                 else:
                     pass
     except OSError:
@@ -105,9 +118,17 @@ def reset():
     canvas_objects.fill(0)
     rewards.fill(-1)
     agent_pos = np.copy(initial_pos)
-    canvas_objects[agent_pos[0], agent_pos[1]] = canvas.create_oval(agent_pos[1] * tile_size, agent_pos[0] * tile_size, agent_pos[1] * tile_size + tile_size, agent_pos[0] * tile_size + tile_size, fill="red")
+    canvas_objects[agent_pos[0], agent_pos[1]] = canvas.create_oval(agent_pos[1] * tile_size,
+                                                                    agent_pos[0] * tile_size,
+                                                                    agent_pos[1] * tile_size + tile_size,
+                                                                    agent_pos[0] * tile_size + tile_size,
+                                                                    fill="red")
     rewards[goal_pos[0], goal_pos[1]] = 100
-    canvas_objects[goal_pos[0], goal_pos[1]] = canvas.create_rectangle(goal_pos[1] * tile_size, goal_pos[0] * tile_size, goal_pos[1] * tile_size + tile_size, goal_pos[0] * tile_size + tile_size, fill="green")
+    canvas_objects[goal_pos[0], goal_pos[1]] = canvas.create_rectangle(goal_pos[1] * tile_size,
+                                                                       goal_pos[0] * tile_size,
+                                                                       goal_pos[1] * tile_size + tile_size,
+                                                                       goal_pos[0] * tile_size + tile_size,
+                                                                       fill="green")
 
 # Reset agent to original position
 def reset_agent():
@@ -115,7 +136,11 @@ def reset_agent():
     canvas.delete(canvas_objects[agent_pos[0], agent_pos[1]])
     canvas_objects[agent_pos[0], agent_pos[1]] = 0
     agent_pos = np.copy(initial_pos)
-    canvas_objects[agent_pos[0], agent_pos[1]] = canvas.create_oval(agent_pos[1] * tile_size, agent_pos[0] * tile_size, agent_pos[1] * tile_size + tile_size, agent_pos[0] * tile_size + tile_size, fill="red")
+    canvas_objects[agent_pos[0], agent_pos[1]] = canvas.create_oval(agent_pos[1] * tile_size,
+                                                                    agent_pos[0] * tile_size,
+                                                                    agent_pos[1] * tile_size + tile_size, 
+                                                                    agent_pos[0] * tile_size + tile_size,
+                                                                    fill="red")
 
 # Check every available option on a specific state
 def is_valid_move(direction):
@@ -166,8 +191,6 @@ def start():
     btn_load.config(state="disabled")
     best_reward = 0
     success_times = 0
-    b_rewards_text.set("Best score: " + str(best_reward))
-    success_text.set("Success: " + str(success_times) + "%")
 
     for i in range (1, EPISODES + 1):
         episodes_text.set("Episode: " + str(i))
@@ -176,9 +199,9 @@ def start():
         # Reduce the greedy parameter
         if i > 1 and epsilon_value.get() == 1 and epsilon > 0.01:
             epsilon *= 97/100
-            exploration_text.set("Exploration rate: " + str(round(100 * epsilon, 2)) + "%")
+            exploration_text.set("Explore: " + str(round(100 * epsilon, 2)) + "%")
         if i == 1 and epsilon_value.get() == 1:
-            exploration_text.set("Exploration rate: " + str(100 * epsilon) + "%")
+            exploration_text.set("Explore: " + str(round(100 * epsilon, 2)) + "%")
 
         for j in range (200, 0, -1):
             tries_text.set("Tries left: " + str(j))
@@ -233,7 +256,12 @@ def setInputs(option):
                 canvas_objects[agent_row, agent_col] = 0
                 initial_pos = [agent_row, agent_col]
                 agent_pos = np.copy(initial_pos)
-                canvas_objects[agent_row, agent_col] = canvas.create_oval(agent_pos[1] * tile_size, agent_pos[0] * tile_size, agent_pos[1] * tile_size + tile_size, agent_pos[0] * tile_size + tile_size, fill="red")
+                canvas_objects[agent_row, agent_col] = canvas.create_oval(agent_pos[1] * tile_size,
+                                                                          agent_pos[0] * tile_size,
+                                                                          agent_pos[1] * tile_size + tile_size,
+                                                                          agent_pos[0] * tile_size + tile_size,
+                                                                          fill="red")
+                agent_label['text'] = "Agent's Position: (" + str(agent_pos[0]) + "," + str(agent_pos[1]) + ")"
             else:
                 print("You can't place agent on top of the goal position!")
         else:
@@ -245,7 +273,12 @@ def setInputs(option):
                 rewards[goal_pos[0], goal_pos[1]] = -1
                 goal_pos = [goal_row, goal_col]
                 rewards[goal_pos[0], goal_pos[1]] = 100
-                canvas_objects[goal_pos[0], goal_pos[1]] = canvas.create_rectangle(goal_pos[1] * tile_size, goal_pos[0] * tile_size, goal_pos[1] * tile_size + tile_size, goal_pos[0] * tile_size + tile_size, fill="green")
+                canvas_objects[goal_pos[0], goal_pos[1]] = canvas.create_rectangle(goal_pos[1] * tile_size,
+                                                                                   goal_pos[0] * tile_size,
+                                                                                   goal_pos[1] * tile_size + tile_size,
+                                                                                   goal_pos[0] * tile_size + tile_size,
+                                                                                   fill="green")
+                goal_label['text'] = "Goals's Position: (" + str(goal_pos[0]) + "," + str(goal_pos[1]) + ")"
             else:
                 print("You can't place goal on top of the agent position!")
     except Exception:
@@ -255,37 +288,42 @@ def setInputs(option):
 # Enable-Disable Epsilon-greedy Parameter
 def toggle_epsilon():
     if (epsilon_value.get() == 1):
-        exploration_text.set("Exploration rate: N/A")
+        exploration_text.set("Explore: 100%")
     else:
-        exploration_text.set("Exploration rate: Disabled")
+        exploration_text.set("Explore: N/A")
 
 # User Interface Parameters
 window = tk.Tk()
-window.title("Reinforcement Learning")
+window.title("Reinforcement Learning - Maze Solving Agent")
 window.rowconfigure(0, minsize=500, weight=1)
-window.columnconfigure(0, minsize=150, weight=1)
-window.columnconfigure(2, minsize=150, weight=1)
+window.columnconfigure(0, minsize=300, weight=1)
+window.columnconfigure(2, minsize=300, weight=1)
+mainFontStyle = tkFont.Font(family="Lucida Grande", size=20)
+secondaryFontStyle = tkFont.Font(family="Lucida Grande", size=16)
 
 # Main Menu
 main_menu = tk.Frame(window)
 main_menu.grid(row=0, column=0, sticky="ns")
 main_menu.rowconfigure(0, minsize=150, weight=1)
 inputs = tk.Frame(main_menu)
-inputs.grid(row=0, column=0, sticky="n", pady=5)
+inputs.grid(row=0, column=0, sticky="w")
 
 # Agent position inputs
-agent_label = tk.Label(inputs, text="Agent Position:")
+agent_frame = tk.Frame(inputs)
+agent_frame.grid(row=0, column=0, sticky="w", pady = 15)
+
+agent_label = tk.Label(agent_frame, text="Agent's Position: (" + str(agent_pos[0]) + "," + str(agent_pos[1]) + ")", font=mainFontStyle)
 agent_label.grid(row=0, column=0, sticky="w")
 
-agent_params = tk.Frame(inputs)
-agent_params.grid(row=1, column=0, sticky="nwe")
+agent_params = tk.Frame(agent_frame)
+agent_params.grid(row=1, column=0, sticky="w")
 
-agent_row = tk.Label(agent_params, text="Row:")
+agent_row = tk.Label(agent_params, text="Row:", font=secondaryFontStyle)
 agent_row.grid(row=0, column=0, sticky="w")
 agent_row_input = tk.Entry(agent_params, width=2)
 agent_row_input.grid(row=0, column=1, sticky="ew")
 
-agent_col = tk.Label(agent_params, text="Col:")
+agent_col = tk.Label(agent_params, text=" - Col:", font=secondaryFontStyle)
 agent_col.grid(row=0, column=2, sticky="w")
 
 agent_col_input = tk.Entry(agent_params, width=2)
@@ -294,18 +332,21 @@ btn_agent = tk.Button(agent_params, text="Set", command=lambda: setInputs(0))
 btn_agent.grid(row=0, column=4, sticky="ew", padx=5)
 
 # Goal position inputs
-goal_label = tk.Label(inputs, text="Goal Position:")
-goal_label.grid(row=2, column=0, sticky="w")
+goal_frame = tk.Frame(inputs)
+goal_frame.grid(row=2, column=0, sticky="w", pady = 15)
 
-goal_params = tk.Frame(inputs)
-goal_params.grid(row=3, column=0, sticky="n")
+goal_label = tk.Label(goal_frame, text="Goal's Position: (" + str(goal_pos[0]) + "," + str(goal_pos[1]) + ")", font=mainFontStyle)
+goal_label.grid(row=0, column=0, sticky="w")
 
-goal_row = tk.Label(goal_params, text="Row:")
+goal_params = tk.Frame(goal_frame)
+goal_params.grid(row=1, column=0, sticky="w")
+
+goal_row = tk.Label(goal_params, text="Row:", font=secondaryFontStyle)
 goal_row.grid(row=0, column=0, sticky="w")
 goal_row_input = tk.Entry(goal_params, width=2)
 goal_row_input.grid(row=0, column=1, sticky="ew")
 
-goal_col = tk.Label(goal_params, text="Col:")
+goal_col = tk.Label(goal_params, text=" - Col:", font=secondaryFontStyle)
 goal_col.grid(row=0, column=2, sticky="w")
 
 goal_col_input = tk.Entry(goal_params, width=2)
@@ -318,18 +359,19 @@ epsilon_param = tk.Frame(inputs)
 epsilon_param.grid(row=4, column=0, sticky="nwe")
 
 epsilon_value = tk.IntVar(value=1)
-greedy_cb = tk.Checkbutton(epsilon_param, text='Epsilon-greedy', variable=epsilon_value, onvalue=1, offvalue=0, command=lambda: toggle_epsilon())
+greedy_cb = tk.Checkbutton(epsilon_param, pady=15, text='ε-greedy strategy', font=mainFontStyle,
+                           variable=epsilon_value, onvalue=1, offvalue=0, command=lambda: toggle_epsilon())
 greedy_cb.grid(row=0, column=2, sticky="w")
 
 # Left Panel Parameters
 btn_menu = tk.Frame(main_menu)
 btn_menu.grid(row=1, column=0, sticky="s")
 
-btn_start = tk.Button(btn_menu, width=20, height=2, command=start, text="Start")
-btn_reset = tk.Button(btn_menu, width=20, height=2, command=reset, text="Reset")
-btn_save  = tk.Button(btn_menu, width=20, height=2, command=saveMaze, text="Save Custom Maze")
-btn_load  = tk.Button(btn_menu, width=20, height=2, command=loadMaze, text="Load Custom Maze")
-btn_exit  = tk.Button(btn_menu, width=20, height=2, command=window.destroy, text="Exit")
+btn_start = tk.Button(btn_menu, width=18, height=1, command=start, text="Start", font=secondaryFontStyle)
+btn_reset = tk.Button(btn_menu, width=18, height=1, command=reset, text="Reset", font=secondaryFontStyle)
+btn_save  = tk.Button(btn_menu, width=18, height=1, command=saveMaze, text="Save Custom Maze", font=secondaryFontStyle)
+btn_load  = tk.Button(btn_menu, width=18, height=1, command=loadMaze, text="Load Custom Maze", font=secondaryFontStyle)
+btn_exit  = tk.Button(btn_menu, width=18, height=1, command=window.destroy, text="Exit", font=secondaryFontStyle)
 
 btn_start.grid(row=0, column=0, sticky="ew", padx=5, pady=10)
 btn_reset.grid(row=1, column=0, sticky="ew", padx=5, pady=10)
@@ -347,7 +389,7 @@ canvas.bind("<Button 2>", lambda event : drawOnCanvas(event, 2))  # Show Q-Table
 canvas.bind("<Button 3>", lambda event : drawOnCanvas(event, 3))  # Delete canvas object
 
 info_menu = tk.Frame(window)
-info_menu.grid(row=0, column=2, sticky="ns", padx=3)
+info_menu.grid(row=0, column=2, sticky="ew", padx=20)
 
 episodes_text    = tk.StringVar()
 tries_text       = tk.StringVar()
@@ -356,19 +398,19 @@ b_rewards_text   = tk.StringVar()
 success_text     = tk.StringVar()
 exploration_text = tk.StringVar()
 
-episodes_text.set("Episode: N/A")
-tries_text.set("Tries left: N/A")
+episodes_text.set("Episode: 1")
+tries_text.set("Tries left: 200")
 rewards_text.set("Reward: N/A")
 b_rewards_text.set("Best Score: N/A")
 success_text.set("Success: N/A")
-exploration_text.set("Exploration rate: N/A")
+exploration_text.set("Explore: 100%")
 
-label_epoch       = tk.Label(info_menu, textvariable=episodes_text)
-label_tries       = tk.Label(info_menu, textvariable=tries_text)
-label_reward      = tk.Label(info_menu, textvariable=rewards_text)
-label_b_reward    = tk.Label(info_menu, textvariable=b_rewards_text)
-label_success     = tk.Label(info_menu, textvariable=success_text)
-label_exploration = tk.Label(info_menu, textvariable=exploration_text)
+label_epoch       = tk.Label(info_menu, textvariable=episodes_text, font=mainFontStyle)
+label_tries       = tk.Label(info_menu, textvariable=tries_text, font=mainFontStyle)
+label_reward      = tk.Label(info_menu, textvariable=rewards_text, font=mainFontStyle)
+label_b_reward    = tk.Label(info_menu, textvariable=b_rewards_text, font=mainFontStyle)
+label_success     = tk.Label(info_menu, textvariable=success_text, font=mainFontStyle)
+label_exploration = tk.Label(info_menu, textvariable=exploration_text, font=mainFontStyle)
 
 label_epoch.grid(row=0, column=0, sticky="w", pady=10)
 label_tries.grid(row=1, column=0, sticky="w", pady=10)
@@ -378,8 +420,16 @@ label_success.grid(row=4, column=0, sticky="w", pady=10)
 label_exploration.grid(row=5, column=0, sticky="w", pady=10)
 
 # Initialization of starting state parameters
-canvas_objects[agent_pos[0], agent_pos[1]] = canvas.create_oval(agent_pos[1] * tile_size, agent_pos[0] * tile_size, agent_pos[1] * tile_size + tile_size, agent_pos[0] * tile_size + tile_size, fill="red")
-canvas_objects[goal_pos[0], goal_pos[1]]   = canvas.create_rectangle(goal_pos[1] * tile_size, goal_pos[0] * tile_size, goal_pos[1] * tile_size + tile_size, goal_pos[0] * tile_size + tile_size, fill="green")
-rewards[goal_pos[0], goal_pos[1]]     = 100
+canvas_objects[agent_pos[0], agent_pos[1]] = canvas.create_oval(agent_pos[1] * tile_size,
+                                                                agent_pos[0] * tile_size,
+                                                                agent_pos[1] * tile_size + tile_size,
+                                                                agent_pos[0] * tile_size + tile_size,
+                                                                fill="red")
+canvas_objects[goal_pos[0], goal_pos[1]] = canvas.create_rectangle(goal_pos[1] * tile_size,
+                                                                     goal_pos[0] * tile_size,
+                                                                     goal_pos[1] * tile_size + tile_size,
+                                                                     goal_pos[0] * tile_size + tile_size,
+                                                                     fill="green")
+rewards[goal_pos[0], goal_pos[1]] = 100
 
 window.mainloop()
