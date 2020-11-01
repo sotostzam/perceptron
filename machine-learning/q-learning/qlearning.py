@@ -8,6 +8,9 @@ import sys
 
 # GUI parameters
 tile_size = 70                                          # Tile's size (in pixels)
+best_reward   = 0                                       # Best reward found (Used for visualization)
+success_times = 0                                       # Number of successful times (Used for visualization)
+current_it = 1                                          # Current number of episodes
 
 # Q-Learning parameters
 LEARNING_RATE = 0.05                                    # How big or small step to make each iteration
@@ -15,8 +18,6 @@ DISCOUNT      = 0.95                                    # How much value future 
 EPISODES      = 250                                     # Maximum number of episodes to run
 PENALTY       = -10                                     # Penalty for going off limits
 epsilon       = 1                                       # Epsilon greedy strategy (Exploration percentage)
-best_reward   = 0                                       # Best reward found (Used for visualization)
-success_times = 0                                       # Number of successful times (Used for visualization)
 
 # Initialization of tables (10 x 10) and positions
 initial_pos    = np.array([1, 0])                       # Initial position, used for starting position and resetting
@@ -49,7 +50,7 @@ def saveMaze():
 
 # Load custom maze from csv file
 def loadMaze():
-    global agent_pos, canvas_objects, rewards, initial_pos, goal_pos
+    global agent_pos, canvas_objects, rewards, initial_pos, goal_pos, goal_ID
     try:
         maze_file = np.genfromtxt(askopenfilename(initialdir='/q-learning/'), delimiter=',', dtype = np.int)
         canvas.delete("all")
@@ -80,6 +81,7 @@ def loadMaze():
                                                                                        goal_pos[1] * tile_size + tile_size,
                                                                                        goal_pos[0] * tile_size + tile_size,
                                                                                        fill="green")
+                    goal_ID = canvas_objects[goal_pos[0], goal_pos[1]]
                 else:
                     pass
     except OSError:
@@ -143,7 +145,7 @@ def reset():
 
 # Reset agent to original position
 def reset_agent():
-    global agent_pos, canvas_objects, initial_pos
+    global agent_pos, canvas_objects, initial_pos, goal_ID
     canvas.delete(canvas_objects[agent_pos[0], agent_pos[1]])
     canvas_objects[agent_pos[0], agent_pos[1]] = 0
     agent_pos = np.copy(initial_pos)
@@ -152,6 +154,8 @@ def reset_agent():
                                                                     agent_pos[1] * tile_size + tile_size, 
                                                                     agent_pos[0] * tile_size + tile_size,
                                                                     fill="red")
+    if canvas_objects[goal_pos[0], goal_pos[1]] == 0:
+        canvas_objects[goal_pos[0], goal_pos[1]] = goal_ID
 
 # Check every available option on a specific state
 def is_valid_move(direction):
@@ -195,13 +199,13 @@ def move(direction):
     return tuple(q_table[agent_pos[0], agent_pos[1]]), rewards[agent_pos[0], agent_pos[1]]
 
 def start():
-    global epsilon, best_reward, success_times
+    global epsilon, best_reward, success_times, current_it
     btn_start.config(state="disabled")
     btn_reset.config(state="disabled")
     btn_save.config(state="disabled")
     btn_load.config(state="disabled")
 
-    for i in range (1, EPISODES + 1):
+    for i in range (current_it, current_it + EPISODES):
         episodes_text.set("Episode: " + str(i))
         max_reward = 0
 
@@ -248,8 +252,10 @@ def start():
             best_reward = max_reward
         b_rewards_text.set("Best score: " + str(best_reward))
         success_text.set("Success: " + str(round((100 * success_times / i), 2)) + "%")
+        canvas.update()
         reset_agent()
 
+    current_it += EPISODES
     btn_start.config(state="normal")
     btn_reset.config(state="normal")
     btn_save.config(state="normal")
