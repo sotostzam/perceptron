@@ -23,6 +23,7 @@ epsilon       = 1                                       # Epsilon greedy strateg
 initial_pos    = np.array([1, 0])                       # Initial position, used for starting position and resetting
 agent_pos      = np.copy(initial_pos)                   # Agent starting position (columns, rows)
 goal_pos       = np.array([8, 9])                       # Goal position
+goal_ID        = -1                                     # Goal's object ID
 q_table        = np.zeros((10, 10, 4))                  # Initialize Q-table state-space (states * available actions)
 rewards        = np.ones((10, 10)) * - 1                # Initialize reward table to -1
 canvas_objects = np.zeros((10, 10), dtype=int)          # Canvas objects table
@@ -123,7 +124,7 @@ def reset():
         epsilon = 1
         exploration_text.set("Explore: 100%")
     best_reward = 0
-    b_rewards_text.set("Best Score: N/A")
+    b_rewards_text.set("Best Reward: N/A")
     success_times = 0
     success_text.set("Success: N/A")
     canvas.delete("all")
@@ -217,7 +218,7 @@ def start():
             exploration_text.set("Explore: " + str(round(100 * epsilon, 2)) + "%")
 
         for j in range (200, 0, -1):
-            tries_text.set("Tries left: " + str(j))
+            tries_text.set("Moves left: " + str(j))
             current_state = tuple(np.copy(agent_pos))
 
             # If random number is less than ε then explore else exploit (make agent greedy)
@@ -250,7 +251,7 @@ def start():
         
         if i == 1 or best_reward < max_reward:
             best_reward = max_reward
-        b_rewards_text.set("Best score: " + str(best_reward))
+        b_rewards_text.set("Best reward: " + str(best_reward))
         success_text.set("Success: " + str(round((100 * success_times / i), 2)) + "%")
         canvas.update()
         reset_agent()
@@ -426,9 +427,9 @@ success_text     = tk.StringVar()
 exploration_text = tk.StringVar()
 
 episodes_text.set("Episode: 1")
-tries_text.set("Tries left: 200")
+tries_text.set("Moves left: 200")
 rewards_text.set("Reward: N/A")
-b_rewards_text.set("Best Score: N/A")
+b_rewards_text.set("Best Reward: N/A")
 success_text.set("Success: N/A")
 exploration_text.set("Explore: 100%")
 
