@@ -1,14 +1,14 @@
+from sklearn.datasets import make_blobs
+from sklearn.preprocessing import StandardScaler
 import k_means
-import pandas as pd
 
 def main():
-    # Read the iris dataset
-    dataset = pd.read_csv("iris.csv")
-    dataset.drop(['species'], axis=1, inplace=True)
-    k_means_clf = k_means.K_Means(k=3)      # Maximum k for this implementation is 8
-    k_means_clf.fit(dataset)
-    k_means_clf.predict([[5.5, 3.1, 1.2, 0.3],
-                         [6.1, 2.5, 4.1, 1.7]])
+    features, true_labels = make_blobs(n_samples=200, centers=3, cluster_std=0.60, random_state=0)
+    scaler = StandardScaler()
+    scaled_features = scaler.fit_transform(features)
+
+    model = k_means.K_Means_Classifier()
+    model.fit(scaled_features, clusters=3)
 
 if __name__ == "__main__":
     main()
