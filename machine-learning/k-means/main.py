@@ -8,7 +8,8 @@ def main():
     scaled_features = scaler.fit_transform(features)
 
     model = k_means.K_Means_Classifier()
-    model.fit(scaled_features, clusters=3)
+    model.fit(scaled_features, clusters=3, analysis=True)
 
 if __name__ == "__main__":
     main()
+    

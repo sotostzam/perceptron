@@ -18,6 +18,10 @@ def choose_random_sample(dataset, clusters):
     return [dataset[i] for i in sample]
 
 class K_Means_Classifier:
+    def __init__(self) -> None:
+        self.markers = ['+', 'o', 'x', 'd', 's', 'p', 'v', '^']
+        self.colors = ['r', 'g', 'b', 'y', 'm', 'c', 'peru', 'lightgreen']
+
     def train(self, dataset, clusters):
         # Choose K (amount of clusters) random centroids from X (dataset)
         centroids = choose_random_sample(dataset, clusters)
@@ -42,66 +46,69 @@ class K_Means_Classifier:
         
         return clusters, centroids
 
-    def fit(self, dataset, clusters):
+    def fit(self, dataset, clusters, analysis=False):
         def calc_average_distance(comparator, cluster):
             average_score = 0
             for feature in cluster:
                 average_score += euclidean_distance(comparator, feature)
             return average_score/len(cluster)
 
-        # Compute data for elbow and silhouette plots by various k in {2 until 10% of dataset}
-        elbow_rss = []
-        silhouette_scores = []
-        for iteration in range(2, int(10/100*len(dataset)+1)):
-            clusters, centroids = self.train(dataset, iteration)
-            current_rss=0
-            silhouette_coefficients = []
+        if analysis:
+            # Compute data for elbow and silhouette plots by various k in {2 until 10% of dataset}
+            elbow_rss = []
+            silhouette_scores = []
+            for iteration in range(2, int(10/100*len(dataset)+1)):
+                clusters, centroids = self.train(dataset, iteration)
+                current_rss=0
+                silhouette_coefficients = []
+                for cluster in clusters:
+                    for feature in clusters[cluster]:
+                        # Compute residual sum of squares
+                        current_rss += np.sum((feature-centroids[cluster])**2)/iteration
+
+                        # Compute silhouette
+                        avg_cluster = calc_average_distance(feature, clusters[cluster])
+
+                        distances = {}
+                        for nominee_cluster in clusters:
+                            if nominee_cluster != cluster:
+                                distance = calc_average_distance(feature, clusters[nominee_cluster])
+                                distances[nominee_cluster] = distance
+
+                        if len(distances) != 0:
+                            closer_cluster = distances[min(distances, key=distances.get)]
+                        else:
+                            closer_cluster = avg_cluster
+
+                        silhouette_coefficients.append((closer_cluster-avg_cluster)/max(closer_cluster, avg_cluster))
+                    
+                silhouette_scores.append(sum(silhouette_coefficients) / len(silhouette_coefficients))
+                elbow_rss.append(current_rss)
+
+            # Run with best k found from Silhouette
+            clusters, centroids = self.train(dataset, silhouette_scores.index(max(silhouette_scores))+2)
+
+            fig, axes = plt.subplots(1, 3, sharex=False, figsize=(15,5))
+            #plt.subplots_adjust(left=0.1, right=0.9, top=0.9, bottom=0.1)
+            fig.tight_layout(rect=[0, 0.03, 1, 0.90])
+            fig.suptitle('K-means Algorithm Analysis')
+            msg_info = 'K-means with k ='+ str(silhouette_scores.index(max(silhouette_scores))+2)
+
+            axes[0].set_title(msg_info)
             for cluster in clusters:
                 for feature in clusters[cluster]:
-                    # Compute residual sum of squares
-                    current_rss += np.sum((feature-centroids[cluster])**2)/iteration
+                    axes[0].scatter(feature[0], feature[1], c=self.colors[cluster], s=30)
+                axes[0].scatter(centroids[cluster][0], centroids[cluster][1], c='black', s=150, alpha=0.6);
+            
+            axes[1].set_title('Elbow')
+            axes[1].plot(range(2, int(10/100*len(dataset)+1)), elbow_rss)
 
-                    # Compute silhouette
-                    avg_cluster = calc_average_distance(feature, clusters[cluster])
-
-                    distances = {}
-                    for nominee_cluster in clusters:
-                        if nominee_cluster != cluster:
-                            distance = calc_average_distance(feature, clusters[nominee_cluster])
-                            distances[nominee_cluster] = distance
-
-                    if len(distances) != 0:
-                        closer_cluster = distances[min(distances, key=distances.get)]
-                    else:
-                        closer_cluster = avg_cluster
-
-                    silhouette_coefficients.append((closer_cluster-avg_cluster)/max(closer_cluster, avg_cluster))
-                
-            silhouette_scores.append(sum(silhouette_coefficients) / len(silhouette_coefficients))
-            elbow_rss.append(current_rss)
-
-        # Run with best k found from Silhouette
-        clusters, centroids = self.train(dataset, silhouette_scores.index(max(silhouette_scores))+2)
-        
-        markers = ['+', 'o', 'x', 'd', 's', 'p', 'v', '^']
-        colors = ['r', 'g', 'b', 'y', 'm', 'c', 'peru', 'lightgreen']
-
-        fig, axes = plt.subplots(1, 3, sharex=False, figsize=(15,5))
-        #plt.subplots_adjust(left=0.1, right=0.9, top=0.9, bottom=0.1)
-        fig.tight_layout(rect=[0, 0.03, 1, 0.90])
-        fig.suptitle('K-means Algorithm Analysis')
-        msg_info = 'K-means with k ='+ str(silhouette_scores.index(max(silhouette_scores))+2)
-
-        axes[0].set_title(msg_info)
-        for cluster in clusters:
-            for feature in clusters[cluster]:
-                axes[0].scatter(feature[0], feature[1], c=colors[cluster], s=30)
-            axes[0].scatter(centroids[cluster][0], centroids[cluster][1], c='black', s=150, alpha=0.6);
-        
-        axes[1].set_title('Elbow')
-        axes[1].plot(range(2, int(10/100*len(dataset)+1)), elbow_rss)
-
-        axes[2].set_title('Silhouette')
-        axes[2].plot(range(2, int(10/100*len(dataset)+1)), silhouette_scores)
-
+            axes[2].set_title('Silhouette')
+            axes[2].plot(range(2, int(10/100*len(dataset)+1)), silhouette_scores)
+        else:
+            clusters, centroids = self.train(dataset, clusters)
+            for cluster in clusters:
+                for feature in clusters[cluster]:
+                    plt.scatter(feature[0], feature[1], c=self.colors[cluster], s=30)
+                plt.scatter(centroids[cluster][0], centroids[cluster][1], c='black', s=150, alpha=0.6);
         plt.show()
