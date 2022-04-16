@@ -27,7 +27,10 @@ Artificial neural networks (ANNs) are tools widely used in machine learning. The
 ### Clustering
 
 * [K-Means](https://github.com/sotostzam/artificial-intelligence/tree/master/machine-learning/k-means)
+* [Partition Around Medoids (PAM)](https://github.com/sotostzam/artificial-intelligence/tree/master/machine-learning/partition-around-medoids)
 * [Mean shift](https://github.com/sotostzam/artificial-intelligence/tree/master/machine-learning/mean-shift)
+* [Fuzzy c-means](https://github.com/sotostzam/artificial-intelligence/tree/master/machine-learning/fuzzy-c-means)
+* [Self Organizing Maps (SOM)](https://github.com/sotostzam/artificial-intelligence/tree/master/machine-learning/self-organizing-map)
 
 ## Reinforcement Learning
 
@@ -43,6 +46,7 @@ In order to run the examples you need to have the following requirements:
 2) [NumPy](http://www.numpy.org/)
 3) [Matplotlib](http://matplotlib.org/)
 4) [Pandas](https://pandas.pydata.org/)
+5) [Scikit-learn](https://scikit-learn.org/stable/)
 
 For your convenience there is a file named requirements, which holds the information about all the required libraries. After making sure you have python up and running in your machine, you can install all the requirements by using the following command:
 
