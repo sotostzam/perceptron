@@ -26,11 +26,12 @@ Artificial neural networks (ANNs) are tools widely used in machine learning. The
 
 ### Clustering
 
-* [K-Means](https://github.com/sotostzam/artificial-intelligence/tree/master/machine-learning/k-means)
+* [k-means](https://github.com/sotostzam/artificial-intelligence/tree/master/machine-learning/k-means)
 * [Partition Around Medoids (PAM)](https://github.com/sotostzam/artificial-intelligence/tree/master/machine-learning/partition-around-medoids)
 * [Mean shift](https://github.com/sotostzam/artificial-intelligence/tree/master/machine-learning/mean-shift)
 * [Fuzzy c-means](https://github.com/sotostzam/artificial-intelligence/tree/master/machine-learning/fuzzy-c-means)
 * [Self Organizing Maps (SOM)](https://github.com/sotostzam/artificial-intelligence/tree/master/machine-learning/self-organizing-map)
+* [Kernel k-means](https://github.com/sotostzam/artificial-intelligence/tree/master/machine-learning/kernel-k-means)
 
 ## Reinforcement Learning
 
