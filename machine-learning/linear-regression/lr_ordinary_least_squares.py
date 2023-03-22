@@ -51,7 +51,7 @@ def main():
     line4 = m4 * x_range + b4
 
     fig, ((ax1, ax2), (ax3, ax4)) = plt.subplots(2, 2)
-    fig.canvas.set_window_title('Linear Regression')
+    fig.canvas.manager.set_window_title('Linear Regression')
     fig.suptitle("Anscombe's quartet")
 
     ax1.scatter(x1, y1)
